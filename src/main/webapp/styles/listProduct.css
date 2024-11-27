@@ -1,0 +1,255 @@
+#filter {}
+
+#size {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+
+}
+
+#size button {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    color: #495057;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+#color {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+}
+
+#color div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#color button {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    color: #495057;
+    cursor: pointer;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+.title-filter {
+    margin-top: 20px;
+    font-size: .875rem;
+    font-weight: 700;
+    margin: .75rem 0;
+    opacity: .4;
+
+}
+
+#search {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    padding-bottom: 10px;
+
+
+}
+
+#search i::before {
+    content: "\f002";
+    padding: 10px;
+
+}
+
+#search i:hover {
+    cursor: pointer;
+    color: black;
+}
+
+.product-listProdct {
+    position: relative;
+}
+
+.product-listProdct img {
+    width: 100%;
+    height: 360px;
+    border-radius: 20px;
+    background-color: transparent;
+    /* Xóa phông nền */
+    mix-blend-mode: multiply;
+    margin-bottom: 10px;
+    z-index: 1;
+}
+
+.color-listProduct {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+
+}
+
+.color-listProduct div {
+    margin-right: 5px;
+    padding: 1px 2px;
+    border: 2px solid transparent;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.color-listProduct div button {
+    cursor: pointer;
+    height: 20px;
+    width: 40px;
+    border-radius: 20px;
+    border: none;
+
+}
+
+.color-listProduct div:hover {
+    border: 2px solid #000;
+
+}
+
+.product-listProdct .name-product {
+    font-size: 14px;
+    font-weight: 700;
+    margin: 10px 0;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #231f20;
+}
+
+.priceDiv {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+
+}
+
+.priceDiv .price {
+    font-weight: 800;
+    color: #242424;
+    margin-right: 10px;
+
+}
+
+.priceDiv .discount {
+    padding: 2px 5px;
+    background-color: #273bcd;
+    color: #f8f9fa;
+    font-weight: 700;
+    border-radius: 5px;
+
+}
+
+.priceDiv .original-price {
+    font-weight: 700;
+    color: #242424;
+    text-decoration: line-through;
+    margin-left: 5px;
+    color: #c8c8c8;
+}
+
+.imgAndSize {
+    position: relative;
+}
+
+.size-listProduct {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    width: 80%;
+    transform: translate(-50%, calc(-100% - 10px));
+    background-color: rgba(215, 213, 212, 0.85);
+    min-height: 80px;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    display: none;
+    z-index: 2;
+
+}
+
+
+
+.size-listProduct button {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    color: #495057;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: 0.3s;
+    font-weight: 600;
+}
+
+.size-listProduct button:hover {
+    background-color: black;
+    color: white;
+
+}
+
+
+@keyframes hoverProduct-listProdct {
+    from {
+        opacity: 0;
+        top: 100%;
+    }
+
+    to {
+        opacity: 1;
+        top: 50%;
+        transform: translateX(-50%);
+    }
+
+}
+
+@keyframes notHoverProduct-listProdct {
+    from {
+        opacity: 1;
+        top: 50%;
+        transform: translateX(-50%);
+    }
+
+    to {
+        opacity: 0;
+        top: 100%;
+    }
+
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    border-top: 1px solid #ced4da;
+}
+
+.pagination button {
+    margin-top: 10px;
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    color: #495057;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: 0.3s;
+    margin-right: 10px;
+}

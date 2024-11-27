@@ -1,0 +1,43 @@
+html,
+body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    flex: 1;
+    padding-bottom: 20px;
+}
+
+footer {
+    padding-bottom: 18px;
+    background-color: rgb(245 245 247);
+    font-size: 12px;
+    line-height: 1.3333733333;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+}
+
+.header-footer {
+    border-bottom: 1px solid #e0e0e0;
+    padding: 15px;
+}
+
+.content-footer {
+    padding: 12px 0;
+}
+
+.error {
+    width: 70%;
+    display: flex;
+    align-items: start;
+    margin-bottom: 20px;
+    margin-top: 5px;
+
+}
+
+.error span {
+    color: red;
+    font-size: 16px;
+}

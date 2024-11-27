@@ -1,0 +1,27 @@
+@media (min-width: 1025px) {
+    .h-custom {
+        height: 100vh !important;
+    }
+}
+
+.card-registration .select-input.form-control[readonly]:not([disabled]) {
+    font-size: 1rem;
+    line-height: 2.15;
+    padding-left: .75em;
+    padding-right: .75em;
+}
+
+.card-registration .select-arrow {
+    top: 13px;
+}
+h1 {
+    font-size: 64px;
+    line-height: 1.0625;
+    letter-spacing: -0.009em;
+    font-weight: 600;
+}
+h6 , .text-body{
+    font-size: 20px ;
+    font-weight: 400;
+}
+ 

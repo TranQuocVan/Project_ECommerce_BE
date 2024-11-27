@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+
+    <!-- Define the AdminRoleFilter -->
+    <filter>
+        <filter-name>AdminRoleFilter</filter-name>
+        <filter-class>filters.AdminRoleFilter</filter-class>
+    </filter>
+
+    <!-- Map the filter to /admin/* URL pattern -->
+    <filter-mapping>
+        <filter-name>AdminRoleFilter</filter-name>
+        <url-pattern>/adminPages/*</url-pattern>
+    </filter-mapping>
+
+
+    <filter>
+        <filter-name>AuthFilter</filter-name>
+        <filter-class>filters.AuthFilter</filter-class>
+    </filter>
+
+    <!-- Mapping Filter -->
+    <filter-mapping>
+        <filter-name>AuthFilter</filter-name>
+        <url-pattern>/*</url-pattern> <!-- Áp dụng cho mọi URL -->
+    </filter-mapping>
+
+    <filter>
+        <filter-name>Login</filter-name>
+        <filter-class>filters.Login</filter-class>
+    </filter>
+
+    <!-- Áp dụng filter cho tất cả các URL -->
+    <filter-mapping>
+        <filter-name>Login</filter-name>
+        <url-pattern>/loginPages/*</url-pattern>
+    </filter-mapping>
+
+
+
+
+</web-app>
+
+
