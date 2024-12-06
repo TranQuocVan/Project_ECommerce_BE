@@ -41,8 +41,8 @@ public class GmailAuthenticationController extends HttpServlet {
             UserModel userModel = authService.registerUser(gmail, password);
 
             // Cập nhật thông tin session
-            session.setAttribute("user", userModel);
-            session.setAttribute("isLogin", true);
+//            session.setAttribute("user", userModel);
+//            session.setAttribute("isLogin", true);
 
             // Tạo session và xử lý "Remember Me"
             try {

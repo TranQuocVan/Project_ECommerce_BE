@@ -3,7 +3,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
+
 import model.UserModel;
 
 public class UserDao {
@@ -14,19 +20,40 @@ public class UserDao {
      * @return Số dòng bị ảnh hưởng (1 nếu thành công, 0 nếu thất bại).
      */
     public int insert(UserModel userModel) {
-        String sql = "INSERT INTO users (gmail, password, role) VALUES (?, ?, ?)";
+        // Ensure userModel is not null
+        if (userModel == null || userModel.getGmail() == null || userModel.getPassword() == null || userModel.getRole() == null) {
+            throw new IllegalArgumentException("UserModel or its fields cannot be null");
+        }
+
+        // Use modern Java Date API
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"); // Use standard SQL datetime format
+
+        String sql = "INSERT INTO users (gmail, password, role, created_at) VALUES (?, ?, ?, ?)";
+
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
 
+            // Set parameters
             st.setString(1, userModel.getGmail());
-            st.setString(2, userModel.getPassword()); // Nên mã hóa mật khẩu trước khi lưu
+            st.setString(2, hashPassword(userModel.getPassword())); // Hash the password before storing
             st.setString(3, userModel.getRole());
+            st.setString(4, now.format(formatter));
 
-            return st.executeUpdate();
+            return st.executeUpdate(); // Execute the query
         } catch (SQLException e) {
+            // Log the error and rethrow it or handle it accordingly
+            System.err.println("Error while inserting user: " + e.getMessage());
             e.printStackTrace();
-            return 0; // Lỗi trong quá trình thêm người dùng
+            return 0; // Return 0 if insertion fails
         }
+    }
+
+    // Example password hashing method (BCrypt recommended)
+    private String hashPassword(String password) {
+        // Use a library like BCrypt to hash passwords securely
+        // Example: return BCrypt.hashpw(password, BCrypt.gensalt());
+        return password; // Replace with actual hash implementation
     }
 
     /**

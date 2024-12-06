@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 
-@WebServlet(name = "SignInController", value = "/SignInController")
+@WebServlet(name = "SignInController", value = "/SignInControlle")
 public class SignInController extends HttpServlet {
 
     @Override
