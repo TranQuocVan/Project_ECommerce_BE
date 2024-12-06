@@ -41,7 +41,7 @@ public class Login implements Filter {
 
         // Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập
         if (!isLogin) {
-            httpResponse.sendRedirect("../signin.jsp"); // Chuyển đến trang login
+            httpResponse.sendRedirect("../signUp.jsp"); // Chuyển đến trang login
             return; // Dừng xử lý request
         }
 

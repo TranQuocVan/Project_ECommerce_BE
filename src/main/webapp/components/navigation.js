@@ -116,7 +116,7 @@ const renderNavigation = () => {
                 <div style="font-size: 20px;" class="row">
                     <div class="col-md-9 flex-align-items-center dropdown">
                         <span class="navigation"><a href="index.html"><img style="width: 20px;" src="${urlLogo}" alt="logo"></a></span>
-                        <span class="navigation" id="shop"><a href="index.html">Cửa hàng</a></span>
+                        <span class="navigation" id="shop"><a href="index.jsp">Cửa hàng</a></span>
                         <span class="navigation" id="shoe"><a href="shoes.html">Giày</a></span>
                         <span class="navigation" id="sandal"><a href="#">Dép</a></span> 
                         <span class="navigation"><a href="#">Sản phẩm khuyến mãi</a></span>
@@ -126,7 +126,7 @@ const renderNavigation = () => {
                         
                     </div>
                     <div class="col-md-3 flex-align-items-center" style="justify-content: end;">
-                        ${isLogin ? `<a href='loginPages/userInfo.jsp'><i class="fa-regular fa-user"></i></i></a>` : `<a href='signup.jsp'>Sign up</i></a>`}
+                        ${isLogin ? `<a href='loginPages/userInfo.jsp'><i class="fa-regular fa-user"></i></i></a>` : `<a href='signIn.jsp'>Sign up</i></a>`}
                     </div>
                 </div>
             </div>

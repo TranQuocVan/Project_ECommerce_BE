@@ -1,6 +1,10 @@
 package service;
 
 import database.UserDao;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.UserModel;
 
 import java.sql.SQLException;
@@ -62,4 +66,43 @@ public class UserService {
     public static void invalidateToken(String token) throws SQLException {
         UserDao.invalidateToken(token);
     }
+
+    // Xác thực thông tin người dùng
+    public static UserModel authenticateUser(String gmail, String password) throws SQLException {
+        UserModel userModel = new UserModel(gmail, password);
+
+        // Kiểm tra tài khoản hợp lệ qua DAO (hoặc thêm các bước xử lý khác)
+        return checkValidGmailAndPassword(userModel);
+    }
+
+    public static void handleRememberMe(UserModel userModel, HttpSession session, HttpServletResponse response) throws SQLException {
+        // Xóa mật khẩu trước khi lưu vào session
+        userModel.setPassword("******");
+        session.setAttribute("user", userModel);
+
+        // Tạo token
+        String token = TokenService.generateToken();
+        userModel.setRememberMeToken(token);
+
+        // Cập nhật token vào cơ sở dữ liệu
+        updateRememberMeToken(userModel);
+
+        // Lưu trạng thái đăng nhập
+        session.setAttribute("isLogin", true);
+
+        // Tạo và thêm cookie
+        Cookie tokenCookie = new Cookie("remember_me", token);
+
+        tokenCookie.setMaxAge(7 * 24 * 60 * 60); // 7 ngày
+        tokenCookie.setHttpOnly(true);
+        tokenCookie.setSecure(true); // Chỉ hoạt động qua HTTPS
+        tokenCookie.setPath("/"); // Có hiệu lực trên toàn bộ ứng dụng
+        response.addCookie(tokenCookie);
+
+    }
+
+
+
+
+
 }

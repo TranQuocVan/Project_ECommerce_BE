@@ -1,4 +1,4 @@
-<%--
+<%@ page import="model.UserModel" %><%--
   Created by IntelliJ IDEA.
   User: huyvu
   Date: 11/27/2024
@@ -28,7 +28,15 @@
 </head>
 
 <body>
+<%
+    UserModel user = (UserModel) session.getAttribute("user");
+    String gmail = "Chưa có thông tin";
+    if(user != null) {
+        gmail = user.getGmail();
+    }
 
+
+%>
 <header>
     <nav></nav>
     <div class="under-navigation">
@@ -39,7 +47,7 @@
                         <div class="col-md-9">
                             <div>
                                 <h3>
-                                    Hi, Nguyễn Huy Vũ
+                                    <%=gmail%>
                                 </h3>
                                 <img id="rankCurrent" src="../assets/rankImage/none.png" alt="">
                                 <div class="spendMore">

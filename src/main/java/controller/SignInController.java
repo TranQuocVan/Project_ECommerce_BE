@@ -3,56 +3,50 @@ package controller;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import model.UserModel;
 import service.UserService;
 
 import java.io.IOException;
 import java.sql.SQLException;
+
 
 @WebServlet(name = "SignInController", value = "/SignInController")
 public class SignInController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("doGet");
+        // Có thể redirect đến trang đăng nhập hoặc đăng ký
+        response.sendRedirect("signIn.jsp");
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Lấy thông tin từ request
         String gmail = request.getParameter("gmail");
         String password = request.getParameter("password");
-        String res = "";
-        HttpSession session = request.getSession();
-        if(gmail.isEmpty()) {
-            request.setAttribute("res", " Must enter gmail");
-            session.setAttribute("password", password);
-            RequestDispatcher login = getServletContext().getRequestDispatcher("/signin.jsp");
-            login.forward(request, response);
-        }
-        if(!gmail.isEmpty()) {
-            try {
-                res = UserService.checkValidGmailAndExists(gmail);
-                session.setAttribute("gmail", gmail);
 
-                if(res.equals("Success")) {
-//                 int authCode = (int) (Math.random() * 999999);
-                   int authCode = 1;
-//                 Email.sendEmail(gmail,"Auth code", authCode+"");
+        // Gọi UserService để xử lý
+        try {
+            // Kiểm tra thông tin tài khoản qua service
+            UserModel userModel = UserService.authenticateUser(gmail, password);
 
-                    session.setAttribute("authCode", ""+authCode);
-
-                   RequestDispatcher login = getServletContext().getRequestDispatcher("/gmailAuthentication.jsp");
-                   login.forward(request, response);
-                   // response.sendRedirect("index.jsp");
-                }
-                else {
-                    request.setAttribute("res",res);
-                    RequestDispatcher login = getServletContext().getRequestDispatcher("/signin.jsp");
-                    login.forward(request, response);
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+            if (userModel == null) {
+                // Trường hợp thông tin không hợp lệ
+                request.setAttribute("res", "This gmail or password is incorrect");
+                request.getRequestDispatcher("signIn.jsp").forward(request, response);
+                return;
             }
-        }
 
+            // Tạo session và xử lý "Remember Me"
+            HttpSession session = request.getSession(true);
+            UserService.handleRememberMe(userModel, session, response);
+
+            // Chuyển hướng về trang index
+            response.sendRedirect("index.jsp");
+        } catch (SQLException e) {
+            // Xử lý ngoại lệ từ cơ sở dữ liệu
+            throw new RuntimeException("Database error occurred: " + e.getMessage(), e);
+        }
     }
+
 }

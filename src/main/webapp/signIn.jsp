@@ -43,7 +43,7 @@
             <div class="col-md-6">
                 <div class="login-container text-center p-4 ">
                     <h1 id="titleLogin">Đăng nhập vào Silk Road</h1>
-                    <form id="loginForm"  action="SignUpController" method="post">
+                    <form id="loginForm"  action="SignInController" method="post">
 
                         <div id="inputName" class="input-container">
                             <input name="gmail" type="text" id="nameLogin" class="floating-input" placeholder=" " required>

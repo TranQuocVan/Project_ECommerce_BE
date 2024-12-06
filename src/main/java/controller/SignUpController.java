@@ -3,60 +3,74 @@ package controller;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
-import model.UserModel;
-import service.TokenService;
 import service.UserService;
 
 import java.io.IOException;
 import java.sql.SQLException;
-
 
 @WebServlet(name = "SignUpController", value = "/SignUpController")
 public class SignUpController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Có thể redirect đến trang đăng nhập hoặc đăng ký
-        response.sendRedirect("signup.jsp");
+        System.out.println("doGet");
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Lấy thông tin từ request
         String gmail = request.getParameter("gmail");
         String password = request.getParameter("password");
+        String res = "";
 
-        UserModel userModel = new UserModel(gmail, password);
+        // Tạo session
+        HttpSession session = request.getSession();
 
+        // Kiểm tra nếu không nhập Gmail
+        if (gmail.isEmpty()) {
+            request.setAttribute("res", "Must enter gmail");
+            session.setAttribute("password", password); // Lưu mật khẩu vào session (nếu cần)
+
+            // Chuyển hướng về trang đăng nhập
+            RequestDispatcher login = getServletContext().getRequestDispatcher("/signUp.jsp");
+            login.forward(request, response);
+            return; // Kết thúc xử lý tại đây
+        }
+
+        // Nếu Gmail không rỗng, xử lý tiếp
         try {
-            userModel = UserService.checkValidGmailAndPassword(userModel);
-            if (userModel == null) {
-                request.setAttribute("res", "This gmail or password is incorrect");
-                request.getRequestDispatcher("signup.jsp").forward(request, response);
+            // Kiểm tra Gmail hợp lệ và tồn tại
+            res = UserService.checkValidGmailAndExists(gmail);
+
+            // Lưu Gmail vào session
+            session.setAttribute("gmail", gmail);
+
+            if (res.equals("Success")) {
+                // Tạo mã xác thực (ở đây đặt tạm là 1)
+                int authCode = 1;
+
+                // Gửi mã xác thực qua email (bỏ qua phần gửi thực tế để test)
+                // Email.sendEmail(gmail, "Auth code", authCode + "");
+
+                // Lưu mã xác thực vào session
+                session.setAttribute("authCode", String.valueOf(authCode));
+                session.setAttribute("password", password);
+
+                // Chuyển hướng sang trang xác thực Gmail
+                RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/gmailAuthentication.jsp");
+                dispatcher.forward(request, response);
             } else {
-                // Tạo session
-                HttpSession session = request.getSession(true);
-                userModel.setPassword("******"); // Không lưu mật khẩu thực vào session
-                session.setAttribute("user", userModel);
+                // Nếu Gmail không hợp lệ hoặc không tồn tại
+                request.setAttribute("res", res);
 
-                // Tạo token và lưu vào cơ sở dữ liệu
-                String token = TokenService.generateToken();
-                userModel.setRememberMeToken(token);
-                UserService.updateRememberMeToken(userModel);
-
-                // Tạo cookie lưu token
-                Cookie tokenCookie = new Cookie("remember_me", token);
-                tokenCookie.setMaxAge(7 * 24 * 60 * 60); // Cookie tồn tại 7 ngày
-                tokenCookie.setHttpOnly(true);
-                tokenCookie.setSecure(true); // Đảm bảo chỉ gửi qua HTTPS
-                tokenCookie.setPath("/"); // Có hiệu lực trên toàn bộ ứng dụng
-                response.addCookie(tokenCookie);
-
-                session.setAttribute("isLogin", true);
-
-                response.sendRedirect("index.jsp");
+                // Quay lại trang đăng nhập với thông báo lỗi
+                RequestDispatcher login = getServletContext().getRequestDispatcher("/signUp.jsp");
+                login.forward(request, response);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            // Xử lý ngoại lệ SQL
+            throw new RuntimeException("Database error occurred: " + e.getMessage(), e);
         }
     }
+
 }

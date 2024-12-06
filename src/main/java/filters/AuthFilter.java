@@ -39,6 +39,8 @@ public class AuthFilter implements Filter {
                                 HttpSession newSession = httpRequest.getSession(true);
                                 user.setPassword("******");
                                 newSession.setAttribute("user", user);
+                                newSession.setAttribute("isLogin", true);
+
 
                                 // Tùy chọn: Cập nhật token mới để tăng cường bảo mật
                                 String newToken = service.TokenService.generateToken();

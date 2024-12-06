@@ -47,7 +47,7 @@
                 <div class="login-container text-center p-4 ">
                     <h1 id="titleLogin">Đăng ký vào Silk Road</h1>
 
-                    <form id="loginForm" action="SignInController" method="post">
+                    <form id="loginForm" action="SignUpController" method="post">
                         <div id="inputName" class="input-container">
                             <input name="gmail" type="text" id="nameLogin" class="floating-input" placeholder=" " required value=<%=gmail%>>
                             <label for="nameLogin"  class="floating-label">Vui lòng điền gmail của bạn</label>
