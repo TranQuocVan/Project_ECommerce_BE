@@ -7,6 +7,9 @@ public class SizeModel {
     private String size;
 
     private  int stock;
+    public SizeModel() {
+
+    }
 
     public SizeModel(String size, int stock) {
         this.size = size;

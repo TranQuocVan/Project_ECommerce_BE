@@ -10,13 +10,21 @@ public class ProductModel {
     private double price;
     private float discount;
 
+    private int groupProductId;
+    private  int productCategoryId;
+
     private List<ColorModel> ColorModels =  new ArrayList<ColorModel>();
 
-    public ProductModel( String name, double price, float discount , List<ColorModel> ColorModels) {
+    public ProductModel() {
+
+    }
+
+    public ProductModel( String name, double price, float discount , int productCategoryId, int groupProductId) {
         this.name = name;
         this.price = price;
         this.discount = discount;
-        this.ColorModels = ColorModels;
+        this.groupProductId = groupProductId;
+        this.productCategoryId = productCategoryId;
 
 
     }
@@ -32,6 +40,14 @@ public class ProductModel {
         this.name = name;
         this.price = price;
         this.discount = discount;
+
+    }
+
+    public  ProductModel(String name, double price, float discount, int groupProductId) {
+        this.name = name;
+        this.price = price;
+        this.discount = discount;
+        this.groupProductId = groupProductId;
 
     }
 
@@ -63,5 +79,26 @@ public class ProductModel {
     }
     public float getDiscount() {
         return discount;
+    }
+
+    public int getGroupProductId() {
+        return groupProductId;
+    }
+    public void setGroupProductId(int groupProductId) {
+        this.groupProductId = groupProductId;
+    }
+    public int getProductCategoryId() {
+        return productCategoryId;
+    }
+    public void setProductCategoryId(int productCategoryId) {
+        this.productCategoryId = productCategoryId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDiscount(float discount) {
+        this.discount = discount;
     }
 }

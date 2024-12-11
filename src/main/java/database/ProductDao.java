@@ -3,67 +3,17 @@ package database;
 import model.Product;
 import model.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
+import java.util.*;
 
 public class ProductDao {
-//    public  int getCategoryIDByName(String categoryName) {
-//        String query = "SELECT idProductCategory FROM ProductCategory WHERE nameCategory = ?";
-//
-//
-//        try (Connection con = JDBCUtil.getConnection();
-//             PreparedStatement st = con.prepareStatement(query)) {
-//
-//            // Check if category exists
-//            st.setString(1, categoryName);
-//            ResultSet rs = st.executeQuery();
-//
-//            if (rs.next()) {
-//                return rs.getInt("idProductCategory"); // Return existing category ID
-//            } else {
-//                // If category does not exist, insert it and retrieve the new ID
-//                String insertQuery = "INSERT INTO ProductCategory (nameCategory) VALUES (?)";
-//                try (PreparedStatement insertSt = con.prepareStatement(insertQuery)) {
-//                    insertSt.setString(1, categoryName);
-//                    insertSt.executeUpdate();
-//
-//                    return getCategoryIDByName(categoryName);
-//                }
-//            }
-//
-//        } catch (SQLException e) {
-//            System.err.println("SQL Error: " + e.getMessage());
-//        }
-//        return -1;
-//    }
 
-//    public  int addNewProduct(Product product) {
-//        int row = 0;
-//        String sql = "INSERT INTO products (nameProduct, quantity, image, price, idProductCategory) VALUES (?, ?, ?, ?, ?)";
-//
-//        try (Connection con = JDBCUtil.getConnection();
-//             PreparedStatement st = con.prepareStatement(sql)) {
-//
-//            st.setString(1, product.getNameProduct());
-//            st.setInt(2, product.getQuantity());
-//
-//            if (product.getImage() != null) {
-//                st.setBlob(3, product.getImage());
-//            }
-//            st.setFloat(4, product.getPrice());
-//            st.setInt(5, product.getIdProductCategory());
-//
-//            row = st.executeUpdate();
-//
-//        } catch (SQLException e) {
-//            System.err.println("SQL Error: " + e.getMessage());
-//        }
-//
-//        return row;
-//    }
 
     public void addProduct(ProductModel product) throws SQLException {
-        String insertProductQuery = "INSERT INTO products (name, price, discount, groupProductId,productCategoryId) VALUES (?, ?, ?, ? ,?)";
+        String insertProductQuery = "INSERT INTO products (name, price, discount, productCategoryId,groupProductId) VALUES (?, ?, ?, ? ,?)";
         String insertColorQuery = "INSERT INTO colors (name, hexCode, productId) VALUES (?, ?, ?)";
         String insertSizeQuery = "INSERT INTO sizes (size, stock, colorId) VALUES (?, ?, ?)";
         String insertImageQuery = "INSERT INTO images (image, colorId) VALUES (?, ?)";
@@ -79,8 +29,8 @@ public class ProductDao {
                     productStmt.setString(1, product.getName());
                     productStmt.setDouble(2, product.getPrice());
                     productStmt.setFloat(3, product.getDiscount());
-                    productStmt.setInt(4, 1);
-                    productStmt.setInt(5, 1);
+                    productStmt.setInt(4, product.getProductCategoryId());
+                    productStmt.setInt(5, product.getGroupProductId());
                     productStmt.executeUpdate();
 
                     try (ResultSet rs = productStmt.getGeneratedKeys()) {
@@ -139,6 +89,106 @@ public class ProductDao {
                 con.rollback();
                 throw e; // Rethrow exception for caller to handle
             }
+        }
+    }
+
+
+
+    public ProductModel getProductById(int productId) throws SQLException {
+        String productQuery = "SELECT * FROM products WHERE productId = ?";
+        String colorQuery = "SELECT * FROM colors WHERE productId = ?";
+        String sizeQuery = "SELECT * FROM sizes WHERE colorId = ?";
+        String imageQuery = "SELECT * FROM images WHERE colorId = ?";
+
+        try (Connection con = JDBCUtil.getConnection()) {
+            ProductModel product = null;
+
+            // Fetch Product Details
+            try (PreparedStatement productStmt = con.prepareStatement(productQuery)) {
+                productStmt.setInt(1, productId);
+                try (ResultSet rs = productStmt.executeQuery()) {
+                    if (rs.next()) {
+                        product = new ProductModel();
+                        product.setId(rs.getInt("productId"));
+                        product.setName(rs.getString("name"));
+                        product.setPrice(rs.getDouble("price"));
+                        product.setDiscount(rs.getFloat("discount"));
+                        product.setProductCategoryId(rs.getInt("productCategoryId"));
+                        product.setGroupProductId(rs.getInt("groupProductId"));
+                    } else {
+                        throw new SQLException("Product not found with ID: " + productId);
+                    }
+                }
+            }
+
+            if (product != null) {
+                // Fetch Colors
+                List<ColorModel> colors = new ArrayList<>();
+                try (PreparedStatement colorStmt = con.prepareStatement(colorQuery)) {
+                    colorStmt.setInt(1, productId);
+                    try (ResultSet rs = colorStmt.executeQuery()) {
+                        while (rs.next()) {
+                            ColorModel color = new ColorModel();
+                            color.setId(rs.getInt("colorId"));
+                            color.setName(rs.getString("name"));
+                            color.setHexCode(rs.getString("hexCode"));
+
+                            // Fetch Sizes for this Color
+                            List<SizeModel> sizes = new ArrayList<>();
+                            try (PreparedStatement sizeStmt = con.prepareStatement(sizeQuery)) {
+                                sizeStmt.setInt(1, color.getId());
+                                try (ResultSet sizeRs = sizeStmt.executeQuery()) {
+                                    while (sizeRs.next()) {
+                                        SizeModel size = new SizeModel();
+                                        size.setId(sizeRs.getInt("sizeId"));
+                                        size.setSize(sizeRs.getString("size"));
+                                        size.setStock(sizeRs.getInt("stock"));
+                                        sizes.add(size);
+                                    }
+                                }
+                            }
+                            color.setSizeModels(sizes);
+
+                            // Fetch Images for this Color
+                            List<ImageModel> images = new ArrayList<>();
+                            try (PreparedStatement imageStmt = con.prepareStatement(imageQuery)) {
+                                imageStmt.setInt(1, color.getId());
+                                try (ResultSet imageRs = imageStmt.executeQuery()) {
+                                    while (imageRs.next()) {
+                                        ImageModel image = new ImageModel();
+                                        image.setId(imageRs.getInt("imageId"));
+
+                                        // Get the binary stream
+                                        InputStream imageStream = imageRs.getBinaryStream("image");
+
+                                        // Convert the binary stream to Base64
+                                        if (imageStream != null) {
+                                            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                                            byte[] buffer = new byte[1024];
+                                            int bytesRead;
+                                            while ((bytesRead = imageStream.read(buffer)) != -1) {
+                                                outputStream.write(buffer, 0, bytesRead);
+                                            }
+                                            byte[] imageBytes = outputStream.toByteArray();
+                                            String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+                                            image.setImageBase64(base64Image); // Set the Base64 string
+                                        }
+
+                                        images.add(image);
+                                    }
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                            color.setImageModels(images);
+
+                            colors.add(color);
+                        }
+                    }
+                }
+                product.setColorModels(colors);
+            }
+            return product;
         }
     }
 

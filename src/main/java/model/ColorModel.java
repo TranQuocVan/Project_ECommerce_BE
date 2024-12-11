@@ -15,6 +15,9 @@ public class ColorModel {
 
     List<ImageModel> imageModels = new ArrayList<ImageModel>();
 
+    public ColorModel() {
+
+    }
     public ColorModel(String name , String hexCode) {
         this.name = name;
         this.hexCode = hexCode;
@@ -62,6 +65,14 @@ public class ColorModel {
 
     public void setImageModels(List<ImageModel> imageModels) {
         this.imageModels = imageModels;
+    }
+
+    public void setHexCode(String hexCode) {
+        this.hexCode = hexCode;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
 

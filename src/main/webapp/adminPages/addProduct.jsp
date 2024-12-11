@@ -23,7 +23,6 @@
     <!-- Dropdown danh mục sản phẩm -->
     <label for="productCategory">Product Category:</label>
     <select id="productCategory" name="productCategory" required>
-        <option value="">-- Select Category --</option>
         <c:forEach var="category" items="${ListProductCategory}">
             <option value="${category.id}">${category.name}</option>
         </c:forEach>
@@ -32,7 +31,6 @@
     <!-- Dropdown nhóm sản phẩm -->
     <label for="groupProduct">Group Product:</label>
     <select id="groupProduct" name="groupProduct">
-        <option value="">-- Select Group --</option>
         <c:forEach var="group" items="${ListGroupProduct}">
             <option value="${group.id}">${group.name}</option>
         </c:forEach>
@@ -68,6 +66,7 @@
     <button type="submit">Submit</button>
 </form>
 
-<script src="add.js?v=${System.currentTimeMillis()}"></script>
+<script src="${pageContext.request.contextPath}/scripts/addProduct.js?v=<%= System.currentTimeMillis() %>"></script>
+
 </body>
 </html>

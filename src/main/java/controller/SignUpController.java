@@ -32,7 +32,7 @@ public class SignUpController extends HttpServlet {
             session.setAttribute("password", password); // Lưu mật khẩu vào session (nếu cần)
 
             // Chuyển hướng về trang đăng nhập
-            RequestDispatcher login = getServletContext().getRequestDispatcher("/signUp.jsp");
+            RequestDispatcher login = getServletContext().getRequestDispatcher("/signIn.jsp");
             login.forward(request, response);
             return; // Kết thúc xử lý tại đây
         }

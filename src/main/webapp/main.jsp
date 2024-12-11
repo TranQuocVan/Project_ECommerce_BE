@@ -1,44 +1,43 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix = "f" uri = "http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="f" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main</title>
-
+    <title>Add Product</title>
+</head>
 <body>
+<h1>Add Product</h1>
+<form action="ProductController" method="post" enctype="multipart/form-data">
+    <h2>Product Details</h2>
+    <label for="productName">Product Name:</label>
+    <input type="text" id="productName" name="productName" required><br>
 
-<!-- Header -->
-<header>
-    <h1>Main page</h1>
+    <label for="price">Price:</label>
+    <input type="number" id="price" name="price" step="0.01" required><br>
 
-</header>
+    <label for="discount">Discount:</label>
+    <input type="number" id="discount" name="discount" step="0.01" required><br>
 
-<!-- Main Content: Products -->
-<main>
-    <section class="products">
-        <!-- Product 1 -->
-        <c:forEach var="p" items="${products}">
-            <div class="product-item">
-                <h3>${p.getNameProduct()}</h3>
-                <h3>Price ${p.getPrice()}</h3>
-                <h3>Quantity ${p.getQuantity()}</h3>
-                <h3>Category ${p.getIdProductCategory()}</h3>
-                <img src="data:image/jpeg;base64, ${p.getImageBase64()}" alt="${p.getNameProduct()}">
-                <button class="add-to-cart">Thêm vào giỏ</button>
-            </div>
+    <label for="productCategory">Product Category:</label>
+    <select id="productCategory" name="productCategory" required>
+        <option value="">-- Select Category --</option>
+        <!-- Sử dụng JSTL để lặp qua danh sách -->
+        <c:forEach var="category" items="${ListProductCategoty}">
+            <option value="${category.id}">${category.name}</option>
         </c:forEach>
+    </select><br>
 
-    </section>
-</main>
-
-<!-- Footer -->
-<footer>
-    <p>&copy; 2024 Cửa Hàng Quần Áo. Tất cả quyền được bảo lưu.</p>
-</footer>
-
+    <h2>Colors</h2>
+    <div id="colorContainer">
+        <!-- Color template here -->
+    </div>
+    <button type="button" onclick="addColor()">Add Color</button>
+    <br><br>
+    <button type="submit">Submit</button>
+</form>
+<script src="scripts/addProduct.js?v=${System.currentTimeMillis()}"></script>
 </body>
 </html>
-

@@ -24,6 +24,8 @@ public class ProductController extends HttpServlet {
             String productName = request.getParameter("productName");
             double price = Double.parseDouble(request.getParameter("price"));
             float discount = Float.parseFloat(request.getParameter("discount"));
+            int productCategory = Integer.parseInt(request.getParameter("productCategory"));
+            int groupProduct =Integer.parseInt(request.getParameter("groupProduct"));
 
             List<ColorModel> colorModels = new ArrayList<>();
 
@@ -63,7 +65,7 @@ public class ProductController extends HttpServlet {
             }
 
             // Create and save the product
-            ProductModel product = new ProductModel(productName, price, discount);
+            ProductModel product = new ProductModel(productName, price, discount,productCategory,groupProduct);
             product.setColorModels(colorModels);
 
             ProductDao productDao = new ProductDao();
