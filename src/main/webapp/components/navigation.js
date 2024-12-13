@@ -85,20 +85,31 @@ const data = {
 
 
 
-// const isLogin = localStorage.getItem('isLogin') === 'true';
-let  isLogin = localStorage.getItem('isLogin') === 'true';
 
-const checkLoginUpdate = () => {
-    const login = document.getElementById("isLogin");
-    if(login && login.innerText === "true"){
-        localStorage.setItem("isLogin" , true);
-        isLogin = localStorage.getItem('isLogin') === 'true';
+// Check and update login status
+let isLogin = localStorage.getItem('isLogin') === 'true';
+
+const updateLoginStatus = () => {
+    const loginElement = document.getElementById("isLogin");
+    if (loginElement && loginElement.innerText === "true") {
+        localStorage.setItem("isLogin", "true");
+        isLogin = true; // Update local variable after storing in localStorage
     }
-}
-checkLoginUpdate();
+};
+updateLoginStatus();
 
+// Check and update admin role
+let isAdmin = localStorage.getItem('currentRole') === 'admin';
 
-let role = document.getElementById("role");
+const updateRoleStatus = () => {
+    const roleElement = document.getElementById("role");
+    if (roleElement && roleElement.innerText === "admin") {
+        localStorage.setItem("currentRole", "admin");
+        isAdmin = true; // Update local variable after storing in localStorage
+    }
+};
+updateRoleStatus();
+
 let urlLogo = "assets/logo2.svg";
 checkImageExists(urlLogo)
     .then(exists => {
@@ -119,9 +130,11 @@ const renderNavigation = () => {
                         <span class="navigation" id="shop"><a href="index.jsp">Cửa hàng</a></span>
                         <span class="navigation" id="shoe"><a href="shoes.html">Giày</a></span>
                         <span class="navigation" id="sandal"><a href="#">Dép</a></span> 
-                        <span class="navigation"><a href="#">Sản phẩm khuyến mãi</a></span>
-                        <span class="navigation"><a href="#">Sản phẩm mới ra mắt</a></span>
-                        <span class="navigation"><a href="#">Sản phẩm dành cho bé</a></span>
+                        <span class="navigation"><a href="GetProductByCategoryNameController">Sản phẩm theo loại hàng</a></span>
+                        <span class="navigation"> ${isAdmin  ? `<a href='adminPages/adminHome.jsp'>Admin</a>` : ``}</span>
+                       
+              
+                        
                        
                         
                     </div>

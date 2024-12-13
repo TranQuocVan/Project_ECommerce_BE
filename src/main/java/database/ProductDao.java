@@ -192,5 +192,105 @@ public class ProductDao {
         }
     }
 
+    public ProductModel getProductById(int productId, String colorName, String sizeName) throws SQLException {
+        String query = """
+        SELECT 
+            p.productId, p.name AS productName, p.price, p.discount, p.productCategoryId, p.groupProductId,
+            c.colorId, c.name AS colorName, c.hexCode,
+            s.sizeId, s.size, s.stock,
+            i.imageId, i.image
+        FROM products p
+        LEFT JOIN colors c ON p.productId = c.productId
+        LEFT JOIN sizes s ON c.colorId = s.colorId
+        LEFT JOIN images i ON c.colorId = i.colorId
+        WHERE p.productId = ?
+        """ +
+                (colorName != null ? " AND c.name LIKE ? " : "") +
+                (sizeName != null ? " AND s.size LIKE ? " : "");
+
+        try (Connection con = JDBCUtil.getConnection()) {
+            ProductModel product = null;
+            try (PreparedStatement stmt = con.prepareStatement(query)) {
+                int paramIndex = 1;
+                stmt.setInt(paramIndex++, productId);
+                if (colorName != null) {
+                    stmt.setString(paramIndex++, "%" + colorName + "%");
+                }
+                if (sizeName != null) {
+                    stmt.setString(paramIndex++, "%" + sizeName + "%");
+                }
+
+                try (ResultSet rs = stmt.executeQuery()) {
+                    Map<Integer, ColorModel> colorMap = new HashMap<>();
+
+                    while (rs.next()) {
+                        // Initialize Product
+                        if (product == null) {
+                            product = new ProductModel();
+                            product.setId(rs.getInt("productId"));
+                            product.setName(rs.getString("productName"));
+                            product.setPrice(rs.getDouble("price"));
+                            product.setDiscount(rs.getFloat("discount"));
+                            product.setProductCategoryId(rs.getInt("productCategoryId"));
+                            product.setGroupProductId(rs.getInt("groupProductId"));
+                        }
+
+                        // Process Color
+                        int colorId = rs.getInt("colorId");
+                        if (!rs.wasNull()) {
+                            ColorModel color = colorMap.getOrDefault(colorId, new ColorModel());
+                            color.setId(colorId);
+                            color.setName(rs.getString("colorName"));
+                            color.setHexCode(rs.getString("hexCode"));
+
+                            // Process Size
+                            int sizeId = rs.getInt("sizeId");
+                            if (!rs.wasNull()) {
+                                SizeModel size = new SizeModel();
+                                size.setId(sizeId);
+                                size.setSize(rs.getString("size"));
+                                size.setStock(rs.getInt("stock"));
+                                color.getSizeModels().add(size);
+                            }
+
+                            // Process Image
+                            int imageId = rs.getInt("imageId");
+                            if (!rs.wasNull()) {
+                                ImageModel image = new ImageModel();
+                                image.setId(imageId);
+
+                                // Convert image to Base64
+                                InputStream imageStream = rs.getBinaryStream("image");
+                                if (imageStream != null) {
+                                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                                    byte[] buffer = new byte[1024];
+                                    int bytesRead;
+                                    while ((bytesRead = imageStream.read(buffer)) != -1) {
+                                        outputStream.write(buffer, 0, bytesRead);
+                                    }
+                                    byte[] imageBytes = outputStream.toByteArray();
+                                    String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+                                    image.setImageBase64(base64Image);
+                                }
+
+                                color.getImageModels().add(image);
+                            }
+
+                            colorMap.put(colorId, color);
+                        }
+                    }
+
+                    // Set Colors in Product
+                    if (product != null) {
+                        product.setColorModels(new ArrayList<>(colorMap.values()));
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            return product;
+        }
+    }
 
 }

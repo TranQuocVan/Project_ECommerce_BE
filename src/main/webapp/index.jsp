@@ -39,11 +39,9 @@
         <div style="padding-top: 100px;" class="container">
             <div class="row mb-5">
                 <div class="col-md-12">
-                        <span class="titleHeader" style="
-                           ">Cửa Hàng.</span>
+                    <span class="titleHeader">Cửa Hàng.</span>
                     <span style="color: #6e6e73;" class="titleSubHeader">Cách tốt nhất để <br>
-                            mua sản phẩm bạn thích.
-                    </span>
+                            mua sản phẩm bạn thích.</span>
                 </div>
             </div>
         </div>
@@ -61,7 +59,9 @@
                 </div>
                 <div class="col-6 col-md-4 col-lg-2 mb-4">
                     <div class="best-saler-item text-center">
-                        <img src="assets/bestSellerHome/image2.png" alt="" class="img-fluid">
+                        <a href="womenShoes.html">
+                            <img src="assets/bestSellerHome/image2.png" alt="" class="img-fluid">
+                        </a>
                         <span>Giày thể thao nữ</span>
                     </div>
                 </div>
@@ -94,16 +94,16 @@
         <div style="padding-top: 100px;" class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <span class="titleHeaderMin" >Ưu đãi đặc biệt. </span>
+                    <span class="titleHeaderMin">Ưu đãi đặc biệt. </span>
                     <span style="color: #6e6e73;" class="titleSubHeaderMin">Chỉ diễn ra trong thời
-                            gian khuyến mãi.</span>
+                            gian khuyến mãi.
+                    </span>
                 </div>
             </div>
         </div>
 
         <div style="padding-top: 70px;" class="container-fluid">
             <div class="row">
-
                 <div class="col-md-12">
                     <div id="slide">
                         <div class="item" data-bs-toggle="modal" data-bs-target="#lightboxModal">
@@ -144,16 +144,9 @@
         <div style="padding-top: 100px;" class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <span class="titleHeaderMin" >Lựa chọn cho dịp lễ. </span>
-                    <span style="color: #6e6e73;" class="titleSubHeaderMin">Chỉ diễn ra trong thời
-                            gian khuyến mãi.</span>
+                    <span class="titleHeaderMin">Số lượng mua nhiều nhất. </span>
+                    <span style="color: #6e6e73;" class="titleSubHeaderMin">Khẳng định xu hướng, chất lượng vượt trội.</span>
                 </div>
-            </div>
-        </div>
-
-        <div style="padding-top: 70px;" class="container-fluid">
-            <div class="row">
-
             </div>
         </div>
 
@@ -164,7 +157,7 @@
                 <div class="col-md-12">
                     <div id="slide2">
 
-                        <div class="item" data-bs-toggle="modal" data-bs-target="#lightboxModal2" data-price="500.000đ" >
+                        <div class="item" data-bs-toggle="modal" data-bs-target="#lightboxModal2" data-price="500.000đ">
                             <img src="assets/homeImages/7.png" alt="">
                         </div>
                         <div class="item" data-bs-toggle="modal" data-bs-target="#lightboxModal2" data-price="799.000đ">
@@ -182,7 +175,7 @@
                         <div class="item" data-bs-toggle="modal" data-bs-target="#lightboxModal2">
                             <img src="assets/homeImages/12.png" alt="" data-price="999.000đ">
                         </div>
-                        <div class="item" data-bs-toggle="modal" data-bs-target="#lightboxModal" >
+                        <div class="item" data-bs-toggle="modal" data-bs-target="#lightboxModal">
                             <img src="assets/homeImages/9.png" alt="">
                         </div>
 
@@ -197,6 +190,9 @@
                 </div>
             </div>
         </div>
+
+
+
         <div class="container">
             <div class="row">
                 <div id="scroll" style="position: relative;  margin-top: 70px;" class="container">
@@ -212,21 +208,20 @@
                                 <div class="form">
                                     <div class="item support">
                                         <div class="content ">
-                                            <div style="position: absolute; top: 5%; font-size: 28px;font-weight: 700; left: 50%; transform: translateX(-50%); width: 90%;"
-                                                 class="header">
+                                            <div style="position: absolute; top: 5%; font-size: 28px;font-weight: 700; left: 50%; transform: translateX(-50%); width: 90%;" class="header">
                                                 <p>Dịch vụ và hỗ trợ. Chúng tôi luôn sẵn sàng hỗ trợ.</p>
                                             </div>
-                                            <img src="assets/supporImgs/store-card-50-genius-202108.jpg" alt="">
+                                            <a href="support.html">
+                                                <img src="assets/supporImgs/store-card-50-genius-202108.jpg" alt="">
+                                            </a>
                                         </div>
                                     </div>
                                     <div class="item support">
                                         <div class="content ">
-                                            <div style="position: absolute; top: 10%; font-size: 28px;font-weight: 700; left: 50%; transform: translateX(-50%); width: 90%;"
-                                                 class="header">
+                                            <div style="position: absolute; top: 10%; font-size: 28px;font-weight: 700; left: 50%; transform: translateX(-50%); width: 90%;" class="header">
                                                 <p>Mua hàng với tư vấn trực tiếp từ Chuyên Gia trực tuyến. </p>
                                             </div>
-                                            <img src="assets/supporImgs/store-card-50-specialist-help-202309.jpg"
-                                                 alt="">
+                                            <img src="assets/supporImgs/store-card-50-specialist-help-202309.jpg" alt="">
                                         </div>
                                     </div>
                                 </div>
@@ -240,19 +235,19 @@
 </header>
 
 <!--Light box1 -->
-<div class="modal fade" id="lightboxModal" tabindex="-1" aria-labelledby="lightboxModalLabel" aria-hidden="true">
+<div class="modal fade" id="lightboxModal" tabindex="0" aria-labelledby="lightboxModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
             <div class="modal-body">
-                <div class="lightbox-content">
+                <div class="lightbox-content mt-3">
                     <!-- Nút Mua ngay -->
                     <div class="buy-button-container">
-                        <button class="mx-auto d-flex justify-content-center align-items-center rounded-pill order-button cart-box" style="width: 250px;">
-                            <i class="fa-solid fa-eye mx-2"></i>                                <span class="fw-bold">Xem ngay</span>
-                        </button>
+                        <a href="detailShoes.html">
+                            <button class="mx-auto d-flex justify-content-center align-items-center rounded-pill order-button cart-box" style="width: 250px;">
+                                <i class="fa-solid fa-eye mx-2"></i>
+                                <span class="fw-bold">Xem ngay</span>
+                            </button>
+                        </a>
                     </div>
 
 
@@ -279,10 +274,12 @@
                 <div class="lightbox-content">
                     <!-- Nút Mua ngay -->
                     <div class="buy-button-container2">
-                        <button class="mx-auto d-flex justify-content-center align-items-center rounded-pill order-button cart-box" style="width: 250px;">
-                            <i class="fa-solid fa-cart-shopping mx-2"></i>
-                            <span class="fw-bold">Mua ngay</span>
-                        </button>
+                        <a href="shoppingCart.html">
+                            <button class="mx-auto d-flex justify-content-center align-items-center rounded-pill order-button cart-box" style="width: 250px;">
+                                <i class="fa-solid fa-cart-shopping mx-2"></i>
+                                <span class="fw-bold">Thêm vào giỏ hàng</span>
+                            </button>
+                        </a>
                     </div>
 
 
@@ -297,7 +294,9 @@
     </div>
 </div>
 
-<footer></footer>
+
+<footer>
+</footer>
 
 <script src="components/footer.js?v=${System.currentTimeMillis()}"></script>
 <script src="components/navigation.js?v=${System.currentTimeMillis()}"></script>

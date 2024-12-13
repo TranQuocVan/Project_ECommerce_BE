@@ -1,144 +1,224 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: huyvu
-  Date: 12/11/2024
-  Time: 9:17 PM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product List</title>
-    <style>
-        .product-item {
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    <title>Document</title>
 
-        .product-item img {
-            max-width: 200px;
-            margin-bottom: 10px;
-        }
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles/navigation.css">
+    <link rel="stylesheet" href="styles/global.css">
+    <link rel="stylesheet" href="styles/listProduct.css?v=${System.currentTimeMillis()}">
+    <link rel="stylesheet" href="styles/login.css?v=${System.currentTimeMillis()}">
+    <link rel="stylesheet" href="styles/popup.css">
 
-        .color-box {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 1px solid #000;
-            margin-right: 5px;
-        }
-
-        .pagination {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .pagination ul {
-            list-style: none;
-            padding: 0;
-            display: inline-flex;
-            gap: 10px;
-        }
-
-        .pagination a {
-            text-decoration: none;
-            padding: 5px 10px;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-            color: #007bff;
-        }
-
-        .pagination a.active {
-            background-color: #007bff;
-            color: white;
-            pointer-events: none;
-        }
-
-        .pagination a:hover {
-            background-color: #ddd;
-        }
-
-        .search-bar {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-    </style>
 </head>
+
 <body>
 
-<h1>Product Categories</h1>
+<header>
+    <nav>  </nav>
+        <div style="margin-top: 50px" class="under-navigation">
+            <div class="container">
+                <div class="row">
+                    <h3 style="text-align: center; font-weight: bold; margin-top: 50px">Danh sách sản phẩm</h3>
+                    <div  class="col-md-2">
+                        <div id="filter">
+                            <form action="">
+                                <p class="title-filter">Kích cỡ</p>
+                                <div id="size">
+                                    <button>XS</button>
+                                    <button>S</button>
+                                    <button>M</button>
 
-<!-- Search form -->
-<div class="search-bar">
-    <form action="your-servlet-url" method="get">
-        <input type="text" name="keyword" placeholder="Search by category name" value="${param.keyword}" />
-        <button type="submit">Search</button>
-    </form>
-</div>
+                                    <button>L</button>
+                                    <button>XL</button>
+                                    <button>2XL</button>
 
-<!-- Product List -->
-<div class="product-list">
-    <c:if test="${not empty page.items}">
-        <c:forEach var="product" items="${page.items}">
-            <div class="product-item">
-                <h2>${product.name}</h2>
-                <p><strong>Price:</strong> <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="$" /></p>
-                <p><strong>Discount:</strong> ${product.discount}%</p>
-                <p><strong>Category ID:</strong> ${product.productCategoryId}</p>
-                <p><strong>Group Product ID:</strong> ${product.groupProductId}</p>
+                                    <button>3XL</button>
+                                    <button>4XL</button>
+                                </div>
+                                <p class="title-filter">Màu sắc</p>
+                                <div id="color">
+                                    <div>
+                                        <button style="background-color: red;"></button>
+                                        <p>Đỏ</p>
+                                    </div>
+                                    <div>
+                                        <button style="background-color: blue;"></button>
+                                        <p>Xanh</p>
+                                    </div>
+                                    <div>
+                                        <button style="background-color: yellow;"></button>
+                                        <p>Vàng</p>
+                                    </div>
+                                    <div>
+                                        <button style="background-color: green;"></button>
+                                        <p>Xanh lá</p>
+                                    </div>
+                                    <div>
+                                        <button style="background-color: black;"></button>
+                                        <p>Đen</p>
+                                    </div>
+                                    <div>
+                                        <button style="background-color: white;"></button>
+                                        <p>Trắng</p>
+                                    </div>
+                                    <div class="">
+                                        <button style="background-color: pink;"></button>
+                                        <p>Hồng</p>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div  class="col-md-10">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="search">
 
-                <!-- Display Colors -->
-                <c:if test="${not empty product.colorModels}">
-                    <h3>Colors:</h3>
-                    <div class="colors">
-                        <c:forEach var="color" items="${product.colorModels}">
-                            <div class="color-item">
-                                <p><strong>Color:</strong> ${color.name}</p>
-                                <p>
-                                    <strong>Hex Code:</strong> ${color.hexCode}
-                                    <span class="color-box" style="background-color: ${color.hexCode};"></span>
-                                </p>
+                                        <form action="GetProductByCategoryNameController" method="GET" id="searchForm">
+                                            <div style="display: flex" id="inputName" class="input-container">
+                                                <input
+                                                        style="padding: 5px 0;"
+                                                        type="text"
+                                                        id="nameLogin"
+                                                        class="floating-input"
+                                                        placeholder=" "
+                                                        name="keyword"
+                                                        required>
+                                                <label class="floating-label">Tìm kiếm</label>
+                                                <button type="submit" style="background: none; border: none; cursor: pointer;">
+                                                    <i style="right: 0;" class="fas fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
 
-                                <!-- Display Sizes for this color -->
-                                <h4>Sizes:</h4>
-                                <ul>
-                                    <c:forEach var="size" items="${color.sizeModels}">
-                                        <li>${size.size} (Stock: ${size.stock})</li>
+
+
+                                <c:if test="${not empty page.items}">
+                                    <c:forEach var="product" items="${page.items}">
+
+                                        <div class="col-md-3">
+                                            <a style="display: block" href="GetProductByIdController?id=${product.id}">
+                                            <div class="product-item">
+                                                <!-- Display Color-Specific Product Images (First and Second Image) -->
+                                                <c:forEach var="color" items="${product.colorModels}" varStatus="status">
+                                                    <div class="product-color-display">
+                                                        <!-- Thêm class 'active' chỉ cho màu đầu tiên -->
+                                                        <div class="imgAndSize color-item ${status.index == 0 ? 'active' : ''}" data-color="${color.name}">
+                                                            <div class="image-container">
+                                                                <!-- Default Image -->
+                                                                <c:choose>
+                                                                    <c:when test="${not empty color.imageModels and not empty color.imageModels[0]}">
+                                                                        <img
+                                                                                class="image-item image-default ${status.index == 0 ? 'active' : ''}"
+                                                                                src="data:image/jpeg;base64,${color.imageModels[0].imageBase64}"
+                                                                                alt="Default Image"
+                                                                                onerror="this.onerror=null; this.src='noImageAvailable.jpg';"/>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <img
+                                                                                class="image-item image-default ${status.index == 0 ? 'active' : ''}"
+                                                                                src="assets/default/noImageAvailable.jpg"
+                                                                                alt="Default Image"/>
+                                                                    </c:otherwise>
+                                                                </c:choose>
+
+                                                                <!-- Hover Image -->
+                                                                <c:choose>
+                                                                    <c:when test="${not empty color.imageModels and not empty color.imageModels[1]}">
+                                                                        <img
+                                                                                class="image-item image-hover"
+                                                                                src="data:image/jpeg;base64,${color.imageModels[1].imageBase64}"
+                                                                                alt="Hover Image"
+                                                                                onerror="this.onerror=null; this.src='noImageAvailable.jpg';"/>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <img
+                                                                                class="image-item image-hover"
+                                                                                src="assets/default/noImageAvailable.jpg"
+                                                                                alt="Hover Image"/>
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </c:forEach>
+
+                                                <c:if test="${not empty product.colorModels}">
+                                                    <c:forEach var="color" items="${product.colorModels}" varStatus="status">
+                                                        <c:if test="${status.first}">
+                                                            <div class="size-listProduct">
+                                                                <p class="fw-bold custom-center">Thêm vào giỏ hàng</p>
+                                                                <div class="button-spacing">
+                                                                    <!-- Giả định size nằm trong danh sách color.sizeModels -->
+                                                                    <c:forEach var="sizes" items="${color.sizeModels}">
+                                                                        <div style="display: none" class="id">${sizes.id}</div>
+                                                                        <button class="option-size popup"><span class="fw-bold">${sizes.size}</span></button>
+                                                                    </c:forEach>
+                                                                </div>
+                                                            </div>
+                                                        </c:if>
+                                                    </c:forEach>
+                                                </c:if>
+
+
+                                                <div class="underImg">
+                                                    <!-- Loop Through Product Colors -->
+                                                    <c:if test="${not empty product.colorModels}">
+                                                        <div class="color-listProduct color-buttons">
+                                                            <c:forEach var="color" items="${product.colorModels}">
+                                                                <div class="option-collor">
+                                                                    <div class="nameColor">${color.name}</div>
+                                                                    <button class="color-button" data-target="${color.name}"
+                                                                            style="background-color:${color.hexCode};"></button>
+                                                                </div>
+                                                            </c:forEach>
+                                                        </div>
+                                                    </c:if>
+
+
+                                                    <!-- Product Name, Price, Discount, and Original Price -->
+
+                                                        <p class="name-product">${product.name}</p>
+                                                        <div class="priceDiv">
+                                                            <p class="price">
+                                                                <fmt:formatNumber value="${product.price - (product.price * product.discount / 100)}" type="currency"/>
+                                                            </p>
+
+                                                            <p class="discount">${product.discount}%</p>
+
+                                                            <c:if test="${product.discount > 0}">
+                                                                <p class="original-price">
+                                                                    <fmt:formatNumber value="${product.price}" type="currency"/>
+                                                                </p>
+                                                            </c:if>
+                                                        </div>
+
+                                                </div>
+                                            </div>
+                                            </a>
+                                        </div>
+
                                     </c:forEach>
-                                </ul>
-
-                                <!-- Display Images for this color -->
-                                <h4>Images:</h4>
-                                <c:if test="${not empty color.imageModels}">
-                                    <c:forEach var="image" items="${color.imageModels}">
-                                        <img src="data:image/jpeg;base64,${image.imageBase64}" alt="Product Image" />
-                                    </c:forEach>
-                                </c:if>
-                                <c:if test="${empty color.imageModels}">
-                                    <p>No images available for this color.</p>
                                 </c:if>
                             </div>
-                        </c:forEach>
+                        </div>
                     </div>
-                </c:if>
+                </div>
             </div>
-        </c:forEach>
-    </c:if>
-
-    <c:if test="${empty page.items}">
-        <p>No products found for the given category.</p>
-    </c:if>
-</div>
+        </div>
+</header>
 
 <!-- Pagination -->
 <div class="pagination">
@@ -151,8 +231,29 @@
                 </li>
             </c:if>
 
+            <!-- Calculate Start and End Pages -->
+            <c:set var="startPage" value="${page.pageNo - 2}" />
+            <c:set var="endPage" value="${page.pageNo + 2}" />
+
+            <!-- Adjust if startPage is less than 1 -->
+            <c:if test="${startPage < 1}">
+                <c:set var="endPage" value="${endPage + (1 - startPage)}" />
+                <c:set var="startPage" value="1" />
+            </c:if>
+
+            <!-- Adjust if endPage exceeds totalPages -->
+            <c:if test="${endPage > page.totalPages}">
+                <c:set var="startPage" value="${startPage - (endPage - page.totalPages)}" />
+                <c:set var="endPage" value="${page.totalPages}" />
+            </c:if>
+
+            <!-- Ensure startPage does not go below 1 -->
+            <c:if test="${startPage < 1}">
+                <c:set var="startPage" value="1" />
+            </c:if>
+
             <!-- Page Numbers -->
-            <c:forEach begin="1" end="${page.totalPages}" var="i">
+            <c:forEach begin="${startPage}" end="${endPage}" var="i">
                 <li>
                     <a href="GetProductByCategoryNameController?keyword=${param.keyword}&pageNo=${i}"
                        class="${i == page.pageNo ? 'active' : ''}">
@@ -164,15 +265,19 @@
             <!-- Next Page -->
             <c:if test="${page.pageNo < page.totalPages}">
                 <li>
-                    <a href="?keyword=${param.keyword}&pageNo=${page.pageNo + 1}">Next</a>
+                    <a href="GetProductByCategoryNameController?keyword=${param.keyword}&pageNo=${page.pageNo + 1}">Next</a>
                 </li>
             </c:if>
         </ul>
     </c:if>
 </div>
-<div>
-    12345
-</div>
+
+<footer></footer>
 
 </body>
+<script src="components/footer.js?v=${System.currentTimeMillis()}"></script>
+<script src="scripts/listProduct.js?v=${System.currentTimeMillis()}"></script>
+<script src="scripts/login.js?v=${System.currentTimeMillis()}"></script>
+<script src="components/navigation.js?v=${System.currentTimeMillis()}"></script>
+<script src="components/popup.js?v=${System.currentTimeMillis()}"></script>
 </html>

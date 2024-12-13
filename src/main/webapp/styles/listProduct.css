@@ -1,10 +1,7 @@
-#filter {}
-
 #size {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
-
 }
 
 #size button {
@@ -48,7 +45,6 @@
     font-weight: 700;
     margin: .75rem 0;
     opacity: .4;
-
 }
 
 #search {
@@ -57,14 +53,11 @@
     align-items: center;
     margin-top: 20px;
     padding-bottom: 10px;
-
-
 }
 
 #search i::before {
     content: "\f002";
     padding: 10px;
-
 }
 
 #search i:hover {
@@ -72,16 +65,15 @@
     color: black;
 }
 
-.product-listProdct {
+.product-item {
     position: relative;
+    height: 510px;
 }
 
-.product-listProdct img {
+.product-item img {
     width: 100%;
-    height: 360px;
     border-radius: 20px;
     background-color: transparent;
-    /* Xóa phông nền */
     mix-blend-mode: multiply;
     margin-bottom: 10px;
     z-index: 1;
@@ -91,8 +83,6 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-
-
 }
 
 .color-listProduct div {
@@ -111,15 +101,13 @@
     width: 40px;
     border-radius: 20px;
     border: none;
-
 }
 
-.color-listProduct div:hover {
-    border: 2px solid #000;
-
+.option-collor button:hover {
+    padding: 10px;
 }
 
-.product-listProdct .name-product {
+.product-item .name-product {
     font-size: 14px;
     font-weight: 700;
     margin: 10px 0;
@@ -133,14 +121,12 @@
     display: flex;
     align-items: center;
     font-size: 14px;
-
 }
 
 .priceDiv .price {
     font-weight: 800;
     color: #242424;
     margin-right: 10px;
-
 }
 
 .priceDiv .discount {
@@ -149,7 +135,8 @@
     color: #f8f9fa;
     font-weight: 700;
     border-radius: 5px;
-
+    font-size: 10px;
+    margin-right: 10px;
 }
 
 .priceDiv .original-price {
@@ -180,11 +167,8 @@
     align-items: center;
     justify-content: space-between;
     display: none;
-    z-index: 2;
-
+    z-index: 3;
 }
-
-
 
 .size-listProduct button {
     background-color: #f8f9fa;
@@ -201,10 +185,142 @@
 .size-listProduct button:hover {
     background-color: black;
     color: white;
+}
 
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    border-top: 1px solid #ced4da;
+}
+
+.pagination button {
+    margin-top: 10px;
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    color: #495057;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: 0.3s;
+    margin-right: 10px;
 }
 
 
+
+
+.nameColor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: transparent;
+    color: transparent;
+    display: none !important;
+}
+
+.custom-center {
+    text-align: center;
+    width: 100%;
+}
+
+.button-spacing button {
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+
+.product-link:hover .name-product {
+    color: #FF4500;
+}
+
+.button-spacing {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+
+/* Ensure only hover applies if the button is NOT clicked */
+.optionColorOnClicked {
+    border: 2px solid #000 !important;
+}
+
+.option-collor:hover {
+    border: 2px solid #000 ;
+}
+
+
+/* Hover applies only when the button is NOT clicked */
+/*.color-listProduct .color-button:hover {*/
+/*    border: 2px solid #000;*/
+/*}*/
+
+.image-container {
+    position: relative;
+    height: 400px;
+    overflow: hidden;
+    object-fit: cover;
+}
+
+.image-item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    z-index: 1;
+}
+
+.image-item.active {
+    opacity: 1;
+    z-index: 2;
+}
+
+
+/* Color items to switch */
+.color-item {
+    display: block;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.color-item.active {
+    opacity: 1;
+}
+
+/* Optional: if you want all images to be visible at once, instead of hiding them behind opacity */
+.image-container {
+    position: relative;
+    height: 400px;
+    overflow: hidden;
+    object-fit: cover;
+}
+
+.image-item {
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.5s ease-in-out;
+    opacity: 0;
+}
+
+.image-item.active {
+    opacity: 1;
+}
+.product-color-display{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.underImg{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+}
 @keyframes hoverProduct-listProdct {
     from {
         opacity: 0;
@@ -233,23 +349,24 @@
 
 }
 
-.pagination {
+.pagination ul {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-    border-top: 1px solid #ced4da;
-}
-
-.pagination button {
+    list-style: none;
+    padding: 0;
     margin-top: 10px;
-    background-color: #f8f9fa;
-    border: 1px solid #ced4da;
-    color: #495057;
+}
+.pagination li {
+    margin: 0 5px;
+}
+.pagination a {
+    text-decoration: none;
     padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 14px;
-    transition: 0.3s;
-    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    color: #333;
+}
+.pagination a.active {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
 }

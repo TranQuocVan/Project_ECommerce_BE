@@ -13,7 +13,6 @@
 
 /* Container styling */
 .input-container {
-    width: 70%;
     position: relative;
     margin-bottom: 5px;
     padding: 10px 20px 0px 20px;
@@ -30,17 +29,24 @@
     transform: translateX(-50%);
 }
 
+#searchForm{
+    width: 70%;
+    border-radius: 10px;
+}
+
 
 /* Input field styling */
 .floating-input {
-    width: 100%;
-    padding: 10px 0;
-    font-size: 16px;
+    position: relative;
+    margin-bottom: 5px;
+    border-radius: 10px;
     border: none;
-    border-radius: 4px;
-    outline: none;
-    transition: border-color 0.3s;
+    width: 100%;
 }
+.floating-input:focus{
+    outline: none;
+}
+
 
 /* Label styling */
 .floating-label {
