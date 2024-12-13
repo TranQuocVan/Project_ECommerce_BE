@@ -166,9 +166,9 @@
                                                             <div class="button-spacing">
                                                                 <!-- Lặp qua các size của mỗi màu -->
                                                                 <c:forEach var="sizes" items="${color.sizeModels}">
-                                                                    <button class="option-size popup">
-                                                                        <span style="display: none">${sizes.id}</span>
-                                                                        <span class="fw-bold">${sizes.size}</span>
+                                                                    <button class="option-size ">
+                                                                        <span class="idSize" style="display: none">${sizes.id}</span>
+                                                                        <span class="fw-bold sizeName">${sizes.size}</span>
                                                                     </button>
                                                                 </c:forEach>
                                                             </div>
@@ -185,10 +185,10 @@
                                                                 <div class="option-collor" data-color-id="${color.id}">
                                                                     <!-- Lưu trữ thông tin màu sắc -->
                                                                     <div class="nameColor">${color.name}</div>
+
                                                                     <button class="color-button"
                                                                             data-target="${color.name}"
                                                                             data-color-id="${color.id}" style="background-color:${color.hexCode};"> <!-- Truyền ID vào thuộc tính data -->
-
                                                                     </button>
                                                                 </div>
                                                             </c:forEach>
