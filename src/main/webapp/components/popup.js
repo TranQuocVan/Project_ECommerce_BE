@@ -1,55 +1,42 @@
-
 const timeAnimation = 2;
 
-const popUps = document.querySelectorAll('.popup')
+const popUps = document.querySelectorAll('.popup');
 
-
-
-
-const optionColorPopup = document.querySelectorAll('.option-collor');
-let currentColor = null;
-optionColorPopup.forEach((color) => {
-    color.addEventListener('click', function () {
-        if (currentColor) {
-            currentColor.classList.remove('optionColorOnClicked');
-        }
-
-        color.classList.add('optionColorOnClicked');
-
-        currentColor = color;
-
+const optionColor = () => {
+    const optionColorPopup = document.querySelectorAll('.option-collor');
+    let currentColor = null;
+    optionColorPopup.forEach((color) => {
+        color.addEventListener('click', function (e) {
+            e.stopPropagation(); // Ngăn chặn sự kiện click nổi bọt lên thẻ cha
+            if (currentColor) {
+                currentColor.classList.remove('optionColorOnClicked');
+            }
+            color.classList.add('optionColorOnClicked');
+            currentColor = color;
+        });
     });
-});
-
-
-const optionSizePopup = document.querySelectorAll('.option-size');
-let currentSize = null;
-optionSizePopup.forEach((size) => {
-    size.addEventListener('click', function () {
-        if (currentSize) {
-            currentSize.classList.remove('sizeOnClicked');
-        }
-        size.classList.add('sizeOnClicked');
-        currentSize = size;
-
-
-    })
-
-});
-
+};
 
 popUps.forEach((popUp) => {
-    popUp.addEventListener('click', () => {
+    popUp.addEventListener('click', (e) => {
+        e.stopPropagation(); // Đảm bảo sự kiện click không bị ảnh hưởng bởi phần tử cha
+
+        // Gọi lại optionColor để đảm bảo các màu được gắn sự kiện click
+        optionColor();
+
         const div = document.createElement('div');
         div.id = 'popUp';
 
-        const parent = popUp.parentElement?.parentElement?.parentElement?.parentElement;
-        const imgPopupSrc = parent?.querySelector("img")?.src || document.querySelector("#imgPopUp")?.src;
-        const sizeValue = document.querySelector(".sizeOnClicked > span")?.textContent || document.querySelector(".option-size > span").textContent;
-        const collorValue = document.querySelector(".optionColorOnClicked > .nameColor ")?.textContent || document.querySelector(".nameColor").textContent;
-        const price = document.querySelector(".priceDetail")?.textContent || parent?.querySelector(".price")?.textContent;
+        const parent = popUp.closest('.product-item'); // Tìm phần tử cha gần nhất
+        const imgPopupSrc = parent?.querySelector('img')?.src || document.querySelector('#imgPopUp')?.src;
+        const sizeValue = parent?.querySelector('.sizeOnClicked > span')?.textContent || parent?.querySelector('.option-size > span')?.textContent;
+        const collorValue = parent?.querySelector('.optionColorOnClicked > .nameColor')?.textContent || parent?.querySelector('.nameColor')?.textContent;
+        const price = parent?.querySelector('.priceDetail')?.textContent || parent?.querySelector('.price')?.textContent;
+
+        // Lấy id của màu được chọn
 
 
+        // Debug giá trị
 
 
         div.innerHTML = `
@@ -58,7 +45,7 @@ popUps.forEach((popUp) => {
                 </div>
                 <div style="display: flex;padding: 16px 0;" class="contentPopup"> <img
                         style="width: 65px; height: 90px; object-fit:contain;border-radius: 5px ;background-color: beige;"
-                        src="${imgPopupSrc}" alt="">
+                        src="${imgPopupSrc}" alt="Hình ảnh sản phẩm">
                     <div style="display: flex;justify-content: space-between; flex-direction: column; padding: 0 10px"
                         class="infoPopup">
                         <h3 style="font-size: 20px; font-weight: 700;">Giày thể thao nam</h3>
@@ -75,7 +62,7 @@ popUps.forEach((popUp) => {
                 </div>`;
 
         div.style.animation = `popUpDown ${timeAnimation}s`;
-        underNavigation.appendChild(div);
+        document.body.appendChild(div); // Thêm popup vào body
 
         const timeDelay = timeAnimation * 1000 + 1000;
 
@@ -84,12 +71,7 @@ popUps.forEach((popUp) => {
         }, timeDelay);
 
         setTimeout(() => {
-            div.style.display = 'none';;
+            div.style.display = 'none';
         }, timeDelay + timeAnimation * 1000);
-
-
-
-    })
-})
-
-
+    });
+});

@@ -109,30 +109,33 @@
                                     <c:forEach var="product" items="${page.items}">
 
                                         <div class="col-md-3">
-                                            <a style="display: block" href="GetProductByIdController?id=${product.id}">
+
                                             <div class="product-item">
                                                 <!-- Display Color-Specific Product Images (First and Second Image) -->
                                                 <c:forEach var="color" items="${product.colorModels}" varStatus="status">
                                                     <div class="product-color-display">
                                                         <!-- Thêm class 'active' chỉ cho màu đầu tiên -->
                                                         <div class="imgAndSize color-item ${status.index == 0 ? 'active' : ''}" data-color="${color.name}">
+                                                            <a style="display: block" href="GetProductByIdController?id=${product.id}">
                                                             <div class="image-container">
                                                                 <!-- Default Image -->
+
                                                                 <c:choose>
                                                                     <c:when test="${not empty color.imageModels and not empty color.imageModels[0]}">
                                                                         <img
                                                                                 class="image-item image-default ${status.index == 0 ? 'active' : ''}"
                                                                                 src="data:image/jpeg;base64,${color.imageModels[0].imageBase64}"
                                                                                 alt="Default Image"
-                                                                                onerror="this.onerror=null; this.src='noImageAvailable.jpg';"/>
+                                                                                onerror="this.onerror=null; this.src='noImageAvailable.jpg';" />
                                                                     </c:when>
                                                                     <c:otherwise>
                                                                         <img
                                                                                 class="image-item image-default ${status.index == 0 ? 'active' : ''}"
                                                                                 src="assets/default/noImageAvailable.jpg"
-                                                                                alt="Default Image"/>
+                                                                                alt="Default Image" />
                                                                     </c:otherwise>
                                                                 </c:choose>
+
 
                                                                 <!-- Hover Image -->
                                                                 <c:choose>
@@ -151,24 +154,24 @@
                                                                     </c:otherwise>
                                                                 </c:choose>
                                                             </div>
+                                                            </a>
                                                         </div>
                                                     </div>
                                                 </c:forEach>
 
                                                 <c:if test="${not empty product.colorModels}">
                                                     <c:forEach var="color" items="${product.colorModels}" varStatus="status">
-                                                        <c:if test="${status.first}">
-                                                            <div class="size-listProduct">
-                                                                <p class="fw-bold custom-center">Thêm vào giỏ hàng</p>
-                                                                <div class="button-spacing">
-                                                                    <!-- Giả định size nằm trong danh sách color.sizeModels -->
-                                                                    <c:forEach var="sizes" items="${color.sizeModels}">
-                                                                        <div style="display: none" class="id">${sizes.id}</div>
-                                                                        <button class="option-size popup"><span class="fw-bold">${sizes.size}</span></button>
-                                                                    </c:forEach>
-                                                                </div>
+                                                        <div class="size-listProduct">
+                                                            <p class="fw-bold custom-center">Thêm vào giỏ hàng</p>
+                                                            <div class="button-spacing">
+                                                                <!-- Lặp qua các size của mỗi màu -->
+                                                                <c:forEach var="sizes" items="${color.sizeModels}">
+                                                                    <button class="option-size popup">
+                                                                        <span class="fw-bold">${sizes.size}</span>
+                                                                    </button>
+                                                                </c:forEach>
                                                             </div>
-                                                        </c:if>
+                                                        </div>
                                                     </c:forEach>
                                                 </c:if>
 
@@ -178,18 +181,23 @@
                                                     <c:if test="${not empty product.colorModels}">
                                                         <div class="color-listProduct color-buttons">
                                                             <c:forEach var="color" items="${product.colorModels}">
-                                                                <div class="option-collor">
+                                                                <div class="option-collor" data-color-id="${color.id}">
+                                                                    <!-- Lưu trữ thông tin màu sắc -->
                                                                     <div class="nameColor">${color.name}</div>
-                                                                    <button class="color-button" data-target="${color.name}"
-                                                                            style="background-color:${color.hexCode};"></button>
+                                                                    <button class="color-button"
+                                                                            data-target="${color.name}"
+                                                                            data-color-id="${color.id}" style="background-color:${color.hexCode};"> <!-- Truyền ID vào thuộc tính data -->
+
+                                                                    </button>
                                                                 </div>
                                                             </c:forEach>
                                                         </div>
                                                     </c:if>
 
 
-                                                    <!-- Product Name, Price, Discount, and Original Price -->
 
+                                                    <!-- Product Name, Price, Discount, and Original Price -->
+                                                    <a style="display: block" href="GetProductByIdController?id=${product.id}">
                                                         <p class="name-product">${product.name}</p>
                                                         <div class="priceDiv">
                                                             <p class="price">
@@ -204,10 +212,11 @@
                                                                 </p>
                                                             </c:if>
                                                         </div>
+                                                    </a>
 
                                                 </div>
                                             </div>
-                                            </a>
+
                                         </div>
 
                                     </c:forEach>
