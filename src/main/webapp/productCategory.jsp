@@ -167,6 +167,7 @@
                                                                 <!-- Lặp qua các size của mỗi màu -->
                                                                 <c:forEach var="sizes" items="${color.sizeModels}">
                                                                     <button class="option-size popup">
+                                                                        <span style="display: none">${sizes.id}</span>
                                                                         <span class="fw-bold">${sizes.size}</span>
                                                                     </button>
                                                                 </c:forEach>

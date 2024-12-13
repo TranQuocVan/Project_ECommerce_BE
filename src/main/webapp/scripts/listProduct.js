@@ -20,6 +20,28 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Add 'active' class to the clicked color button
                 colorButton.classList.add('activeSize');
+
+
+                sizeListProducts.forEach(sizeListProduct => {
+                    sizeListProduct.style.animation = 'notHoverProduct-listProdct 0.8s forwards';
+                    sizeListProduct.style.display = 'none';
+                });
+
+
+                let activeIndex = 0;
+
+
+                // Find the index of the active color button
+                productBtn.forEach((colorButton, index) => {
+                    if (colorButton.classList.contains('activeSize')) {
+                        activeIndex = index; // Store the index of the button with 'activeSize' class
+                    }
+                });
+
+                sizeListProducts[activeIndex].style.display = 'flex';
+                sizeListProducts[activeIndex].style.animation = 'hoverProduct-listProdct 0.8s forwards';
+
+
             });
         });
 
