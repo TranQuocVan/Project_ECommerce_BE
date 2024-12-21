@@ -84,6 +84,7 @@ public class UserDao {
             try (ResultSet rs = st.executeQuery()) {
                 if (rs.next()) {
                     return new UserModel(
+                            rs.getInt("id"),
                             rs.getString("gmail"),
                             "******",
                             rs.getString("role")
@@ -112,6 +113,7 @@ public class UserDao {
             try (ResultSet rs = st.executeQuery()) {
                 if (rs.next()) {
                     return new UserModel(
+                            rs.getInt("userId"),
                             rs.getString("gmail"),
                             "******", // Ẩn mật khẩu khi trả về
                             rs.getString("role")
@@ -160,6 +162,7 @@ public class UserDao {
             try (ResultSet rs = st.executeQuery()) {
                 if (rs.next()) {
                     return new UserModel(
+                            rs.getInt("userId"),
                             rs.getString("gmail"),
                             "******", // Ẩn mật khẩu
                             rs.getString("role")

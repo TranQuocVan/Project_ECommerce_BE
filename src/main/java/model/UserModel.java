@@ -8,6 +8,13 @@ public class UserModel {
     String rememberMeToken;
 
 
+    public UserModel(int id ,String gmail, String password, String role) {
+        super();
+        this.gmail = gmail;
+        this.password = password;
+        this.role = role;
+        this.id = id;
+    }
     public UserModel(String gmail, String password, String role) {
         super();
         this.gmail = gmail;

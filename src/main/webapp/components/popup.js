@@ -1,5 +1,5 @@
 
-const popUp = (img,name,color,size,price) => {
+const popUp = (img,name,color,size,price , productId) => {
     const timeAnimation = 2;
     const div = document.createElement('div');
     div.id = 'popUp';
@@ -30,6 +30,12 @@ const popUp = (img,name,color,size,price) => {
     div.style.animation = `popUpDown ${timeAnimation}s`;
     document.body.appendChild(div); // Thêm popup vào body
 
+
+    // Gửi dữ liệu đến server
+
+
+
+
     const timeDelay = timeAnimation * 1000 + 1000;
 
     setTimeout(() => {
@@ -43,14 +49,51 @@ const popUp = (img,name,color,size,price) => {
 
 const productItems = document.querySelectorAll(".product-item");
 
+const products = (idSize) => {
+    if (!idSize || typeof idSize !== 'number') {
+        console.error('Error: idSize is undefined, null, or not a number');
+        return;
+    }
+
+    const product = {idSize};
+
+    fetch('/Shoe_war_exploded/AddToCartController', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(product),
+    })
+        .then(response => {
+            console.log('Response headers:', response.headers);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                throw new Error('Invalid response format: Expected JSON');
+            }
+
+            return response.json();
+        })
+        .then(data => {
+            console.log('Product saved successfully:', data);
+        })
+        .catch(error => {
+            console.error('Error saving product:', error);
+        });
+};
+
+
 productItems.forEach(productItem => {
     const optionSizes = productItem.querySelectorAll(".option-size");
     optionSizes.forEach(optionSize =>{
         optionSize.addEventListener("click",()=>{
-            const idSize = optionSize.querySelector(".idSize");
+            const idSize = optionSize.querySelector(".idSize").textContent.trim();
             console.log(idSize.innerHTML)
 
-            const product = idSize.closest(".product-item")
+            const product = optionSize.closest(".product-item")
             let activeIndex = 0;
             const productBtn = product.querySelectorAll(".color-button");
 
@@ -69,7 +112,12 @@ productItems.forEach(productItem => {
             const color = optionColor[activeIndex].querySelector(".nameColor").innerHTML
             const size = product.querySelector(".sizeName").innerHTML
             const price = product.querySelector(".price").innerHTML
+            const productId = product.querySelector(".idProduct").innerHTML;
             popUp(img,name,color,size,price)
+            products(Number(idSize));
+
+
+
 
 
 
