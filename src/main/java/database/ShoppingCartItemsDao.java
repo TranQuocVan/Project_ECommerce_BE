@@ -1,9 +1,14 @@
 package database;
 
+import model.ListModel;
+import model.ShoppingCartItems;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ShoppingCartItemsDao {
     public boolean addProductToShoppingCart(int orderId, int sizeId) {
@@ -50,6 +55,24 @@ public class ShoppingCartItemsDao {
         }
         return false;
 
+    }
+    public List<ShoppingCartItems> getAllShoppingCartItems(int orderId) {
+        ListModel<ShoppingCartItems> shoppingCartItemsList = new ListModel<>();
+        List<ShoppingCartItems> list = shoppingCartItemsList.getShoppingCartItemsList();
+        String sql = "SELECT * FROM ShoppingCartItems WHERE orderId = ?";
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, orderId);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                ShoppingCartItems spci = new ShoppingCartItems(rs.getInt("sizeId"), rs.getInt("quantity"), rs.getInt("orderId"));
+                list.add(spci);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
 }

@@ -1,27 +1,24 @@
-@media (min-width: 1025px) {
-    .h-custom {
-        height: 100vh !important;
-    }
+h6{
+    font-size: 20px;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
-.card-registration .select-input.form-control[readonly]:not([disabled]) {
-    font-size: 1rem;
-    line-height: 2.15;
-    padding-left: .75em;
-    padding-right: .75em;
+input[type="number"] {
+    text-align: center;
 }
 
-.card-registration .select-arrow {
-    top: 13px;
+.btn * {
+    margin: 1px ;
 }
-h1 {
-    font-size: 64px;
-    line-height: 1.0625;
-    letter-spacing: -0.009em;
-    font-weight: 600;
+.text-body{
+    font-size: 20px
 }
-h6 , .text-body{
-    font-size: 20px ;
-    font-weight: 400;
+.hover-red:hover {
+    color: red !important;
 }
- 
+
+

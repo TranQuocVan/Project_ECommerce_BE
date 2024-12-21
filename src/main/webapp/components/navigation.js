@@ -139,7 +139,7 @@ const renderNavigation = () => {
                         
                     </div>
                     <div class="col-md-3 flex-align-items-center" style="justify-content: end;">
-                        ${isLogin ? `<a href='loginPages/userInfo.jsp'><i class="fa-regular fa-user"></i></i></a> <a href='shoppingCart.jsp'><i class="fa-solid fa-cart-shopping"></i></i></a>` : `<a href='signIn.jsp'>Sign in</i></a>`}
+                        ${isLogin ? `<a href='loginPages/userInfo.jsp'><i class="fa-regular fa-user"></i></i></a> <a href='ShoppingCartItemsController'><i class="fa-solid fa-cart-shopping"></i></i></a>` : `<a href='signIn.jsp'>Sign in</i></a>`}
                     </div>
                 </div>
             </div>

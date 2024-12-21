@@ -5,7 +5,12 @@
   Time: 1:55 PM
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -37,14 +42,23 @@
       <div class="container py-5 h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
           <div class="col-12">
-            <div class="card card-registration card-registration-2" style="border-radius: 15px;">
+            <div class="card card-registration card-registration-2" style=" border-radius: 15px;">
               <div class="card-body p-0">
                 <div class="row g-0">
                   <div class="col-lg-8">
                     <div class="p-5">
                       <div class="d-flex justify-content-between align-items-center mb-5">
                         <h1 class="fw-bold mb-0">Giỏ hàng</h1>
-                        <h6 class="mb-0 text-muted">3 món</h6>
+
+                        <c:if test="${not empty shoppingCartItemsList.shoppingCartItemsList}">
+                         <c:forEach var="item" items="${shoppingCartItemsList.shoppingCartItemsList}">
+
+                           <h6 class="mb-0 text-muted">${fn:length(shoppingCartItemsList.shoppingCartItemsList)} món</h6>
+
+                         </c:forEach>
+                        </c:if>
+
+
                       </div>
                       <hr class="my-4">
 
