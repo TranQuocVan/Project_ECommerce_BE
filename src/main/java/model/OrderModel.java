@@ -12,8 +12,8 @@ public class OrderModel
     int userId ;
     int deliveryId ;
 
-    public OrderModel(int id, int paymentId, Date orderDate, String deliveryAddress, float totalPrice, int userId, int deliveryId) {
-        this.id = id;
+    public OrderModel(int paymentId, Date orderDate, String deliveryAddress, float totalPrice, int userId, int deliveryId) {
+
         this.paymentId = paymentId;
         this.orderDate = orderDate;
         this.deliveryAddress = deliveryAddress;

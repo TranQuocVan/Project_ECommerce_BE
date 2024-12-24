@@ -46,19 +46,8 @@ public class AddToCartController extends HttpServlet {
             OrderService orderService = new OrderService();
             ShoppingCartService shoppingCartService = new ShoppingCartService();
 
-            int orderId;
-            if (orderService.checkOrder(user.getId())) {
-                // Nếu đã có order, lấy ID của order
-                orderId = orderService.getOrderId(user.getId());
-            } else {
-                // Nếu chưa có order, tạo mới và lấy ID của order
-                OrderModel order = new OrderModel(null, user.getId());
-                orderService.addOrder(order);
-                orderId = orderService.getOrderId(user.getId());
-            }
-
             // Thêm sản phẩm vào giỏ hàng
-            shoppingCartService.addProductToShoppingCart(orderId, sizeId);
+            shoppingCartService.addProductToShoppingCart(1, sizeId, user.getId());
 
             // Trả về phản hồi thành công
             response.getWriter().write("{\"status\":\"success\",\"message\":\"Product added successfully\"}");

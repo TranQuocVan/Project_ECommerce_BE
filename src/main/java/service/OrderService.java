@@ -9,12 +9,12 @@ public class OrderService {
         OrderDao orderDao = new OrderDao();
         return orderDao.addOrder(orderModel);
     }
-    public boolean checkOrder(int userId) {
-        OrderDao orderDao = new OrderDao();
-        return orderDao.checkOrder(userId);
-    }
-    public int getOrderId(int userId) {
-        OrderDao orderDao = new OrderDao();
-        return orderDao.getOrderId(userId);
-    }
+//    public boolean checkOrder(int userId) {
+//        OrderDao orderDao = new OrderDao();
+//        return orderDao.checkOrder(userId);
+//    }
+//    public int getOrderId(int userId) {
+//        OrderDao orderDao = new OrderDao();
+//        return orderDao.getOrderId(userId);
+//    }
 }

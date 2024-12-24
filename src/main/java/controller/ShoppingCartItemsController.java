@@ -5,11 +5,14 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import model.ListModel;
 import model.ShoppingCartItems;
+import model.ShoppingCartItemsModel;
 import model.UserModel;
 import service.OrderService;
 import service.ShoppingCartService;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,14 +24,21 @@ public class ShoppingCartItemsController extends HttpServlet {
         OrderService orderService = new OrderService();
         HttpSession session = request.getSession();
         UserModel user = (UserModel) session.getAttribute("user");
-        ListModel<ShoppingCartItems> listModel = new ListModel<>();
-        List<ShoppingCartItems> shoppingCartItemsList =listModel.getShoppingCartItemsList();
-        int orderId = orderService.getOrderId(user.getId());
-        if (orderId > 0) {
-            ShoppingCartService shoppingCartService = new ShoppingCartService();
-            shoppingCartItemsList.addAll(shoppingCartService.getAllShoppingCartItems(orderId));
-        }
-        request.setAttribute("shoppingCartItemsList", listModel);
+
+
+        ShoppingCartService shoppingCartService = new ShoppingCartService();
+        List<ShoppingCartItemsModel> lists = shoppingCartService.getAllShoppingCartItems(user.getId());
+
+        float totalPrice = shoppingCartService.totalPrice(user.getId());
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setGroupingSeparator('.');
+
+        DecimalFormat df = new DecimalFormat("#,###", symbols);
+        String formattedPrice = df.format(totalPrice) + "đ";
+
+        request.setAttribute("totalPriceFormat", formattedPrice);
+        request.setAttribute("totalPrice", totalPrice);
+        request.setAttribute("shoppingCartItemsList", lists);
         request.getRequestDispatcher("shoppingCart.jsp").forward(request, response);
     }
 

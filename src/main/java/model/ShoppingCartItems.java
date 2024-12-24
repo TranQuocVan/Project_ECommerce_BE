@@ -5,25 +5,21 @@ public class ShoppingCartItems {
     int id ;
     int quantity ;
     int sizeId;
-    int orderId ;
     int userId ;
 
-    public ShoppingCartItems(int id, int quantity, int sizeId) {
-        this.id = id;
+
+    public ShoppingCartItems(int quantity, int sizeId, int userId) {
+
         this.quantity = quantity;
         this.sizeId = sizeId;
+        this.userId = userId;
     }
 
     public void setId(int id) {
         this.id = id;
     }
 
-    public ShoppingCartItems(int quantity, int sizeId, int orderId, int userId) {
-        this.quantity = quantity;
-        this.sizeId = sizeId;
-        this.orderId = orderId;
-        this.userId = userId;
-    }
+
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
@@ -33,9 +29,7 @@ public class ShoppingCartItems {
         this.sizeId = sizeId;
     }
 
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
-    }
+
 
     public void setUserId(int userId) {
         this.userId = userId;
@@ -53,9 +47,7 @@ public class ShoppingCartItems {
         return sizeId;
     }
 
-    public int getOrderId() {
-        return orderId;
-    }
+
 
     public int getUserId() {
         return userId;

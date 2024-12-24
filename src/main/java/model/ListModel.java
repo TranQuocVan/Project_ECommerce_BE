@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListModel<T> {
-    private List<T> shoppingCartItemsList;
+    private List<T> lists;
 
     // Khởi tạo danh sách trong constructor
     public ListModel() {
-        this.shoppingCartItemsList = new ArrayList<>();
+        this.lists = new ArrayList<>();
     }
 
-    public List<T> getShoppingCartItemsList() {
-        return shoppingCartItemsList;
+    public List<T> getLists() {
+        return lists;
     }
 }

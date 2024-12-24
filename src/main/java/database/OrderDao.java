@@ -10,16 +10,16 @@ import java.time.LocalDateTime;
 public class OrderDao {
     public boolean addOrder(OrderModel order) {
 
-        String sql = "insert into orders (orderDate, deliveryAddress, totalPrice, userId,paymentId,deliveryId) values(?,?,?,?,?,?)";
+        String sql = "insert into orders (paymentId,orderDate, deliveryAddress, totalPrice, userId,deliveryId) values(?,?,?,?,?,?)";
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
             LocalDate currentDate = LocalDate.now(); // Lấy ngày hiện tại
-            st.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
-            st.setString(2, "Tieu chuan");
-            st.setFloat(3, 0);
-            st.setInt(4, order.getUserId());
-            st.setInt(5, 1);
-            st.setInt(6, 1);
+            st.setInt(1, order.getPaymentId());
+            st.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
+            st.setString(3, order.getDeliveryAddress());
+            st.setFloat(4, order.getTotalPrice());
+            st.setInt(5, order.getUserId());
+            st.setInt(6, order.getDeliveryId());
             return st.executeUpdate() > 0;
 
         } catch (SQLException e) {
