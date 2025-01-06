@@ -19,5 +19,8 @@ public class ShoppingCartService {
         ShoppingCartItemsDao shoppingCartItemsDao = new ShoppingCartItemsDao();
         return shoppingCartItemsDao.totalPrice(userId);
     }
-
-}
+    public boolean deleteProductToShoppingCart( int sizeId, int userId) {
+        ShoppingCartItemsDao shoppingCartItemsDao = new ShoppingCartItemsDao();
+        return shoppingCartItemsDao.deleteProductToShoppingCart(sizeId,userId);
+    }
+    }

@@ -92,8 +92,16 @@
                           <h6 class="mb-0">${item.formattedPrice}</h6>
                         </div>
                         <div class="col-md-1 col-lg-1 col-xl-1 text-end">
-                          <a href="#!" class="text-muted hover-red "><i
-                                  class="fas fa-times"></i></a>
+
+                          <form method="POST" action="DeleteCartItemController">
+                            <input type="hidden" name="sizeId" value="${item.sizeId}">
+                            <button data-mdb-button-init data-mdb-ripple-init class="btn btn-link px-2"
+                                    onclick="handleDelete(this, '${item.nameProduct}', '${item.nameSize}'); return false;">
+                              <i class="fas fa-times"></i>
+                            </button>
+                          </form>
+
+
                         </div>
                       </div>
 
@@ -114,7 +122,7 @@
 
 
 
-                  <c:if test="${not empty shoppingCartItemsList}">
+<%--                  <c:if test="${not empty shoppingCartItemsList}">--%>
 
                   <div class="col-lg-4 bg-body-tertiary">
                     <div class="p-5">
@@ -126,7 +134,7 @@
                         <h5> ${shoppingCartItemsList.size()} món</h5>
                       </div>
 
-                      <form action="OrderController" method="post">
+                      <form id="orderForm" action="OrderController" method="post">
                         <input type="hidden" name="totalPrice" value="${totalPrice}" />
                       <h5 class="text-uppercase mb-3">Phương thức giao hàng</h5>
 
@@ -168,14 +176,14 @@
                         <h5>${totalPriceFormat}</h5>
                       </div>
 
+                          <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark" onclick="orderButton(this);return false;">
+                            Thanh toán
+                          </button>
 
-                        <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Thanh
-                          toán
-                        </button>
 
                       </form>
 
-                      </c:if>
+<%--                      </c:if>--%>
 
 
                     </div>
@@ -194,7 +202,6 @@
 <footer>
 
 </footer>
-
 <script src="components/navigation.js"></script>
 <script src="components/footer.js"></script>
 <script src="scripts/scroll.js"></script>

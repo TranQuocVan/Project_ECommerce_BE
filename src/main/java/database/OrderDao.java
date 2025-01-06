@@ -1,21 +1,20 @@
 package database;
 
-import jakarta.servlet.http.HttpSession;
+import model.Order;
 import model.OrderModel;
 
 import java.sql.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OrderDao {
-    public boolean addOrder(OrderModel order) {
+    public boolean addOrder(Order order) {
 
         String sql = "insert into orders (paymentId,orderDate, deliveryAddress, totalPrice, userId,deliveryId) values(?,?,?,?,?,?)";
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
-            LocalDate currentDate = LocalDate.now(); // Lấy ngày hiện tại
             st.setInt(1, order.getPaymentId());
-            st.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
+            st.setTimestamp(2, order.getOrderDate());
             st.setString(3, order.getDeliveryAddress());
             st.setFloat(4, order.getTotalPrice());
             st.setInt(5, order.getUserId());
@@ -54,5 +53,60 @@ public class OrderDao {
             e.printStackTrace();
         }
         return -1;
+    }
+    public List<OrderModel> getAllOrders(int userId) {
+        String sql = "select * from orders where userId = ?";
+        List<OrderModel> orders = new ArrayList<>();
+
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, userId);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                OrderModel orderModel = new OrderModel(
+                        rs.getInt("orderId"),
+                        methodPayment(rs.getInt("paymentId")),
+                        rs.getTimestamp("orderDate"),
+                        rs.getString("deliveryAddress"),
+                        rs.getFloat("totalPrice"),
+                        deliveryName(rs.getInt("deliveryId"))
+                        );
+
+                orders.add(orderModel);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return orders;
+    }
+
+    public String methodPayment (int paymentId){
+        String sql = "select methodPayment from Payments where paymentId = ?";
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, paymentId);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                return rs.getString("methodPayment");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "Trống";
+    }
+    public String deliveryName (int deliveryId){
+        String sql = "select name from deliveries where deliveryId = ?";
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, deliveryId);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                return rs.getString("name");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "Trống";
     }
 }

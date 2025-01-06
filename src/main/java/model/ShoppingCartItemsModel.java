@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
 public class ShoppingCartItemsModel {
+    private int sizeId;
     private String nameProduct;
     private float price;
     private String nameColor ;
@@ -12,11 +13,12 @@ public class ShoppingCartItemsModel {
     private int stock;
     private int quantity;
 
-    public ShoppingCartItemsModel(String nameProduct, float price, String nameColor, String nameSize, int stock, int quantity) {
+    public ShoppingCartItemsModel(int sizeId,String nameProduct, float price, String nameColor, String nameSize, int stock, int quantity) {
         this.nameProduct = nameProduct;
         this.price = price;
         this.nameColor = nameColor;
 
+        this.sizeId = sizeId;
         this.nameSize = nameSize;
         this.stock = stock;
         this.quantity = quantity;
@@ -53,5 +55,9 @@ public class ShoppingCartItemsModel {
     }
     public int getQuantity() {
         return quantity;
+    }
+
+    public int getSizeId() {
+        return sizeId;
     }
 }

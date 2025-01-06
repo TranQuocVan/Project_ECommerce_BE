@@ -1,46 +1,36 @@
 package model;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
-public class OrderModel
-{
+public class OrderModel {
     int id;
-    int paymentId ;
-    Date orderDate ;
+    String paymentName ;
+    Timestamp orderDate ;
     String deliveryAddress ;
-    float totalPrice ;
-    int userId ;
-    int deliveryId ;
+    float totalPrice ;;
+    String deliveryName ;
+    String nameStatus ;
 
-    public OrderModel(int paymentId, Date orderDate, String deliveryAddress, float totalPrice, int userId, int deliveryId) {
 
-        this.paymentId = paymentId;
+    public OrderModel(int id, String paymentName, Timestamp orderDate, String deliveryAddress, float totalPrice, String deliveryName) {
+        this.id = id;
+        this.paymentName = paymentName;
         this.orderDate = orderDate;
         this.deliveryAddress = deliveryAddress;
         this.totalPrice = totalPrice;
-        this.userId = userId;
-        this.deliveryId = deliveryId;
-    }
+        this.deliveryName = deliveryName;
 
-    public OrderModel(Date orderDate,float totalPrice,int userId) {
-        this.totalPrice = totalPrice;
-        this.orderDate = orderDate;
-        this.userId = userId;
-    }
-    public OrderModel(Date orderDate,int userId) {
-        this.orderDate = orderDate;
-        this.userId = userId;
     }
 
     public int getId() {
         return id;
     }
 
-    public int getPaymentId() {
-        return paymentId;
+    public String getPaymentName() {
+        return paymentName;
     }
 
-    public Date getOrderDate() {
+    public Timestamp getOrderDate() {
         return orderDate;
     }
 
@@ -52,11 +42,11 @@ public class OrderModel
         return totalPrice;
     }
 
-    public int getUserId() {
-        return userId;
+    public String getDeliveryName() {
+        return deliveryName;
     }
 
-    public int getDeliveryId() {
-        return deliveryId;
+    public String getNameStatus() {
+        return nameStatus;
     }
 }

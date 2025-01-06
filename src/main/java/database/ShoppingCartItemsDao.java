@@ -63,7 +63,7 @@ public class ShoppingCartItemsDao {
     public List<ShoppingCartItemsModel> getAllShoppingCartItems(int userId) {
         List<ShoppingCartItemsModel> lists = new ArrayList<ShoppingCartItemsModel>();
         String sql = """
-        SELECT p.name,p.price, c.name, s.size, s.stock, spc.quantity
+        SELECT s.sizeId, p.name,p.price, c.name, s.size, s.stock, spc.quantity
         FROM Sizes s 
         LEFT JOIN  ShoppingCartItems spc ON spc.sizeId = s.sizeId 
         LEFT JOIN  Colors c ON c.colorId = s.colorId 
@@ -77,7 +77,7 @@ public class ShoppingCartItemsDao {
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                ShoppingCartItemsModel shoppingCartItemsModel =
-                       new ShoppingCartItemsModel(rs.getString("name"),rs.getFloat("price"),
+                       new ShoppingCartItemsModel( rs.getInt("sizeId"), rs.getString("name"),rs.getFloat("price"),
                                rs.getString("name"),
                                rs.getString("size"), rs.getInt("stock"), rs.getInt("quantity")) ;
                 lists.add(shoppingCartItemsModel);
@@ -88,7 +88,27 @@ public class ShoppingCartItemsDao {
         }
         return lists;
     }
-    public float totalPrice (int userId){
+
+     public boolean deleteProductToShoppingCart( int sizeId, int userId) {
+
+         String sql = "delete from shoppingCartItems where sizeId = ? and userId = ?";
+
+         try (Connection con = JDBCUtil.getConnection()) {
+
+                 try (PreparedStatement ps = con.prepareStatement(sql)) {
+                     ps.setInt(1, sizeId);
+                     ps.setInt(2, userId);
+                     return ps.executeUpdate() > 0;
+                 }
+
+
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+         return false;
+     }
+
+        public float totalPrice (int userId){
         float totalPrice = 0;
         List<ShoppingCartItemsModel> lists = getAllShoppingCartItems(userId);
         for (ShoppingCartItemsModel shoppingCartItemsModel : lists) {

@@ -1,11 +1,13 @@
 package service;
 
-import com.mysql.cj.x.protobuf.MysqlxCrud;
 import database.OrderDao;
+import model.Order;
 import model.OrderModel;
 
+import java.util.List;
+
 public class OrderService {
-    public boolean addOrder(OrderModel orderModel) {
+    public boolean addOrder(Order orderModel) {
         OrderDao orderDao = new OrderDao();
         return orderDao.addOrder(orderModel);
     }
@@ -17,4 +19,9 @@ public class OrderService {
 //        OrderDao orderDao = new OrderDao();
 //        return orderDao.getOrderId(userId);
 //    }
+public List<OrderModel> getAllOrders(int userId){
+        OrderDao orderDao = new OrderDao();
+        return orderDao.getAllOrders(userId);
+}
+
 }

@@ -22,9 +22,11 @@ const popUp = (img,name,color,size,price , productId) => {
             </div>
         </div>
         <div style="padding-bottom: 20px;">
+        <form action="ShoppingCartItemsController" method="get">
             <button id="btnPopup">
                 Xem Giỏ hàng
             </button>
+            </form>
         </div>`;
 
     div.style.animation = `popUpDown ${timeAnimation}s`;
