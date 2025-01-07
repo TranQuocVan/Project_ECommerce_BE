@@ -51,23 +51,25 @@
                     <div class="p-5">
                       <div class="d-flex justify-content-between align-items-center mb-5">
                         <h1 class="fw-bold mb-0">Giỏ hàng</h1>
-
-
-<%--                            <div>--%>
-<%--                              <h6>Sản phẩm: ${item.nameProduct}</h6>--%>
-<%--                              <p>Giá: ${item.price}</p>--%>
-<%--                              <p>Số lượng: ${item.quantity}</p>--%>
-<%--                            </div>--%>
-
-
-
-
                       </div>
+                        <c:if test="${empty shoppingCartItemsList}">
+                            <div class="alert alert-info text-center mt-4" role="alert">
+                                Giỏ hàng của bạn đang trống. Hãy thêm sản phẩm vào giỏ hàng để tiếp tục mua sắm!
+                            </div>
+                        </c:if>
                       <c:if test="${not empty shoppingCartItemsList}">
                       <c:forEach var="item" items="${shoppingCartItemsList}">
                       <hr class="my-4">
 
                       <div class="row mb-4 d-flex justify-content-between align-items-center items">
+                        <div class="col-md-1">
+                          <form method="POST" action="ShoppingCartItemsController" id="updateCartForm-${item.sizeId}">
+                            <input type="hidden" name="sizeId" value="${item.sizeId}">
+                            <input type="checkbox" class="select-item" data-item-id="${item.sizeId}"
+                                   onclick="toggleSelection(this)" />
+                          </form>
+
+                        </div>
                         <div class="col-md-2 col-lg-2 col-xl-2">
                           <img src="assets/shoeMens/1.png" class="img-fluid rounded-3" alt="Fashion shoes">
                         </div>
@@ -112,9 +114,8 @@
 
 
                       <div class="pt-5">
-                        <h6 class="mb-0"><a href="index.html" class="text-body"><i
-                                class="fas fa-long-arrow-alt-left me-2"></i>Back to
-                          shop</a>
+                        <h6 class="mb-0"><a href="./index.jsp" class="text-body"><i
+                                class="fas fa-long-arrow-alt-left me-2"></i>Trở về trang chủ</a>
                         </h6>
                       </div>
                     </div>
@@ -122,7 +123,6 @@
 
 
 
-<%--                  <c:if test="${not empty shoppingCartItemsList}">--%>
 
                   <div class="col-lg-4 bg-body-tertiary">
                     <div class="p-5">
@@ -135,7 +135,7 @@
                       </div>
 
                       <form id="orderForm" action="OrderController" method="post">
-                        <input type="hidden" name="totalPrice" value="${totalPrice}" />
+                        <input type="hidden" id="selectedItems" name="selectedItems" />
                       <h5 class="text-uppercase mb-3">Phương thức giao hàng</h5>
 
                       <div class="d-flex justify-content-between mb-4">
@@ -176,14 +176,16 @@
                         <h5>${totalPriceFormat}</h5>
                       </div>
 
-                          <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark" onclick="orderButton(this);return false;">
-                            Thanh toán
-                          </button>
+                        <button data-mdb-button-init data-mdb-ripple-init
+                                class="btn btn-dark btn-block btn-lg"
+                                data-mdb-ripple-color="dark"
+                                onclick="orderButton(this, event);">
+                          Thanh toán
+                        </button>
+
 
 
                       </form>
-
-<%--                      </c:if>--%>
 
 
                     </div>

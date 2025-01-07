@@ -51,42 +51,39 @@ const popUp = (img,name,color,size,price , productId) => {
 
 const productItems = document.querySelectorAll(".product-item");
 
-const products = (idSize) => {
+const products = (idSize, img, name, color, size, price) => {
     if (!idSize || typeof idSize !== 'number') {
-        console.error('Error: idSize is undefined, null, or not a number');
+        console.error('Error: idSize is invalid');
         return;
     }
 
-    const product = {idSize};
-
     fetch('/Shoe_war_exploded/AddToCartController', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(product),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idSize }),
     })
-        .then(response => {
-            console.log('Response headers:', response.headers);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const contentType = response.headers.get('content-type');
-            if (!contentType || !contentType.includes('application/json')) {
-                throw new Error('Invalid response format: Expected JSON');
-            }
-
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
-            console.log('Product saved successfully:', data);
+            if (data.status === 'error') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: data.message || 'Không thể thêm sản phẩm vào giỏ hàng.'
+                });
+            } else if (data.status === 'ok') {
+                // Chỉ hiển thị popup khi sản phẩm được thêm thành công
+                popUp(img, name, color, size, price);
+            }
         })
         .catch(error => {
-            console.error('Error saving product:', error);
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Đã xảy ra lỗi trong quá trình thêm sản phẩm.'
+            });
         });
 };
-
 
 productItems.forEach(productItem => {
     const optionSizes = productItem.querySelectorAll(".option-size");
@@ -115,8 +112,8 @@ productItems.forEach(productItem => {
             const size = product.querySelector(".sizeName").innerHTML
             const price = product.querySelector(".price").innerHTML
             const productId = product.querySelector(".idProduct").innerHTML;
-            popUp(img,name,color,size,price)
-            products(Number(idSize));
+            products(Number(idSize), img, name, color, size, price);
+            // popUp(img,name,color,size,price)
 
 
 

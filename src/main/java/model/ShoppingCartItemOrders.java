@@ -1,15 +1,18 @@
 package model;
 
+import java.util.List;
+
 public class ShoppingCartItemOrders {
     public int paymentId;
     public int quantity ;
     public int orderId ;
-    public int sizeId ;
-    public ShoppingCartItemOrders(int paymentId, int quantity, int orderId, int sizeId) {
+    public List<Integer> listSizeId ;
+
+    public ShoppingCartItemOrders(int paymentId, int quantity, int orderId, List<Integer> listSizeId) {
         this.paymentId = paymentId;
         this.quantity = quantity;
         this.orderId = orderId;
-        this.sizeId = sizeId;
+        this.listSizeId = listSizeId;
     }
 
     public int getPaymentId() {
@@ -24,7 +27,7 @@ public class ShoppingCartItemOrders {
         return orderId;
     }
 
-    public int getSizeId() {
-        return sizeId;
+    public List<Integer> getListSizeId() {
+        return listSizeId;
     }
 }

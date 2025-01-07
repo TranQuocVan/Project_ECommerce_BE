@@ -21,3 +21,16 @@ input[type="number"] {
     color: red !important;
 }
 
+/* Viền xanh mặc định cho các sản phẩm */
+.items {
+    border: 2px solid transparent; /* Viền trong suốt ban đầu */
+    border-radius: 8px;
+    padding: 10px;
+    transition: border 0.3s ease; /* Thêm hiệu ứng chuyển đổi khi thay đổi viền */
+}
+
+/* Viền xanh khi sản phẩm được chọn */
+.items.selected {
+    border: 2px solid #000000; /* Màu xanh khi chọn */
+}
+

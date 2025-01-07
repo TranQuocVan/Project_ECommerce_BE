@@ -46,10 +46,14 @@ public class AddToCartController extends HttpServlet {
             ShoppingCartService shoppingCartService = new ShoppingCartService();
 
             // Thêm sản phẩm vào giỏ hàng
-            shoppingCartService.addProductToShoppingCart(1, sizeId, user.getId());
+            if(shoppingCartService.addProductToShoppingCart(1, sizeId, user.getId())){
+                response.getWriter().write("{\"status\":\"ok\",\"message\":\"Product added successfully\"}");
+            }
+            else {
+                response.getWriter().write("{\"status\":\"error\",\"message\":\"Product no added successfully\"}");
+            }
 
             // Trả về phản hồi thành công
-            response.getWriter().write("{\"status\":\"success\",\"message\":\"Product added successfully\"}");
 
         } catch (Exception e) {
             e.printStackTrace();

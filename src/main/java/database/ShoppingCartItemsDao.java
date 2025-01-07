@@ -13,27 +13,33 @@ import java.util.List;
 
 public class ShoppingCartItemsDao {
 
-    public boolean addProductToShoppingCart( int quantity, int sizeId, int userId) {
+    public boolean addProductToShoppingCart(int quantity, int sizeId, int userId) {
         String insertSql = "INSERT INTO ShoppingCartItems (quantity, sizeId, userId) VALUES(?, ?, ?)";
-        String updateSql = "UPDATE ShoppingCartItems SET quantity = quantity + 1 WHERE sizeId = ? and userId = ?";
+        String updateSql = "UPDATE ShoppingCartItems SET quantity = quantity + ? WHERE sizeId = ? and userId = ?";
 
         try (Connection con = JDBCUtil.getConnection()) {
-            if (checkProductDetailId(sizeId,userId)) {
-                // Nếu sản phẩm đã tồn tại, cập nhật số lượng
-                try (PreparedStatement updateSt = con.prepareStatement(updateSql)) {
-                    updateSt.setInt(1, sizeId);
-                    updateSt.setInt(2, userId);
-                    int rowsAffected = updateSt.executeUpdate();
-                    return rowsAffected > 0;
+            if (checkProductDetailId(sizeId, userId)) {
+                // Kiểm tra xem có đủ số lượng sản phẩm trong kho không trước khi cập nhật
+                if (checkStockProduct(sizeId, userId, 1)) { // Kiểm tra nếu thêm 1 sản phẩm có vượt quá số lượng kho không
+                    // Nếu sản phẩm đã tồn tại, cập nhật số lượng
+                    try (PreparedStatement updateSt = con.prepareStatement(updateSql)) {
+                        updateSt.setInt(1, quantity); // Số lượng tăng thêm
+                        updateSt.setInt(2, sizeId);
+                        updateSt.setInt(3, userId);
+                        int rowsAffected = updateSt.executeUpdate();
+                        return rowsAffected > 0;
+                    }
                 }
             } else {
                 // Nếu sản phẩm chưa tồn tại, thêm mới vào giỏ hàng
-                try (PreparedStatement insertSt = con.prepareStatement(insertSql)) {
-                    insertSt.setInt(1, quantity);
-                    insertSt.setInt(2, sizeId);
-                    insertSt.setInt(3, userId);
-                    int rowsAffected = insertSt.executeUpdate();
-                    return rowsAffected > 0;
+                if (checkStockProduct(sizeId, userId, quantity)) {
+                    try (PreparedStatement insertSt = con.prepareStatement(insertSql)) {
+                        insertSt.setInt(1, quantity);
+                        insertSt.setInt(2, sizeId);
+                        insertSt.setInt(3, userId);
+                        int rowsAffected = insertSt.executeUpdate();
+                        return rowsAffected > 0;
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -42,8 +48,7 @@ public class ShoppingCartItemsDao {
         return false;
     }
 
-
-    private boolean checkProductDetailId(int sizeId, int userId ) {
+    private boolean checkProductDetailId(int sizeId, int userId) {
         String sql = "SELECT 1 FROM ShoppingCartItems WHERE sizeId = ? and userId = ? LIMIT 1";
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
@@ -58,8 +63,35 @@ public class ShoppingCartItemsDao {
             e.printStackTrace();
         }
         return false;
-
     }
+
+
+    private boolean checkStockProduct(int sizeId, int userId, int quantityToAdd) {
+        String sql = """
+    SELECT s.stock, IFNULL(SUM(spc.quantity), 0) AS cartQuantity
+    FROM Sizes s
+    LEFT JOIN ShoppingCartItems spc ON spc.sizeId = s.sizeId AND spc.userId = ?
+    WHERE s.sizeId = ?
+    GROUP BY s.sizeId
+    """;
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, userId);
+            st.setInt(2, sizeId);
+            ResultSet rs = st.executeQuery();
+
+            if (rs.next()) {
+                int stock = rs.getInt("stock");
+                int cartQuantity = rs.getInt("cartQuantity");
+                // Kiểm tra xem tổng số lượng sản phẩm trong giỏ hàng (cộng với số lượng sắp thêm) có vượt quá số lượng kho hay không
+                return (cartQuantity + quantityToAdd) <= stock;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public List<ShoppingCartItemsModel> getAllShoppingCartItems(int userId) {
         List<ShoppingCartItemsModel> lists = new ArrayList<ShoppingCartItemsModel>();
         String sql = """
@@ -107,13 +139,90 @@ public class ShoppingCartItemsDao {
          }
          return false;
      }
+    public boolean updateStockProduct(int userId) {
+        String sql = """
+        SELECT spc.quantity, s.sizeId
+        FROM shoppingCartItems spc
+        JOIN sizes s ON spc.sizeId = s.sizeId 
+        WHERE spc.userId = ?
+    """;
 
-        public float totalPrice (int userId){
-        float totalPrice = 0;
-        List<ShoppingCartItemsModel> lists = getAllShoppingCartItems(userId);
-        for (ShoppingCartItemsModel shoppingCartItemsModel : lists) {
-            totalPrice += shoppingCartItemsModel.getPrice() * shoppingCartItemsModel.getQuantity();
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+            con.setAutoCommit(false); // Bắt đầu transaction
+            st.setInt(1, userId);
+            ResultSet rs = st.executeQuery();
+
+            int totalCount = 0; // Tổng số hàng cần cập nhật
+            int updatedCount = 0; // Số hàng đã cập nhật thành công
+
+            while (rs.next()) {
+                totalCount++;
+                String sql2 = "UPDATE sizes SET stock = stock - ? WHERE sizeId = ?";
+                try (PreparedStatement ps2 = con.prepareStatement(sql2)) {
+                    ps2.setInt(1, rs.getInt("quantity"));
+                    ps2.setInt(2, rs.getInt("sizeId"));
+
+                    int result = ps2.executeUpdate();
+                    if (result > 0) {
+                        updatedCount++;
+                    }
+                }
+            }
+
+            // Kiểm tra nếu tất cả hàng đều được cập nhật thành công
+            if (totalCount == updatedCount) {
+                con.commit(); // Hoàn thành transaction
+                return true;
+            } else {
+                con.rollback(); // Hủy transaction nếu không cập nhật đủ
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
-        return totalPrice;
+    }
+
+
+
+    public boolean cleanShoppingCartItems(int userId) {
+         String sql = "delete from shoppingCartItems where userId = ?";
+
+         try (Connection con = JDBCUtil.getConnection()) {
+
+             try (PreparedStatement ps = con.prepareStatement(sql)) {
+                 ps.setInt(1, userId);
+                 return ps.executeUpdate() > 0;
+             }
+
+
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+         return false;
+     }
+
+        public float totalPrice (int sizeId){
+            String sql = """
+        SELECT p.price, spc.quantity
+        FROM Sizes s 
+        LEFT JOIN  ShoppingCartItems spc ON spc.sizeId = s.sizeId 
+        LEFT JOIN  Colors c ON c.colorId = s.colorId 
+        LEFT JOIN  Products p ON c.productId = p.productId 
+        WHERE  spc.sizeId = ?
+    """;
+            try (Connection con = JDBCUtil.getConnection()) {
+                try (PreparedStatement ps = con.prepareStatement(sql)) {
+                    ps.setInt(1, sizeId);
+                    ResultSet rs = ps.executeQuery();
+                    if (rs.next()) {
+                        return rs.getFloat("price") * rs.getInt("quantity");
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return 0;
     }
 }

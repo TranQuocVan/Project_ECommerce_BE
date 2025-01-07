@@ -18,9 +18,9 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <link rel="stylesheet" href="../styles/navigation.css">
-    <link rel="stylesheet" href="../styles/global.css">
-    <link rel="stylesheet" href="../styles/user.css">
+    <link rel="stylesheet" href="./styles/navigation.css">
+    <link rel="stylesheet" href="./styles/global.css">
+    <link rel="stylesheet" href="./styles/user.css">
 
 
 
@@ -49,29 +49,29 @@
                                 <h3>
                                     <%=gmail%>
                                 </h3>
-                                <img id="rankCurrent" src="../assets/rankImage/none.png" alt="">
+                                <img id="rankCurrent" src="./assets/rankImage/none.png" alt="">
                                 <div class="spendMore">
                                     <p>
                                         Chi tiêu thêm
                                         <span style="color: #2f5acf;">252.000đ đ </span>
                                         để lên hạng
                                     </p>
-                                    <img id="rankNext" src="../assets/rankImage/silver.png" alt="">
+                                    <img id="rankNext" src="./assets/rankImage/silver.png" alt="">
                                 </div>
                                 <div id="lineSpend">
                                     <div class="lineSpend__progress">
                                     </div>
                                     <div style=" left: 0;" class="poinNone">
-                                        <img src="../assets/rankImage/none.png" alt="">
+                                        <img src="./assets/rankImage/none.png" alt="">
                                     </div>
                                     <div style=" left: 33.3%;" class="poinNone">
-                                        <img src="../assets/rankImage/silver.png" alt="">
+                                        <img src="./assets/rankImage/silver.png" alt="">
                                     </div>
                                     <div style=" left: 66.6%;" class="poinNone">
-                                        <img src="../assets/rankImage/gold.png" alt="">
+                                        <img src="./assets/rankImage/gold.png" alt="">
                                     </div>
                                     <div style=" left: 99.9%;" class="poinNone">
-                                        <img src="../assets/rankImage/platinum.png" alt="">
+                                        <img src="./assets/rankImage/platinum.png" alt="">
                                     </div>
                                 </div>
                             </div>
@@ -81,7 +81,7 @@
                                 <div class="CoolCashFull">
                                     <p style="text-align: end;">Bạn đang có</p>
                                     <div class="CoolCash">
-                                        <img src="../assets/user/mceclip6_39.png" alt="">
+                                        <img src="./assets/user/mceclip6_39.png" alt="">
                                         <p>3.000 CoolCash</p>
                                     </div>
                                     <p></p>
@@ -252,9 +252,9 @@
 
 <footer></footer>
 
-<script src="../components/navigation.js"></script>
-<script src="../scripts/user.js?v=${System.currentTimeMillis()}"></script>
-<script src="../components/footer.js?v=${System.currentTimeMillis()}"></script>
+<script src="./components/navigation.js"></script>
+<script src="./scripts/user.js?v=${System.currentTimeMillis()}"></script>
+<script src="./components/footer.js?v=${System.currentTimeMillis()}"></script>
 
 
 

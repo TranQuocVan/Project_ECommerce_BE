@@ -21,7 +21,6 @@ public class ShoppingCartItemsController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        OrderService orderService = new OrderService();
         HttpSession session = request.getSession();
         UserModel user = (UserModel) session.getAttribute("user");
 
@@ -29,7 +28,29 @@ public class ShoppingCartItemsController extends HttpServlet {
         ShoppingCartService shoppingCartService = new ShoppingCartService();
         List<ShoppingCartItemsModel> lists = shoppingCartService.getAllShoppingCartItems(user.getId());
 
-        float totalPrice = shoppingCartService.totalPrice(user.getId());
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setGroupingSeparator('.');
+
+        DecimalFormat df = new DecimalFormat("#,###", symbols);
+        String formattedPrice = df.format(0) + "đ";
+
+        request.setAttribute("totalPriceFormat", formattedPrice);
+        request.setAttribute("totalPrice", formattedPrice);
+        request.setAttribute("shoppingCartItemsList", lists);
+        request.getRequestDispatcher("shoppingCart.jsp").forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        UserModel user = (UserModel) session.getAttribute("user");
+        int sizeId =Integer.parseInt(request.getParameter("sizeId")) ;
+
+
+        ShoppingCartService shoppingCartService = new ShoppingCartService();
+        List<ShoppingCartItemsModel> lists = shoppingCartService.getAllShoppingCartItems(user.getId());
+
+        float totalPrice = shoppingCartService.totalPrice(sizeId);
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
         symbols.setGroupingSeparator('.');
 
@@ -42,8 +63,5 @@ public class ShoppingCartItemsController extends HttpServlet {
         request.getRequestDispatcher("shoppingCart.jsp").forward(request, response);
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-         doGet(request, response);
-    }
+
 }

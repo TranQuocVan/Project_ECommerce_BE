@@ -1,10 +1,10 @@
 package controller; import jakarta.servlet.*; 
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
-import model.Order;
-import model.OrderModel;
-import model.UserModel;
+import model.*;
 import service.OrderService;
+import service.ShoppingCartItemOrderService;
+import service.ShoppingCartService;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -38,22 +38,43 @@ public class OrderController extends HttpServlet {
     HttpSession session = request.getSession();
     UserModel user = (UserModel) session.getAttribute("user");
     OrderService orderService = new OrderService();
+    ShoppingCartService shoppingCartService = new ShoppingCartService();
+    ShoppingCartItemOrderService cartItemOrderService = new ShoppingCartItemOrderService();
 
     int paymentId = Integer.parseInt(request.getParameter("paymentId"));
     int deliveryId = Integer.parseInt(request.getParameter("deliveryId"));
-    float totalPrice = Float.parseFloat(request.getParameter("totalPrice"));
 
+// Lấy chuỗi sizeId từ request (dữ liệu gửi qua form)
+    String selectedItemsParam = request.getParameter("selectedItems");
+
+    // Chuyển chuỗi thành danh sách Integer
+    List<Integer> selectedItems = new ArrayList<>();
+    if (selectedItemsParam != null && !selectedItemsParam.isEmpty()) {
+        String[] selectedItemsArray = selectedItemsParam.split(",");
+        for (String item : selectedItemsArray) {
+            try {
+                selectedItems.add(Integer.parseInt(item.trim())); // Chuyển từng phần tử thành Integer
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     LocalDateTime now = LocalDateTime.now();
     Timestamp sqlTimestamp = Timestamp.valueOf(now);
-    Order orderModel = new Order(paymentId,sqlTimestamp,request.getParameter("address"), totalPrice, user.getId(), deliveryId);
+    Order orderModel = new Order(paymentId,sqlTimestamp,request.getParameter("address"), 0, user.getId(), deliveryId);
     DecimalFormatSymbols symbols = new DecimalFormatSymbols();
     symbols.setGroupingSeparator('.');
 
     DecimalFormat df = new DecimalFormat("#,###", symbols);
-    String formattedPrice = df.format(totalPrice) + "đ";
+//    String formattedPrice = df.format(totalPrice) + "đ";
 try{
+    shoppingCartService.updateStockProduct(user.getId());
     orderService.addOrder(orderModel);
-    request.setAttribute("totalPriceFormat", formattedPrice);
+    ShoppingCartItemOrders cartItemOrders = new ShoppingCartItemOrders(paymentId,0,cartItemOrderService.getOrderId(user.getId(),orderModel.getOrderDate()), selectedItems);
+
+    cartItemOrderService.addShoppingCartItemOrders(cartItemOrders);
+    shoppingCartService.cleanShoppingCartItems(user.getId());
+//    request.setAttribute("totalPriceFormat", formattedPrice);
     request.setAttribute("listOrder", orderService.getAllOrders(user.getId()));
     request.getRequestDispatcher("statusShoes.jsp").forward(request, response);
 }
