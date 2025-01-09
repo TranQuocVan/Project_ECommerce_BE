@@ -42,7 +42,7 @@ public class SignInController extends HttpServlet {
             UserService.handleRememberMe(userModel, session, response);
 
             // Chuyển hướng về trang index
-            response.sendRedirect("index.jsp");
+            response.sendRedirect(request.getContextPath() + "/IndexController");
         } catch (SQLException e) {
             // Xử lý ngoại lệ từ cơ sở dữ liệu
             throw new RuntimeException("Database error occurred: " + e.getMessage(), e);

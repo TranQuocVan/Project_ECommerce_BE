@@ -23,41 +23,51 @@ public class GmailAuthenticationController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String authCode = request.getParameter("authCode");
 
-        HttpSession session = request.getSession(false); // Lấy session hiện tại, không tạo mới
+        // Lấy session hiện tại, không tạo mới
+        HttpSession session = request.getSession(false);
         if (session == null) {
             response.sendRedirect("login.jsp"); // Nếu không có session, chuyển về trang login
             return;
         }
 
+        // Lấy các thông tin cần thiết từ session
         String authCodeOfSession = (String) session.getAttribute("authCode");
         String gmail = (String) session.getAttribute("gmail");
         String password = (String) session.getAttribute("password");
 
-        // Gọi Service để xử lý logic nghiệp vụ
+        if (authCodeOfSession == null || gmail == null || password == null) {
+            response.sendRedirect("login.jsp"); // Nếu thông tin không đầy đủ, chuyển về trang login
+            return;
+        }
+
+        // Gọi service để kiểm tra mã xác thực
         AuthenticationService authService = new AuthenticationService();
         boolean isValid = authService.validateAuthCode(authCode, authCodeOfSession);
 
         if (isValid) {
-            UserModel userModel = authService.registerUser(gmail, password);
-
-            // Cập nhật thông tin session
-//            session.setAttribute("user", userModel);
-//            session.setAttribute("isLogin", true);
-
-            // Tạo session và xử lý "Remember Me"
             try {
-                UserService.handleRememberMe(userModel, session, response);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+                // Kiểm tra Gmail đã tồn tại
 
-            // Chuyển tiếp về trang index
-            RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
-            dispatcher.forward(request, response);
+
+                // Đăng ký người dùng nếu Gmail chưa tồn tại
+                UserModel userModel = authService.registerUser(gmail, password);
+
+                // Xử lý "Remember Me" và cập nhật thông tin session
+                UserService.handleRememberMe(userModel, session, response);
+
+                // Chuyển tiếp về trang index
+                response.sendRedirect(request.getContextPath() + "/IndexController");
+            } catch (SQLException e) {
+                // Xử lý lỗi liên quan đến cơ sở dữ liệu
+                e.printStackTrace();
+                request.setAttribute("res", "Có lỗi xảy ra khi xử lý yêu cầu. Vui lòng thử lại sau.");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("gmailAuthentication.jsp");
+                dispatcher.forward(request, response);
+            }
         } else {
             // Trường hợp mã xác thực không đúng
             request.setAttribute("res", "Mã xác thực bạn nhập chưa đúng");
-            request.setAttribute("password", password);
+            request.setAttribute("password", password); // Giữ lại mật khẩu để người dùng không phải nhập lại
             RequestDispatcher dispatcher = request.getRequestDispatcher("gmailAuthentication.jsp");
             dispatcher.forward(request, response);
         }

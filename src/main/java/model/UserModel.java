@@ -7,7 +7,12 @@ public class UserModel {
     private String role;
     String rememberMeToken;
 
-
+    public UserModel(int id ,String gmail,String role) {
+        super();
+        this.gmail = gmail;
+        this.role = role;
+        this.id = id;
+    }
     public UserModel(int id ,String gmail, String password, String role) {
         super();
         this.gmail = gmail;

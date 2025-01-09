@@ -45,7 +45,7 @@ public class SignOutController extends HttpServlet {
 
         // Redirect về trang đăng nhập hoặc trang chủ
 
-        response.sendRedirect("index.jsp");
+        response.sendRedirect(request.getContextPath() + "/IndexController");
     }
 
     @Override

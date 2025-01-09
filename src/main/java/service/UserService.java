@@ -7,6 +7,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.UserModel;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
 public class UserService {
@@ -69,10 +71,29 @@ public class UserService {
 
     // Xác thực thông tin người dùng
     public static UserModel authenticateUser(String gmail, String password) throws SQLException {
-        UserModel userModel = new UserModel(gmail, password);
+        UserModel userModel = new UserModel(gmail, hashPassword(password));
 
         // Kiểm tra tài khoản hợp lệ qua DAO (hoặc thêm các bước xử lý khác)
         return checkValidGmailAndPassword(userModel);
+    }
+
+    // Hàm mã hóa mật khẩu sử dụng SHA-256
+    private static String hashPassword(String password) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(password.getBytes());
+            StringBuilder hexString = new StringBuilder();
+
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error hashing password", e);
+        }
     }
 
     public static void handleRememberMe(UserModel userModel, HttpSession session, HttpServletResponse response) throws SQLException {
