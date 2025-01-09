@@ -1,0 +1,406 @@
+#size {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+#size button {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    color: #495057;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+#color {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+}
+
+#color div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#color button {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    color: #495057;
+    cursor: pointer;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+.title-filter {
+    margin-top: 20px;
+    font-size: .875rem;
+    font-weight: 700;
+    margin: .75rem 0;
+    opacity: .4;
+}
+
+#search {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    padding-bottom: 10px;
+}
+
+#search i::before {
+    content: "\f002";
+    padding: 10px;
+}
+
+#search i:hover {
+    cursor: pointer;
+    color: black;
+}
+
+.product-item {
+    position: relative;
+    height: 510px;
+}
+
+.product-item img {
+    width: 100%;
+    border-radius: 20px;
+    background-color: transparent;
+    mix-blend-mode: multiply;
+    margin-bottom: 10px;
+    z-index: 1;
+}
+
+.color-listProduct {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.color-listProduct div {
+    margin-right: 5px;
+    padding: 1px 2px;
+    border: 2px solid transparent;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.color-listProduct div button {
+    cursor: pointer;
+    height: 20px;
+    width: 40px;
+    border-radius: 20px;
+    border: none;
+}
+
+.option-collor button:hover {
+    padding: 10px;
+}
+
+.product-item .name-product {
+    font-size: 14px;
+    font-weight: 700;
+    margin: 10px 0;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #231f20;
+}
+
+.priceDiv {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+}
+
+.priceDiv .price {
+    font-weight: 800;
+    color: #242424;
+    margin-right: 10px;
+}
+
+.priceDiv .discount {
+    padding: 2px 5px;
+    background-color: #273bcd;
+    color: #f8f9fa;
+    font-weight: 700;
+    border-radius: 5px;
+    font-size: 10px;
+    margin-right: 10px;
+}
+
+.priceDiv .original-price {
+    font-weight: 700;
+    color: #242424;
+    text-decoration: line-through;
+    margin-left: 5px;
+    color: #c8c8c8;
+}
+
+.imgAndSize {
+    position: relative;
+}
+
+.size-listProduct {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    width: 80%;
+    transform: translate(-50%, calc(-100% - 10px));
+    background-color: rgba(215, 213, 212, 0.85);
+    min-height: 80px;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    display: none;
+    z-index: 3;
+}
+
+.size-listProduct button {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    color: #495057;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: 0.3s;
+    font-weight: 600;
+}
+
+.size-listProduct button:hover {
+    background-color: black;
+    color: white;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    border-top: 1px solid #ced4da;
+}
+
+.pagination button {
+    margin-top: 10px;
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    color: #495057;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: 0.3s;
+    margin-right: 10px;
+}
+
+
+
+
+.nameColor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: transparent;
+    color: transparent;
+    display: none !important;
+}
+
+.custom-center {
+    text-align: center;
+    width: 100%;
+}
+
+.button-spacing button {
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+
+.product-link:hover .name-product {
+    color: #FF4500;
+}
+
+.button-spacing {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+
+/* Ensure only hover applies if the button is NOT clicked */
+.optionColorOnClicked {
+    border: 2px solid #000 !important;
+}
+
+.option-collor:hover {
+    border: 2px solid #000 ;
+}
+
+
+/* Hover applies only when the button is NOT clicked */
+/*.color-listProduct .color-button:hover {*/
+/*    border: 2px solid #000;*/
+/*}*/
+
+.image-container {
+    position: relative;
+    height: 400px;
+    overflow: hidden;
+    object-fit: cover;
+}
+
+.image-item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    z-index: 1;
+}
+
+.image-item.active {
+    opacity: 1;
+    z-index: 2;
+}
+
+
+/* Color items to switch */
+.color-item {
+    display: block;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.color-item.active {
+    opacity: 1;
+}
+
+/* Optional: if you want all images to be visible at once, instead of hiding them behind opacity */
+.image-container {
+    position: relative;
+    height: 400px;
+    overflow: hidden;
+    object-fit: cover;
+}
+
+.image-item {
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.5s ease-in-out;
+    opacity: 0;
+}
+
+.image-item.active {
+    opacity: 1;
+}
+.product-color-display{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.underImg{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}
+@keyframes hoverProduct-listProdct {
+    from {
+        opacity: 0;
+        top: 100%;
+    }
+
+    to {
+        opacity: 1;
+        top: 50%;
+        transform: translateX(-50%);
+    }
+
+}
+
+@keyframes notHoverProduct-listProdct {
+    from {
+        opacity: 1;
+        top: 50%;
+        transform: translateX(-50%);
+    }
+
+    to {
+        opacity: 0;
+        top: 100%;
+    }
+
+}
+
+.pagination ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+}
+.pagination li {
+    margin: 0 5px;
+}
+.pagination a {
+    text-decoration: none;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    color: #333;
+}
+.pagination a.active {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+
+/* Ảnh mặc định (Default Image) */
+.image-item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0; /* Ẩn mặc định */
+    transition: opacity 0.5s ease-in-out, z-index 0.5s ease-in-out;
+    z-index: 1; /* Đặt z-index thấp */
+}
+
+/* Ảnh mặc định được kích hoạt (active - không hover) */
+.image-item.image-default {
+    opacity: 1; /* Hiển thị mặc định */
+    z-index: 2; /* Đưa ảnh này lên trên */
+}
+
+/* Hover vào container: Hiển thị ảnh hover */
+.image-container:hover .image-item.image-default {
+    opacity: 0; /* Ẩn ảnh mặc định */
+    z-index: 1; /* Đưa xuống dưới */
+}
+
+.image-container:hover .image-item.image-hover {
+    opacity: 1; /* Hiển thị ảnh hover */
+    z-index: 2; /* Đưa ảnh này lên trên */
+}
+
+
+

@@ -1,0 +1,82 @@
+.modal-body {
+    text-align: center;
+    position: relative;
+}
+
+.modal-image-container {
+    position: relative;
+    display: inline-block;
+}
+
+#modalImage {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.buy-button-container {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+.buy-button-container2 {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+
+
+.order-button {
+    width: 250px;
+    height: 50px;
+    background-color: #f8f9fa;
+    color: black;
+    border-radius: 30px;
+    border: solid 2px black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.order-button:hover {
+    background-color: black;
+    color: white;
+}
+
+.order-button i {
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.order-button span {
+    font-size: 16px;
+}
+
+.order-button:active {
+    transform: scale(0.98);
+}
+
+.modal-price {
+    font-family: SF Pro Display, SF Pro Icons, Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: .007em;
+    line-height: 1.1428571429;
+    position: absolute;
+    bottom: 150px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: black;
+    padding: 5px 15px;
+    border-radius: 5px;
+}
