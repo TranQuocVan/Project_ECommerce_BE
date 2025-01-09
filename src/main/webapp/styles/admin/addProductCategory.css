@@ -1,0 +1,105 @@
+/* Header and navigation */
+.titlePageAdmin {
+    margin-top: 30px;
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Form container */
+
+/* Form labels */
+.form-label {
+    display: block;
+    margin-bottom: 12px;
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: #495057;
+}
+
+/* Input and textarea styling */
+.upload {
+    border: 3px solid transparent;
+}
+
+.upload,
+.form-input,
+.form-textarea,
+.form-input-file {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 20px;
+    border: 2px solid #ccc;
+    border-radius: 12px;
+    font-size: 1rem;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-input-file:focus {
+    border-color: #007bff;
+    background-color: #e9f5ff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+    outline: none;
+    transform: scale(1.02);
+}
+
+/* Submit button */
+.form-button {
+    width: 100%;
+    padding: 14px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.1);
+}
+
+.form-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-3px);
+}
+
+.form-button:active {
+    transform: translateY(1px);
+}
+
+/* Footer styling */
+.footer {
+    background-color: #f8f9fa;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .form-container {
+        padding: 20px;
+    }
+
+    .titleAddProductCategory {
+        font-size: 1.8rem;
+    }
+
+    .form-input,
+    .form-textarea {
+        font-size: 0.9rem;
+    }
+
+    .form-button {
+        font-size: 1rem;
+    }
+}
+
+/* Ẩn input file gốc */
+.custom-file-input {
+    display: none;
+}

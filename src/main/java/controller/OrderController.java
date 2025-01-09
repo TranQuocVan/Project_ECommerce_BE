@@ -7,6 +7,7 @@ import service.ShoppingCartItemOrderService;
 import service.ShoppingCartService;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -74,7 +75,13 @@ public class OrderController extends HttpServlet {
     }
     LocalDateTime now = LocalDateTime.now();
     Timestamp sqlTimestamp = Timestamp.valueOf(now);
-    Order orderModel = new Order(paymentId,sqlTimestamp,request.getParameter("address"), totalAmount, user.getId(), deliveryId);
+    Order orderModel = null;
+    try {
+        orderModel = new Order(paymentId,sqlTimestamp,request.getParameter("address"),
+                orderService.calculateTotalPrice(selectedItems,user.getId(),deliveryId), user.getId(), deliveryId);
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
+    }
     DecimalFormatSymbols symbols = new DecimalFormatSymbols();
     symbols.setGroupingSeparator('.');
 
@@ -85,7 +92,7 @@ try{
      int orderId = orderService.addOrder(orderModel);
     ShoppingCartItemOrders cartItemOrders = new ShoppingCartItemOrders(paymentId,0,orderId, selectedItems);
 
-    cartItemOrderService.addShoppingCartItemOrders(cartItemOrders);
+    cartItemOrderService.addShoppingCartItemOrders(cartItemOrders,user.getId());
     shoppingCartService.cleanShoppingCartItems(selectedItems);
 //    request.setAttribute("totalPriceFormat", formattedPrice);
     request.setAttribute("listOrder", orderService.getAllOrders(user.getId()));

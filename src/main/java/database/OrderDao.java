@@ -50,20 +50,7 @@ public class OrderDao {
         }
         return false;
     }
-    public int getOrderId(int userId) {
-        String sql = "select orderId from orders where userId = ?";
-        try (Connection con = JDBCUtil.getConnection();
-             PreparedStatement st = con.prepareStatement(sql)) {
-            st.setInt(1, userId);
-            ResultSet rs = st.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return -1;
-    }
+
     public List<OrderModel> getAllOrders(int userId) {
         String sql = "select * from orders where userId = ?";
         List<OrderModel> orders = new ArrayList<>();
@@ -80,7 +67,7 @@ public class OrderDao {
                         rs.getString("deliveryAddress"),
                         rs.getFloat("totalPrice"),
                         deliveryName(rs.getInt("deliveryId"))
-                        );
+                );
 
                 orders.add(orderModel);
             }
@@ -91,7 +78,7 @@ public class OrderDao {
         return orders;
     }
 
-    public String methodPayment (int paymentId){
+    public String methodPayment(int paymentId) {
         String sql = "select methodPayment from Payments where paymentId = ?";
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
@@ -105,7 +92,9 @@ public class OrderDao {
         }
         return "Trống";
     }
-    public String deliveryName (int deliveryId){
+
+
+    public String deliveryName(int deliveryId) {
         String sql = "select name from deliveries where deliveryId = ?";
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
@@ -119,4 +108,49 @@ public class OrderDao {
         }
         return "Trống";
     }
+    public float deliveryFee(int deliveryId) {
+        String sql = "select fee from deliveries where deliveryId = ?";
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, deliveryId);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                return rs.getFloat("fee");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+
+    public float calculateTotalPrice(List<Integer> listSizeId, int userId, int paymentId) throws SQLException {
+        float totalPrice = 0;
+        for (Integer sizeId : listSizeId) {
+            String sql = """
+        SELECT p.price, spc.quantity
+        FROM Sizes s 
+        LEFT JOIN  ShoppingCartItems spc ON spc.sizeId = s.sizeId 
+        LEFT JOIN  Colors c ON c.colorId = s.colorId 
+        LEFT JOIN  Products p ON c.productId = p.productId 
+        WHERE  spc.sizeId = ? and spc.userId = ? 
+    """;
+            try (Connection con = JDBCUtil.getConnection();
+                 PreparedStatement st = con.prepareStatement(sql)) {
+                st.setInt(1, sizeId);
+                st.setInt(2, userId);
+                ResultSet rs = st.executeQuery();
+                if (rs.next()) {
+                    totalPrice += rs.getFloat("price")*rs.getInt("quantity");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        totalPrice += deliveryFee(paymentId);
+        return  totalPrice ;
+    }
+
 }
+
+

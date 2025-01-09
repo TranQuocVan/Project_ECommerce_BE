@@ -20,7 +20,7 @@ const popUp = (img, name, color, size, price) => {
             </div>
         </div>
         <div style="padding-bottom: 20px;">
-            <form action="ShoppingCartItemsController" method="get">
+            <form action="ShoppingCartItemsController">
                 <button id="btnPopup">Xem Giỏ hàng</button>
             </form>
         </div>`;
