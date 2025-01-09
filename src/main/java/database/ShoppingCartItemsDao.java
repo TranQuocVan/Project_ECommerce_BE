@@ -1,8 +1,6 @@
 package database;
 
-import model.ListModel;
-import model.ShoppingCartItems;
-import model.ShoppingCartItemsModel;
+import model.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -47,6 +45,54 @@ public class ShoppingCartItemsDao {
         }
         return false;
     }
+
+    public boolean updateProductToShoppingCart(int quantity, int sizeId, int userId) {
+        String updateSql = "UPDATE ShoppingCartItems SET quantity =  ? WHERE sizeId = ? and userId = ?";
+
+        try (Connection con = JDBCUtil.getConnection()) {
+                if (checkStockUpdateProduct(sizeId, userId, quantity)) {
+                    try (PreparedStatement updateSt = con.prepareStatement(updateSql)) {
+                        updateSt.setInt(1, quantity);
+                        updateSt.setInt(2, sizeId);
+                        updateSt.setInt(3, userId);
+                        int rowsAffected = updateSt.executeUpdate();
+                        return rowsAffected > 0;
+                    }
+                }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+
+    }
+
+    private boolean checkStockUpdateProduct(int sizeId, int userId, int quantity) {
+        String sql = """
+    SELECT s.stock, IFNULL(SUM(spc.quantity), 0) AS cartQuantity
+    FROM Sizes s
+    LEFT JOIN ShoppingCartItems spc ON spc.sizeId = s.sizeId AND spc.userId = ?
+    WHERE s.sizeId = ?
+    GROUP BY s.sizeId
+    """;
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, userId);
+            st.setInt(2, sizeId);
+            ResultSet rs = st.executeQuery();
+
+            if (rs.next()) {
+                int stock = rs.getInt("stock");
+                // Kiểm tra xem tổng số lượng sản phẩm trong giỏ hàng (cộng với số lượng sắp thêm) có vượt quá số lượng kho hay không
+                return (quantity) <= stock;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 
     private boolean checkProductDetailId(int sizeId, int userId) {
         String sql = "SELECT 1 FROM ShoppingCartItems WHERE sizeId = ? and userId = ? LIMIT 1";
@@ -120,8 +166,42 @@ public class ShoppingCartItemsDao {
         }
         return lists;
     }
+    public List<PaymentModel> getAllPayments() {
+        List<PaymentModel> paymentModelList = new ArrayList<>();
+        String sql = "select * from payments" ;
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+             ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                PaymentModel paymentModel = new PaymentModel(rs.getInt(1), rs.getString(2));
+                paymentModelList.add(paymentModel);
+            }
 
-     public boolean deleteProductToShoppingCart( int sizeId, int userId) {
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return paymentModelList;
+
+    }
+
+    public List<DeliveriesModel> getAllDeliveries() {
+        List<DeliveriesModel> paymentModelList = new ArrayList<>();
+        String sql = "select * from deliveries" ;
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                DeliveriesModel deliveriesModel = new DeliveriesModel(rs.getInt(1), rs.getInt(2),rs.getString(3));
+                paymentModelList.add(deliveriesModel);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return paymentModelList;
+
+    }
+
+        public boolean deleteProductToShoppingCart( int sizeId, int userId) {
 
          String sql = "delete from shoppingCartItems where sizeId = ? and userId = ?";
 
@@ -186,24 +266,41 @@ public class ShoppingCartItemsDao {
 
 
 
-    public boolean cleanShoppingCartItems(int userId) {
-         String sql = "delete from shoppingCartItems where userId = ?";
+    public boolean cleanShoppingCartItems(List<Integer> listSizeId) {
+        String sql = "DELETE FROM shoppingCartItems WHERE sizeId = ?";
+        try (Connection con = JDBCUtil.getConnection()) {
+            // Tắt auto-commit để bắt đầu transaction
+            con.setAutoCommit(false);
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
+                for (Integer sizeId : listSizeId) {
+                    ps.setInt(1, sizeId);
+                    int rowsAffected = ps.executeUpdate();
+                    if (rowsAffected == 0) {
+                        // Nếu không xóa được sizeId nào, rollback và trả về false
+                        con.rollback();
+                        return false;
+                    }
+                }
+                // Nếu tất cả sizeId đều xóa thành công, commit transaction
+                con.commit();
+                return true;
+            } catch (SQLException e) {
+                // Rollback nếu có lỗi
+                con.rollback();
+                e.printStackTrace();
+                return false;
+            } finally {
+                // Bật lại auto-commit
+                con.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-         try (Connection con = JDBCUtil.getConnection()) {
 
-             try (PreparedStatement ps = con.prepareStatement(sql)) {
-                 ps.setInt(1, userId);
-                 return ps.executeUpdate() > 0;
-             }
-
-
-         } catch (SQLException e) {
-             e.printStackTrace();
-         }
-         return false;
-     }
-
-        public float totalPrice (int sizeId){
+    public float totalPrice (int sizeId){
             String sql = """
         SELECT p.price, spc.quantity
         FROM Sizes s 

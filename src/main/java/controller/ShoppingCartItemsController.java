@@ -3,10 +3,7 @@ package controller;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
-import model.ListModel;
-import model.ShoppingCartItems;
-import model.ShoppingCartItemsModel;
-import model.UserModel;
+import model.*;
 import service.OrderService;
 import service.ShoppingCartService;
 
@@ -27,6 +24,8 @@ public class ShoppingCartItemsController extends HttpServlet {
 
         ShoppingCartService shoppingCartService = new ShoppingCartService();
         List<ShoppingCartItemsModel> lists = shoppingCartService.getAllShoppingCartItems(user.getId());
+        List<PaymentModel> listPaymentModels = shoppingCartService.getAllPayments();
+        List<DeliveriesModel> listDeliveriesModels = shoppingCartService.getAllDeliveries();
 
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
         symbols.setGroupingSeparator('.');
@@ -37,6 +36,8 @@ public class ShoppingCartItemsController extends HttpServlet {
         request.setAttribute("totalPriceFormat", formattedPrice);
         request.setAttribute("totalPrice", formattedPrice);
         request.setAttribute("shoppingCartItemsList", lists);
+        request.setAttribute("listPaymentModels", listPaymentModels);
+        request.setAttribute("listDeliveriesModels", listDeliveriesModels);
         request.getRequestDispatcher("shoppingCart.jsp").forward(request, response);
     }
 
@@ -49,6 +50,9 @@ public class ShoppingCartItemsController extends HttpServlet {
 
         ShoppingCartService shoppingCartService = new ShoppingCartService();
         List<ShoppingCartItemsModel> lists = shoppingCartService.getAllShoppingCartItems(user.getId());
+        List<PaymentModel> listPaymentModels = shoppingCartService.getAllPayments();
+        List<DeliveriesModel> listDeliveriesModels = shoppingCartService.getAllDeliveries();
+
 
         float totalPrice = shoppingCartService.totalPrice(sizeId);
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
@@ -60,6 +64,10 @@ public class ShoppingCartItemsController extends HttpServlet {
         request.setAttribute("totalPriceFormat", formattedPrice);
         request.setAttribute("totalPrice", totalPrice);
         request.setAttribute("shoppingCartItemsList", lists);
+        request.setAttribute("listPaymentModels", listPaymentModels);
+        request.setAttribute("listDeliveriesModels", listDeliveriesModels);
+
+
         request.getRequestDispatcher("shoppingCart.jsp").forward(request, response);
     }
 

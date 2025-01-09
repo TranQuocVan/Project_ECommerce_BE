@@ -1,6 +1,8 @@
 package service;
 
 import database.ShoppingCartItemsDao;
+import model.DeliveriesModel;
+import model.PaymentModel;
 import model.ShoppingCartItems;
 import model.ShoppingCartItemsModel;
 
@@ -23,15 +25,30 @@ public class ShoppingCartService {
         ShoppingCartItemsDao shoppingCartItemsDao = new ShoppingCartItemsDao();
         return shoppingCartItemsDao.deleteProductToShoppingCart(sizeId,userId);
     }
-    public boolean cleanShoppingCartItems(int userId) {
+    public boolean cleanShoppingCartItems(List<Integer> listSizeId) {
         ShoppingCartItemsDao shoppingCartItemsDao = new ShoppingCartItemsDao();
-        return shoppingCartItemsDao.cleanShoppingCartItems(userId);
+        return shoppingCartItemsDao.cleanShoppingCartItems(listSizeId);
     }
     public boolean updateStockProduct(int userId) {
         ShoppingCartItemsDao shoppingCartItemsDao = new ShoppingCartItemsDao();
         return shoppingCartItemsDao.updateStockProduct(userId);
     }
+    public List<PaymentModel> getAllPayments() {
+        ShoppingCartItemsDao shoppingCartItemsDao = new ShoppingCartItemsDao();
+        return shoppingCartItemsDao.getAllPayments();
     }
+    public List<DeliveriesModel> getAllDeliveries() {
+        ShoppingCartItemsDao shoppingCartItemsDao = new ShoppingCartItemsDao();
+        return shoppingCartItemsDao.getAllDeliveries();
+    }
+    public boolean updateProductToShoppingCart(int quantity, int sizeId, int userId) {
+        ShoppingCartItemsDao shoppingCartItemsDao = new ShoppingCartItemsDao();
+        return shoppingCartItemsDao.updateProductToShoppingCart(quantity, sizeId, userId);
+    }
+    }
+
+
+
 
 
 

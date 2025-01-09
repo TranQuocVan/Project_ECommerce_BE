@@ -7,7 +7,7 @@ import model.OrderModel;
 import java.util.List;
 
 public class OrderService {
-    public boolean addOrder(Order orderModel) {
+    public int addOrder(Order orderModel) {
         OrderDao orderDao = new OrderDao();
         return orderDao.addOrder(orderModel);
     }

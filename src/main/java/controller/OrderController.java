@@ -43,6 +43,19 @@ public class OrderController extends HttpServlet {
 
     int paymentId = Integer.parseInt(request.getParameter("paymentId"));
     int deliveryId = Integer.parseInt(request.getParameter("deliveryId"));
+//    int quantity = Integer.parseInt(request.getParameter("quantity"));
+    String totalAmountStr = request.getParameter("totalAmount");
+    float totalAmount = 0;
+    if (totalAmountStr != null && !totalAmountStr.isEmpty()) {
+        try {
+             totalAmount = Float.parseFloat(totalAmountStr);
+            // Tiến hành xử lý tổng tiền
+        } catch (NumberFormatException e) {
+            // Xử lý nếu giá trị không thể chuyển đổi
+            e.printStackTrace();
+        }
+    }
+
 
 // Lấy chuỗi sizeId từ request (dữ liệu gửi qua form)
     String selectedItemsParam = request.getParameter("selectedItems");
@@ -61,7 +74,7 @@ public class OrderController extends HttpServlet {
     }
     LocalDateTime now = LocalDateTime.now();
     Timestamp sqlTimestamp = Timestamp.valueOf(now);
-    Order orderModel = new Order(paymentId,sqlTimestamp,request.getParameter("address"), 0, user.getId(), deliveryId);
+    Order orderModel = new Order(paymentId,sqlTimestamp,request.getParameter("address"), totalAmount, user.getId(), deliveryId);
     DecimalFormatSymbols symbols = new DecimalFormatSymbols();
     symbols.setGroupingSeparator('.');
 
@@ -69,14 +82,14 @@ public class OrderController extends HttpServlet {
 //    String formattedPrice = df.format(totalPrice) + "đ";
 try{
     shoppingCartService.updateStockProduct(user.getId());
-    orderService.addOrder(orderModel);
-    ShoppingCartItemOrders cartItemOrders = new ShoppingCartItemOrders(paymentId,0,cartItemOrderService.getOrderId(user.getId(),orderModel.getOrderDate()), selectedItems);
+     int orderId = orderService.addOrder(orderModel);
+    ShoppingCartItemOrders cartItemOrders = new ShoppingCartItemOrders(paymentId,0,orderId, selectedItems);
 
     cartItemOrderService.addShoppingCartItemOrders(cartItemOrders);
-    shoppingCartService.cleanShoppingCartItems(user.getId());
+    shoppingCartService.cleanShoppingCartItems(selectedItems);
 //    request.setAttribute("totalPriceFormat", formattedPrice);
     request.setAttribute("listOrder", orderService.getAllOrders(user.getId()));
-    request.getRequestDispatcher("statusShoes.jsp").forward(request, response);
+    response.sendRedirect(request.getContextPath() + "/OrderController");
 }
 
 catch(Exception e){

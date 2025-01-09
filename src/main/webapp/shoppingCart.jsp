@@ -66,7 +66,7 @@
                           <form method="POST" action="ShoppingCartItemsController" id="updateCartForm-${item.sizeId}">
                             <input type="hidden" name="sizeId" value="${item.sizeId}">
                             <input type="checkbox" class="select-item" data-item-id="${item.sizeId}"
-                                   onclick="toggleSelection(this)" />
+                                   data-price="${item.price}" onclick="toggleSelection(this)" />
                           </form>
 
                         </div>
@@ -83,8 +83,8 @@
                             <i class="fas fa-minus"></i>
                           </button>
 
-                          <input id="form" min="1" max="${item.stock}" name="quantity" value="${item.quantity}" type="number" class="form-control form-control-sm" />
-
+                          <input id="form" min="1" max="${item.stock}" name="quantity" value="${item.quantity}" type="number" class="form-control form-control-sm"
+                                 oninput="handleQuantityChange(this)" />
                           <button data-mdb-button-init data-mdb-ripple-init class="btn btn-link px-2" onclick="increaseQuantity(this)">
                             <i class="fas fa-plus"></i>
                           </button>
@@ -134,26 +134,34 @@
                         <h5> ${shoppingCartItemsList.size()} món</h5>
                       </div>
 
+
                       <form id="orderForm" action="OrderController" method="post">
                         <input type="hidden" id="selectedItems" name="selectedItems" />
                       <h5 class="text-uppercase mb-3">Phương thức giao hàng</h5>
 
-                      <div class="d-flex justify-content-between mb-4">
-                        <select data-mdb-select-init name="deliveryId">
-                          <option value="1">Hỏa tốc - Ngày mai</option>
-                          <option value="2">Nhanh</option>
-                          <option value="3">Tiêu chuẩn</option>
-                        </select>
-                        <h5>40.000</h5>
 
-                      </div>
-                      <h5 class="text-uppercase mb-3">Hình thức thanh toán</h5>
+                        <div class="d-flex justify-content-between mb-4">
+                          <select data-mdb-select-init name="deliveryId" id="deliverySelect">
+                            <c:if test="${not empty listDeliveriesModels}">
+                              <c:forEach var="item" items="${listDeliveriesModels}">
+                                <option value="${item.id}" data-fee="${item.fee}">${item.name}</option>
+                              </c:forEach>
+                            </c:if>
+                          </select>
+
+                          <div id="feeDisplay"></div>
+                        </div>
+
+
+                        <h5 class="text-uppercase mb-3">Hình thức thanh toán</h5>
 
                       <div class="d-flex justify-content-between mb-4">
                         <select data-mdb-select-init name="paymentId">
-                          <option value="1">Visa - Mastercard - Jcb</option>
-                          <option value="2">Momo</option>
-                          <option value="3">Tiêu chuẩn - Cod</option>
+                          <c:if test="${not empty listPaymentModels}">
+                          <c:forEach var="item" items="${listPaymentModels}">
+                          <option value="${item.id}">${item.methodPayment}</option>
+                          </c:forEach>
+                          </c:if>
                         </select>
                         <h5> Tiện lợi </h5>
 
@@ -173,7 +181,8 @@
 
                       <div class="d-flex justify-content-between mb-5">
                         <h5 class="text-uppercase">Tổng thanh toán</h5>
-                        <h5>${totalPriceFormat}</h5>
+                        <h5><span id="totalAmount">0</span></h5>
+                        <input type="hidden" name="totalAmount" id="hiddenTotalAmount">
                       </div>
 
                         <button data-mdb-button-init data-mdb-ripple-init
@@ -186,6 +195,7 @@
 
 
                       </form>
+
 
 
                     </div>

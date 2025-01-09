@@ -55,22 +55,22 @@ public class ShoppingCartItemOrdersDao {
 
     }
 
-    public int getOrderId ( int userId ,Timestamp time) {
-        Timestamp exactTimestamp = new Timestamp(time.getTime() / 1000 * 1000);
-        String sql = "SELECT orderId FROM orders WHERE userId = ? and orderDate = ?  ";
-        try (Connection con = JDBCUtil.getConnection();
-             PreparedStatement st = con.prepareStatement(sql)) {
-            st.setInt(1, userId);
-            st.setTimestamp(2, exactTimestamp);
-            ResultSet rs = st.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("orderId");
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
-
-    }
+//    public int getOrderId ( int userId ,Timestamp time) {
+//        Timestamp exactTimestamp = new Timestamp(time.getTime() / 1000 * 1000);
+//        String sql = "SELECT orderId FROM orders WHERE userId = ? and orderDate = ?  ";
+//        try (Connection con = JDBCUtil.getConnection();
+//             PreparedStatement st = con.prepareStatement(sql)) {
+//            st.setInt(1, userId);
+//            st.setTimestamp(2, exactTimestamp);
+//            ResultSet rs = st.executeQuery();
+//            if (rs.next()) {
+//                return rs.getInt("orderId");
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return 0;
+//
+//    }
 }

@@ -10,9 +10,6 @@ public class ShoppingCartItemOrderService {
         ShoppingCartItemOrdersDao dao = new ShoppingCartItemOrdersDao();
         return dao.addShoppingCartItemOrders(order);
     }
-    public int getOrderId (int userId , Timestamp time) {
-        ShoppingCartItemOrdersDao dao = new ShoppingCartItemOrdersDao();
-        return dao.getOrderId(userId,time);
-    }
+
 
     }

@@ -8,24 +8,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDao {
-    public boolean addOrder(Order order) {
-
-        String sql = "insert into orders (paymentId,orderDate, deliveryAddress, totalPrice, userId,deliveryId) values(?,?,?,?,?,?)";
+    public int addOrder(Order order) {
+        String sql = "INSERT INTO orders (paymentId, orderDate, deliveryAddress, totalPrice, userId, deliveryId) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection con = JDBCUtil.getConnection();
-             PreparedStatement st = con.prepareStatement(sql)) {
+             PreparedStatement st = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            // Gán giá trị cho các tham số trong câu lệnh SQL
             st.setInt(1, order.getPaymentId());
             st.setTimestamp(2, order.getOrderDate());
             st.setString(3, order.getDeliveryAddress());
             st.setFloat(4, order.getTotalPrice());
             st.setInt(5, order.getUserId());
             st.setInt(6, order.getDeliveryId());
-            return st.executeUpdate() > 0;
 
+            // Thực thi câu lệnh INSERT
+            int affectedRows = st.executeUpdate();
+            if (affectedRows > 0) {
+                // Lấy giá trị OrderId (khóa chính tự tăng)
+                try (ResultSet rs = st.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        return rs.getInt(1); // Trả về giá trị của cột tự động tăng (OrderId)
+                    }
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return -1; // Trả về -1 nếu có lỗi hoặc không lấy được OrderId
     }
+
     public boolean checkOrder(int userId) {
         String sql = "select * from orders where userId = ?";
         try (Connection con = JDBCUtil.getConnection();
