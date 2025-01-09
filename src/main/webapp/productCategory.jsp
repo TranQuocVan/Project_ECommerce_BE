@@ -91,23 +91,29 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div id="search">
-
                                         <form action="GetProductByCategoryNameController" method="GET" id="searchForm">
                                             <div style="display: flex" id="inputName" class="input-container">
+                                                <!-- Search input for 'name' -->
                                                 <input
                                                         style="padding: 5px 0;"
                                                         type="text"
                                                         id="nameLogin"
                                                         class="floating-input"
                                                         placeholder=" "
-                                                        name="keyword"
+                                                        name="name"
                                                         required>
-                                                <label class="floating-label">Tìm kiếm</label>
+                                                <label class="floating-label">Tìm kiếm theo tên sản phẩm</label>
+
+                                                <!-- Hidden input for 'keyword' -->
+                                                <input type="hidden" name="keyword" value="${param.keyword}" />
+
+                                                <!-- Submit button -->
                                                 <button type="submit" style="background: none; border: none; cursor: pointer;">
                                                     <i style="right: 0;" class="fas fa-search"></i>
                                                 </button>
                                             </div>
                                         </form>
+
                                     </div>
                                 </div>
 
@@ -246,7 +252,7 @@
             <!-- Previous Page -->
             <c:if test="${page.pageNo > 1}">
                 <li>
-                    <a href="GetProductByCategoryNameController?keyword=${param.keyword}&pageNo=${page.pageNo - 1}">Previous</a>
+                    <a href="GetProductByCategoryNameController?keyword=${param.keyword}&name=${param.name}&pageNo=${page.pageNo - 1}">Previous</a>
                 </li>
             </c:if>
 
@@ -274,7 +280,7 @@
             <!-- Page Numbers -->
             <c:forEach begin="${startPage}" end="${endPage}" var="i">
                 <li>
-                    <a href="GetProductByCategoryNameController?keyword=${param.keyword}&pageNo=${i}"
+                    <a href="GetProductByCategoryNameController?keyword=${param.keyword}&name=${param.name}&pageNo=${i}"
                        class="${i == page.pageNo ? 'active' : ''}">
                             ${i}
                     </a>
@@ -284,12 +290,13 @@
             <!-- Next Page -->
             <c:if test="${page.pageNo < page.totalPages}">
                 <li>
-                    <a href="GetProductByCategoryNameController?keyword=${param.keyword}&pageNo=${page.pageNo + 1}">Next</a>
+                    <a href="GetProductByCategoryNameController?keyword=${param.keyword}&name=${param.name}&pageNo=${page.pageNo + 1}">Next</a>
                 </li>
             </c:if>
         </ul>
     </c:if>
 </div>
+
 
 <footer></footer>
 

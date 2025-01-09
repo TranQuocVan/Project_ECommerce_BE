@@ -20,11 +20,11 @@ public class GroupProductService {
         return dao.addGroupProduct(groupProductModel);
     }
 
-    public PageModel<ProductModel> getPageNumber(String groupName, int pageNo, int pageSize){
+    public PageModel<ProductModel> getPageNumber(String groupName, int pageNo, int pageSize, String name){
         GroupProductDao dao = new GroupProductDao();
 
-        int totalRecords = dao.countProductsByGroupName(groupName);
-        List<ProductModel> products = dao.getProductByGroupName(groupName, pageNo, pageSize);
+        int totalRecords = dao.countProductsByGroupName(groupName,name);
+        List<ProductModel> products = dao.getProductByGroupName(groupName, pageNo, pageSize,name);
 
         PageModel<ProductModel> pageModel = new PageModel<>();
         pageModel.setPageNo(pageNo);

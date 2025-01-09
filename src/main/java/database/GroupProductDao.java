@@ -52,23 +52,24 @@ public class GroupProductDao {
         }
     }
 
-    public List<ProductModel> getProductByGroupName(String groupName, int pageNumber, int pageSize) {
+    public List<ProductModel> getProductByGroupName(String groupName, int pageNumber, int pageSize, String name) {
         List<ProductModel> productList = new ArrayList<>();
         String getProductsByCategoryQuery = """
-            SELECT p.* 
-            FROM Products p 
-            JOIN GroupProducts gp ON p.groupProductId = gp.groupProductId 
-            WHERE gp.name LIKE ? 
-            LIMIT ? OFFSET ?
-        """;
+        SELECT p.* 
+        FROM Products p 
+        JOIN GroupProducts gp ON p.groupProductId = gp.groupProductId 
+        WHERE gp.name LIKE ? AND p.name LIKE ? 
+        LIMIT ? OFFSET ?
+    """;
 
         try (Connection connection = JDBCUtil.getConnection();
              PreparedStatement statement = connection.prepareStatement(getProductsByCategoryQuery)) {
 
             // Set parameters for the query
-            statement.setString(1, "%" + groupName + "%");
-            statement.setInt(2, pageSize); // Limit to the specified number of products
-            statement.setInt(3, (pageNumber - 1) * pageSize); // Calculate offset
+            statement.setString(1, "%" + groupName + "%"); // Filter by group name
+            statement.setString(2, "%" + name + "%"); // Filter by product name
+            statement.setInt(3, pageSize); // Limit to the specified number of products
+            statement.setInt(4, (pageNumber - 1) * pageSize); // Calculate offset
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
@@ -92,19 +93,22 @@ public class GroupProductDao {
     }
 
 
-    public int countProductsByGroupName(String groupName) {
-        String countProductsQuery =
-                "SELECT COUNT(*) AS totalProducts " +
-                        "FROM Products p " +
-                        "JOIN GroupProducts gp ON p.groupProductId = gp.groupProductId " +
-                        "WHERE gp.name LIKE ?";
+
+    public int countProductsByGroupName(String groupName, String name) {
+        String countProductsQuery = """
+        SELECT COUNT(*) AS totalProducts 
+        FROM Products p 
+        JOIN GroupProducts gp ON p.groupProductId = gp.groupProductId 
+        WHERE gp.name LIKE ? AND p.name LIKE ?
+    """;
         int totalProducts = 0;
 
         try (Connection connection = JDBCUtil.getConnection();
              PreparedStatement statement = connection.prepareStatement(countProductsQuery)) {
 
-            // Set the parameter for category name with wildcard for partial matching
-            statement.setString(1, "%" + groupName + "%");
+            // Set parameters for group name and product name
+            statement.setString(1, "%" + groupName + "%"); // Filter by group name
+            statement.setString(2, "%" + name + "%"); // Filter by product name
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -117,6 +121,7 @@ public class GroupProductDao {
 
         return totalProducts;
     }
+
 
     public List<GroupProductModel> getAllGroupProducts() {
         String sql = "SELECT * FROM GroupProducts";

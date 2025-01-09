@@ -19,11 +19,14 @@ public class GetProductByCategoryNameController extends HttpServlet {
         int pageNo = request.getParameter("pageNo") != null ? Integer.parseInt(request.getParameter("pageNo")) : 1;
 
 
+        String name = request.getParameter("name") != null ? request.getParameter("name") : "";
+
+
         //String filterColor = request.getParameter("filterColor") != null ? request.getParameter("filterColor") : "";
 
 
         GroupProductService productCategoryService = new GroupProductService();
-        PageModel<ProductModel> page = productCategoryService.getPageNumber(keyword,pageNo,8);
+        PageModel<ProductModel> page = productCategoryService.getPageNumber(keyword,pageNo,8,name);
 
         request.setAttribute("page", page);
         request.getRequestDispatcher("productCategory.jsp").forward(request, response);
