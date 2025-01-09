@@ -132,8 +132,11 @@ const increaseQuantity = async () => {
             return;
         }
 
-        const isStockAvailable = await checkStock(idSize, newQuantity);
-
+        let isStockAvailable = true;
+        let isLogin = localStorage.getItem('isLogin') === 'true';
+        if(isLogin){
+            isStockAvailable = await checkStock(idSize, newQuantity);
+        }
         if (isStockAvailable) {
             quantityInput.innerHTML = newQuantity;
         } else {
@@ -181,7 +184,13 @@ const addToCart = async () => {
                 popUpError("Error adding item to cart.");
             }
         } else {
-            popUpError("Not enough stock available for the selected size.");
+            let isLogin = localStorage.getItem('isLogin') === 'true';
+            if(!isLogin){
+                popUpError("Please login before purchasing the product.");
+            }
+            else{
+                popUpError("Not enough stock available for the selected size.");
+            }
         }
     }
 };
