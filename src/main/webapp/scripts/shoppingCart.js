@@ -115,7 +115,16 @@ function updateQuantityInForm() {
 
 function orderButton(button, event) {
     event.preventDefault();
-
+    // Kiểm tra nếu không có sản phẩm nào được chọn
+    if (selectedItems.size === 0) {
+        Swal.fire({
+            title: 'Thông báo',
+            text: 'Bạn phải chọn ít nhất một sản phẩm để thanh toán!',
+            icon: 'info',
+            confirmButtonText: 'OK'
+        });
+        return; // Dừng thực thi nếu không có sản phẩm nào được chọn
+    }
     updateQuantityInForm();
 
     const form = document.getElementById('orderForm');
@@ -140,7 +149,7 @@ function orderButton(button, event) {
         confirmButtonText: 'OK',
         cancelButtonText: 'Hủy'
     }).then((result) => {
-        if (result.isConfirmed) {
+        if (result.isConfirmed ) {
             // Cập nhật giá trị `selectedItems` vào form trước khi submit
             updateSelectedItemsInForm();
 
@@ -198,6 +207,9 @@ function toggleSelection(checkbox) {
     const item = checkbox.closest('.items');
     const sizeId = item.querySelector('input[type="hidden"]').value;
 
+
+
+
     // Cập nhật danh sách các item đã chọn
     if (checkbox.checked) {
         item.classList.add('selected');
@@ -206,6 +218,8 @@ function toggleSelection(checkbox) {
         item.classList.remove('selected');
         selectedItems.delete(sizeId);
     }
+    const totalCount = selectedItems.size; // Số lượng sản phẩm đã chọn
+    document.getElementById('totalSelectedItems').textContent = `${totalCount} món`;
 
     console.log('Selected sizeIds:', Array.from(selectedItems));
 
@@ -263,7 +277,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var formattedFee = new Intl.NumberFormat('vi-VN').format(fee);
 
         // Hiển thị giá với dấu phân cách và "đ" ở cuối
-        document.getElementById('feeDisplay').innerText = 'Giá: ' + formattedFee + 'đ';
+        document.getElementById('feeDisplay').innerText = 'Phí vận chuyển: ' + formattedFee + 'đ';
     }
 
     // Gọi hàm để cập nhật giá ngay khi trang tải xong

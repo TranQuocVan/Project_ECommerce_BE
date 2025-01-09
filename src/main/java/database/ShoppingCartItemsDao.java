@@ -300,26 +300,26 @@ public class ShoppingCartItemsDao {
     }
 
 
-    public float totalPrice (int sizeId){
-            String sql = """
-        SELECT p.price, spc.quantity
-        FROM Sizes s 
-        LEFT JOIN  ShoppingCartItems spc ON spc.sizeId = s.sizeId 
-        LEFT JOIN  Colors c ON c.colorId = s.colorId 
-        LEFT JOIN  Products p ON c.productId = p.productId 
-        WHERE  spc.sizeId = ?
-    """;
-            try (Connection con = JDBCUtil.getConnection()) {
-                try (PreparedStatement ps = con.prepareStatement(sql)) {
-                    ps.setInt(1, sizeId);
-                    ResultSet rs = ps.executeQuery();
-                    if (rs.next()) {
-                        return rs.getFloat("price") * rs.getInt("quantity");
-                    }
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return 0;
-    }
+//    public float totalPrice (int sizeId){
+//            String sql = """
+//        SELECT p.price, spc.quantity
+//        FROM Sizes s
+//        LEFT JOIN  ShoppingCartItems spc ON spc.sizeId = s.sizeId
+//        LEFT JOIN  Colors c ON c.colorId = s.colorId
+//        LEFT JOIN  Products p ON c.productId = p.productId
+//        WHERE  spc.sizeId = ?
+//    """;
+//            try (Connection con = JDBCUtil.getConnection()) {
+//                try (PreparedStatement ps = con.prepareStatement(sql)) {
+//                    ps.setInt(1, sizeId);
+//                    ResultSet rs = ps.executeQuery();
+//                    if (rs.next()) {
+//                        return rs.getFloat("price") * rs.getInt("quantity");
+//                    }
+//                }
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//            return 0;
+//    }
 }

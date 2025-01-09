@@ -6,7 +6,7 @@ import java.sql.*;
 
 public class ShoppingCartItemOrdersDao {
 
-    public boolean addShoppingCartItemOrders(ShoppingCartItemOrders order) {
+    public boolean addShoppingCartItemOrders(ShoppingCartItemOrders order, int userId) {
         // Dùng transaction để đảm bảo tính nhất quán của dữ liệu
         String insertSql = "INSERT INTO shoppingcartitemsorder (paymentId, quantity, orderId, sizeId) VALUES(?, ?, ?, ?)";
 
@@ -16,14 +16,22 @@ public class ShoppingCartItemOrdersDao {
 
             try (PreparedStatement st = con.prepareStatement(insertSql)) {
                 for (Integer sizeId : order.getListSizeId()) {
-                    // Thiết lập các tham số cho mỗi dòng chèn
-                    st.setInt(1, order.getPaymentId());  // paymentId
-                    st.setInt(2, order.getQuantity());   // quantity
-                    st.setInt(3, order.getOrderId());    // orderId
-                    st.setInt(4, sizeId);                // sizeId
+                    String sql = "select quantity from shoppingcartitems where sizeId = ? and userId = ?";
+                    try (PreparedStatement ps = con.prepareStatement(sql)) {
+                        ps.setInt(1, sizeId);
+                        ps.setInt(2, userId);
+                        ResultSet rs = ps.executeQuery();
+                        if (rs.next()) {
+                            // Thiết lập các tham số cho mỗi dòng chèn
+                            st.setInt(1, order.getPaymentId());        // paymentId
+                            st.setInt(2, rs.getInt(1));   // quantity
+                            st.setInt(3, order.getOrderId());       // orderId
+                            st.setInt(4, sizeId);                  // sizeId
+                            // Thực hiện insert
+                            st.addBatch();  // Thêm câu lệnh vào batch
+                        }
+                    }
 
-                    // Thực hiện insert
-                    st.addBatch();  // Thêm câu lệnh vào batch
                 }
 
                 // Thực thi batch insert
@@ -55,22 +63,5 @@ public class ShoppingCartItemOrdersDao {
 
     }
 
-//    public int getOrderId ( int userId ,Timestamp time) {
-//        Timestamp exactTimestamp = new Timestamp(time.getTime() / 1000 * 1000);
-//        String sql = "SELECT orderId FROM orders WHERE userId = ? and orderDate = ?  ";
-//        try (Connection con = JDBCUtil.getConnection();
-//             PreparedStatement st = con.prepareStatement(sql)) {
-//            st.setInt(1, userId);
-//            st.setTimestamp(2, exactTimestamp);
-//            ResultSet rs = st.executeQuery();
-//            if (rs.next()) {
-//                return rs.getInt("orderId");
-//            }
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return 0;
-//
-//    }
+
 }

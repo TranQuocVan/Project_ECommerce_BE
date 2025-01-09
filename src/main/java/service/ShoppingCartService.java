@@ -17,10 +17,7 @@ public class ShoppingCartService {
         ShoppingCartItemsDao shoppingCartItemsDao = new ShoppingCartItemsDao();
         return shoppingCartItemsDao.getAllShoppingCartItems(userId);
     }
-    public float totalPrice (int sizeId){
-        ShoppingCartItemsDao shoppingCartItemsDao = new ShoppingCartItemsDao();
-        return shoppingCartItemsDao.totalPrice(sizeId);
-    }
+
     public boolean deleteProductToShoppingCart( int sizeId, int userId) {
         ShoppingCartItemsDao shoppingCartItemsDao = new ShoppingCartItemsDao();
         return shoppingCartItemsDao.deleteProductToShoppingCart(sizeId,userId);

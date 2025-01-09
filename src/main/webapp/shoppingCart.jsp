@@ -63,11 +63,11 @@
 
                       <div class="row mb-4 d-flex justify-content-between align-items-center items">
                         <div class="col-md-1">
-                          <form method="POST" action="ShoppingCartItemsController" id="updateCartForm-${item.sizeId}">
+<%--                          <form method="POST" action="ShoppingCartItemsController" id="updateCartForm-${item.sizeId}">--%>
                             <input type="hidden" name="sizeId" value="${item.sizeId}">
                             <input type="checkbox" class="select-item" data-item-id="${item.sizeId}"
                                    data-price="${item.price}" onclick="toggleSelection(this)" />
-                          </form>
+<%--                          </form>--%>
 
                         </div>
                         <div class="col-md-2 col-lg-2 col-xl-2">
@@ -131,7 +131,7 @@
 
                       <div class="d-flex justify-content-between mb-4">
                         <h5 class="text-uppercase">Tổng số sản phẩm </h5>
-                        <h5> ${shoppingCartItemsList.size()} món</h5>
+                        <h5 id="totalSelectedItems"> 0 món</h5>
                       </div>
 
 

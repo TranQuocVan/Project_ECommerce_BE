@@ -1,0 +1,49 @@
+button[type="submit"] {
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    margin-top: 20px;
+    width: 100%;
+    padding: 15px;
+    border-radius: 10px;
+    border: none;
+    border: 2px solid transparent;
+    transition: width 0.3s ease-in-out, background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: white;
+    color: black;
+    border: 2px solid black;
+}
+
+.form-container {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    margin: 20px auto;
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+.titlePageAdmin {
+    margin-top: 30px;
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}

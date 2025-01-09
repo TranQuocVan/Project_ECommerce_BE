@@ -13,6 +13,7 @@ public class DeleteCartItemController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("ShoppingCartItemsController").forward(request, response);
     }
 
     @Override
@@ -24,9 +25,10 @@ public class DeleteCartItemController extends HttpServlet {
 
         ShoppingCartService shoppingCartService = new ShoppingCartService();
         if (shoppingCartService.deleteProductToShoppingCart(sizeId, user.getId())) {
-            request.getRequestDispatcher("ShoppingCartItemsController").forward(request, response);
+            response.sendRedirect(request.getContextPath() + "/ShoppingCartItemsController");
+            return;
         }
-        request.getRequestDispatcher("ShoppingCartItemsController").forward(request, response);
+        response.sendRedirect(request.getContextPath() + "/ShoppingCartItemsController");
 
     }
 }
