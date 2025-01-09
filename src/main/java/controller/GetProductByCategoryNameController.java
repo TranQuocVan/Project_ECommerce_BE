@@ -5,6 +5,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import model.PageModel;
 import model.ProductModel;
+import service.GroupProductService;
 import service.ProductCategoryService;
 
 import java.io.IOException;
@@ -21,9 +22,7 @@ public class GetProductByCategoryNameController extends HttpServlet {
         //String filterColor = request.getParameter("filterColor") != null ? request.getParameter("filterColor") : "";
 
 
-
-
-        ProductCategoryService productCategoryService = new ProductCategoryService();
+        GroupProductService productCategoryService = new GroupProductService();
         PageModel<ProductModel> page = productCategoryService.getPageNumber(keyword,pageNo,8);
 
         request.setAttribute("page", page);

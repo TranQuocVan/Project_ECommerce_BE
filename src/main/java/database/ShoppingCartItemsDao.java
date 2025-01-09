@@ -66,7 +66,7 @@ public class ShoppingCartItemsDao {
     }
 
 
-    private boolean checkStockProduct(int sizeId, int userId, int quantityToAdd) {
+    public boolean checkStockProduct(int sizeId, int userId, int quantityToAdd) {
         String sql = """
     SELECT s.stock, IFNULL(SUM(spc.quantity), 0) AS cartQuantity
     FROM Sizes s

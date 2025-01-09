@@ -2,12 +2,14 @@ package database;
 
 import model.GroupProductModel;
 import model.ProductCategoryModel;
+import model.ProductModel;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 public class GroupProductDao {
@@ -49,5 +51,102 @@ public class GroupProductDao {
             return false;
         }
     }
+
+    public List<ProductModel> getProductByGroupName(String groupName, int pageNumber, int pageSize) {
+        List<ProductModel> productList = new ArrayList<>();
+        String getProductsByCategoryQuery = """
+            SELECT p.* 
+            FROM Products p 
+            JOIN GroupProducts gp ON p.groupProductId = gp.groupProductId 
+            WHERE gp.name LIKE ? 
+            LIMIT ? OFFSET ?
+        """;
+
+        try (Connection connection = JDBCUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(getProductsByCategoryQuery)) {
+
+            // Set parameters for the query
+            statement.setString(1, "%" + groupName + "%");
+            statement.setInt(2, pageSize); // Limit to the specified number of products
+            statement.setInt(3, (pageNumber - 1) * pageSize); // Calculate offset
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    ProductModel product = new ProductModel();
+                    product.setId(resultSet.getInt("productId"));
+
+                    // Assuming ProductDao.getProductById populates full details of the product
+                    ProductDao productDao = new ProductDao();
+                    ProductModel detailedProduct = productDao.getProductById(product.getId());
+
+                    if (detailedProduct != null) {
+                        productList.add(detailedProduct);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Log the exception (consider using a logger)
+        }
+
+        return productList;
+    }
+
+
+    public int countProductsByGroupName(String groupName) {
+        String countProductsQuery =
+                "SELECT COUNT(*) AS totalProducts " +
+                        "FROM Products p " +
+                        "JOIN GroupProducts gp ON p.groupProductId = gp.groupProductId " +
+                        "WHERE gp.name LIKE ?";
+        int totalProducts = 0;
+
+        try (Connection connection = JDBCUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(countProductsQuery)) {
+
+            // Set the parameter for category name with wildcard for partial matching
+            statement.setString(1, "%" + groupName + "%");
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    totalProducts = resultSet.getInt("totalProducts");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Log the exception (use a logger in production)
+        }
+
+        return totalProducts;
+    }
+
+    public List<GroupProductModel> getAllGroupProducts() {
+        String sql = "SELECT * FROM GroupProducts";
+        List<GroupProductModel> groupProducts = new ArrayList<>();
+
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement st = con.prepareStatement(sql);
+             ResultSet rs = st.executeQuery()) {
+
+            while (rs.next()) {
+                GroupProductModel groupProduct = new GroupProductModel();
+                groupProduct.setId(rs.getInt("groupProductId"));
+                groupProduct.setName(rs.getString("name"));
+
+                // Chuyển đổi ảnh sang Base64
+                byte[] imageBytes = rs.getBytes("image");
+                if (imageBytes != null) {
+                    groupProduct.setImageBase64(Base64.getEncoder().encodeToString(imageBytes));
+                }
+
+                groupProducts.add(groupProduct);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Log lỗi nếu có
+        }
+
+        return groupProducts;
+    }
+
+
+
 
 }

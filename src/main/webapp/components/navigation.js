@@ -98,17 +98,30 @@ const updateLoginStatus = () => {
 };
 updateLoginStatus();
 
-// Check and update admin role
+// Initialize the `isAdmin` variable based on localStorage
 let isAdmin = localStorage.getItem('currentRole') === 'admin';
 
+// Function to update the role status based on the element content
 const updateRoleStatus = () => {
     const roleElement = document.getElementById("role");
-    if (roleElement && roleElement.innerText === "admin") {
-        localStorage.setItem("currentRole", "admin");
-        isAdmin = true; // Update local variable after storing in localStorage
+
+    if (roleElement) {
+        const role = roleElement.innerText.trim().toLowerCase(); // Normalize input
+        if (role === "admin") {
+            localStorage.setItem("currentRole", "admin");
+            isAdmin = true; // Update local variable
+        } else {
+            localStorage.setItem("currentRole", "user"); // Default role or fallback
+            isAdmin = false;
+        }
+    } else {
+        console.warn("Role element not found.");
     }
 };
+
+// Call the function to update role status
 updateRoleStatus();
+
 
 let urlLogo = "assets/logo2.svg";
 checkImageExists(urlLogo)
@@ -135,8 +148,7 @@ const renderNavigation = () => {
                        
               
                         
-                       
-                        
+                          
                     </div>
                     <div class="col-md-3 flex-align-items-center" style="justify-content: end;">
                         ${isLogin ? `<a href='./userInfo.jsp'><i class="fa-regular fa-user"></i></i></a> 
