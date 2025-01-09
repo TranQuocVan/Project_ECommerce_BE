@@ -21,12 +21,12 @@
 <body>
 
 <%
-    String isLogin = session.getAttribute("isLogin")+"";
-    isLogin = (isLogin.equals("null")) ? "": isLogin;
+    String isLogin = session.getAttribute("isLogin") + "";
+    isLogin = (isLogin.equals("null")) ? "" : isLogin;
 
     UserModel user = (UserModel) session.getAttribute("user");
-    String role="";
-    if(user != null){
+    String role = "";
+    if (user != null) {
         role = user.getRole();
     }
 %>
@@ -102,31 +102,54 @@
             </div>
         </div>
 
+<%--        <div style="padding-top: 70px;" class="container-fluid">--%>
+<%--            <div class="row">--%>
+<%--                <div class="col-md-12">--%>
+<%--                    <div id="slide">--%>
+<%--                        <div class="item" data-bs-toggle="modal" data-bs-target="#lightboxModal">--%>
+<%--                            <img src="assets/homeImages/1.png" alt="">--%>
+<%--                        </div>--%>
+<%--                        <div class="item" data-bs-toggle="modal" data-bs-target="#lightboxModal">--%>
+<%--                            <img src="assets/homeImages/2.png" alt="">--%>
+<%--                        </div>--%>
+<%--                        <div class="item" data-bs-toggle="modal" data-bs-target="#lightboxModal" data-price="700.000đ">--%>
+<%--                            <img src="assets/homeImages/3.png" alt="">--%>
+<%--                        </div>--%>
+<%--                        <div class="item" data-bs-toggle="modal" data-bs-target="#lightboxModal" data-price="800.000đ">--%>
+<%--                            <img src="assets/homeImages/4.png" alt="">--%>
+<%--                        </div>--%>
+<%--                        <div class="item" data-bs-toggle="modal" data-bs-target="#lightboxModal" data-price="900.000đ">--%>
+<%--                            <img src="assets/homeImages/5.png" alt="">--%>
+<%--                        </div>--%>
+<%--                        <div class="item" data-bs-toggle="modal" data-bs-target="#lightboxModal" data-price="1000.000đ">--%>
+<%--                            <img src="assets/homeImages/6.png" alt="">--%>
+<%--                        </div>--%>
+<%--                        <div class="item" data-bs-toggle="modal" data-bs-target="#lightboxModal" data-price="1100.000đ">--%>
+<%--                            <img src="assets/homeImages/1.png" alt="">--%>
+<%--                        </div>--%>
+
+<%--                        <button class="btnSlide" id="next">--%>
+<%--                            <i class="fa-solid fa-chevron-right"></i>--%>
+<%--                        </button>--%>
+<%--                        <button class="btnSlide" style="display: none;" id="prev">--%>
+<%--                            <i class="fa-solid fa-chevron-left"></i>--%>
+<%--                        </button>--%>
+
+<%--                    </div>--%>
+<%--                </div>--%>
+<%--            </div>--%>
+<%--        </div>--%>
+
+        <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
         <div style="padding-top: 70px;" class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
                     <div id="slide">
-                        <div class="item" data-bs-toggle="modal" data-bs-target="#lightboxModal">
-                            <img src="assets/homeImages/1.png" alt="">
-                        </div>
-                        <div class="item" data-bs-toggle="modal" data-bs-target="#lightboxModal">
-                            <img src="assets/homeImages/2.png" alt="">
-                        </div>
-                        <div class="item" data-bs-toggle="modal" data-bs-target="#lightboxModal" data-price="700.000đ">
-                            <img src="assets/homeImages/3.png" alt="">
-                        </div>
-                        <div class="item" data-bs-toggle="modal" data-bs-target="#lightboxModal" data-price="800.000đ">
-                            <img src="assets/homeImages/4.png" alt="">
-                        </div>
-                        <div class="item" data-bs-toggle="modal" data-bs-target="#lightboxModal" data-price="900.000đ">
-                            <img src="assets/homeImages/5.png" alt="">
-                        </div>
-                        <div class="item" data-bs-toggle="modal" data-bs-target="#lightboxModal" data-price="1000.000đ">
-                            <img src="assets/homeImages/6.png" alt="">
-                        </div>
-                        <div class="item" data-bs-toggle="modal" data-bs-target="#lightboxModal" data-price="1100.000đ">
-                            <img src="assets/homeImages/1.png" alt="">
-                        </div>
+                        <c:forEach var="groupProduct" items="${groupProducts}">
+                            <div class="item" data-bs-toggle="modal" data-bs-target="#lightboxModal" data-name="${groupProduct.name}">
+                                <img src="data:image/png;base64,${groupProduct.imageBase64}" alt="${groupProduct.name}">
+                            </div>
+                        </c:forEach>
 
                         <button class="btnSlide" id="next">
                             <i class="fa-solid fa-chevron-right"></i>
@@ -134,7 +157,6 @@
                         <button class="btnSlide" style="display: none;" id="prev">
                             <i class="fa-solid fa-chevron-left"></i>
                         </button>
-
                     </div>
                 </div>
             </div>
@@ -242,12 +264,12 @@
                 <div class="lightbox-content mt-3">
                     <!-- Nút Mua ngay -->
                     <div class="buy-button-container">
-                        <a href="detailShoes.html">
+                        <div class="listProduct">
                             <button class="mx-auto d-flex justify-content-center align-items-center rounded-pill order-button cart-box" style="width: 250px;">
                                 <i class="fa-solid fa-eye mx-2"></i>
                                 <span class="fw-bold">Xem ngay</span>
                             </button>
-                        </a>
+                        </div>
                     </div>
 
 
@@ -274,12 +296,12 @@
                 <div class="lightbox-content">
                     <!-- Nút Mua ngay -->
                     <div class="buy-button-container2">
-                        <a href="shoppingCart.html">
+                        <div class="listProduct">
                             <button class="mx-auto d-flex justify-content-center align-items-center rounded-pill order-button cart-box" style="width: 250px;">
                                 <i class="fa-solid fa-cart-shopping mx-2"></i>
                                 <span class="fw-bold">Thêm vào giỏ hàng</span>
                             </button>
-                        </a>
+                        </div>
                     </div>
 
 
@@ -302,7 +324,7 @@
 <script src="components/navigation.js?v=${System.currentTimeMillis()}"></script>
 <script src="scripts/scroll.js?v=${System.currentTimeMillis()}"></script>
 <script src="scripts/lightBox_index.js?v=${System.currentTimeMillis()}"></script>
-
+<script src="scripts/index.js?v=${System.currentTimeMillis()}"></script>
 
 
 

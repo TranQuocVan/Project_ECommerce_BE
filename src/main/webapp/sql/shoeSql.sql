@@ -1,114 +1,158 @@
--- --------------------------------------------------------
--- Host:                         127.0.0.1
--- Server version:               10.4.24-MariaDB - mariadb.org binary distribution
--- Server OS:                    Win64
--- HeidiSQL Version:             12.1.0.6537
--- --------------------------------------------------------
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET NAMES utf8 */;
-/*!50503 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
-
--- Dumping database structure for mywebsite
-
+-- Drop and create the database
+DROP DATABASE IF EXISTS `shoeSql`;
 CREATE DATABASE IF NOT EXISTS `shoeSql` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
 USE `shoeSql`;
 
--- Create the database if it doesn't already exist
-CREATE DATABASE IF NOT EXISTS `shoeSql` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
-USE `shoeSql`;
+-- Membership Table
+CREATE TABLE IF NOT EXISTS `Membership` (
+    `membershipId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `pointsRequired` INT NOT NULL,
+    `endow` VARCHAR(255) NOT NULL COLLATE utf8mb4_unicode_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
+-- Users Table
 CREATE TABLE IF NOT EXISTS `Users` (
-    `gmail` VARCHAR(255) PRIMARY KEY COLLATE utf8mb4_unicode_ci NOT NULL, -- Email là khóa chính
-    `role` VARCHAR(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'user', -- Vai trò (mặc định là 'user')
-    `password` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL, -- Mật khẩu đã mã hóa
-    `remember_me_token` VARCHAR(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL, -- Token cho tính năng Remember Me
-    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày giờ tạo tài khoản
-    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Ngày giờ cập nhật tài khoản
+    `userId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `gmail` VARCHAR(255) UNIQUE NOT NULL COLLATE utf8mb4_unicode_ci,
+    `point` FLOAT NOT NULL DEFAULT 0,
+    `role` VARCHAR(50) NOT NULL COLLATE utf8mb4_unicode_ci DEFAULT 'user',
+    `password` VARCHAR(255) NOT NULL COLLATE utf8mb4_unicode_ci,
+    `created_at` DATE NOT NULL,
+    `membershipId` INT,
+    `remember_me_token` VARCHAR(255),
+    FOREIGN KEY (`membershipId`) REFERENCES `Membership`(`membershipId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
+-- Product Categories Table
 CREATE TABLE IF NOT EXISTS `ProductCategory` (
-    idProductCategory INTEGER NOT NULL AUTO_INCREMENT,
-    nameCategory VARCHAR(255) NOT NULL,
-    PRIMARY KEY (idProductCategory)
+    `productCategoryId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `name` VARCHAR(255) NOT NULL COLLATE utf8mb4_unicode_ci,
+    `description` VARCHAR(255) COLLATE utf8mb4_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Group Products Table
+CREATE TABLE IF NOT EXISTS `GroupProducts` (
+    `groupProductId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `name` VARCHAR(255) NOT NULL COLLATE utf8mb4_unicode_ci,
+    `image` LONGBLOB
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Products Table
 CREATE TABLE IF NOT EXISTS `Products` (
-    idproduct INTEGER NOT NULL AUTO_INCREMENT,
-    quantity INTEGER NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    image VARCHAR(255) NOT NULL,
-    price FLOAT NOT NULL,
-    idProductCategory INTEGER NOT NULL,
-    PRIMARY KEY (idproduct),
-    FOREIGN KEY (idProductCategory) REFERENCES ProductCategory(idProductCategory)
+    `productId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `name` VARCHAR(255) NOT NULL COLLATE utf8mb4_unicode_ci,
+    `price` FLOAT NOT NULL,
+    `discount` FLOAT DEFAULT 0,
+    `productCategoryId` INT NOT NULL,
+    `groupProductId` INT NOT NULL,
+    FOREIGN KEY (`productCategoryId`) REFERENCES `ProductCategory`(`productCategoryId`),
+    FOREIGN KEY (`groupProductId`) REFERENCES `GroupProducts`(`groupProductId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `Product_Stock` (
-    stock_id VARCHAR(255) PRIMARY KEY,
-    idproduct INTEGER NOT NULL,
-    color_id INTEGER NOT NULL,
-    stock_quantity INTEGER NOT NULL,
-    size_id INTEGER NOT NULL,
-    FOREIGN KEY (idproduct) REFERENCES Products(idproduct),
-    FOREIGN KEY (color_id) REFERENCES Colors(color_id),
-    FOREIGN KEY (size_id) REFERENCES Sizes(size_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
+-- Colors Table
 CREATE TABLE IF NOT EXISTS `Colors` (
-    color_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    color_name VARCHAR(255) NOT NULL
+    `colorId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `hexCode` VARCHAR(7) NOT NULL COLLATE utf8mb4_unicode_ci,
+    `name` VARCHAR(255) NOT NULL COLLATE utf8mb4_unicode_ci,
+    `productId` INT NOT NULL,
+    FOREIGN KEY (`productId`) REFERENCES `Products`(`productId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Sizes Table
 CREATE TABLE IF NOT EXISTS `Sizes` (
-    size_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    size_name VARCHAR(255) NOT NULL
+    `sizeId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `stock` INT NOT NULL,
+    `size` VARCHAR(50) NOT NULL COLLATE utf8mb4_unicode_ci,
+    `colorId` INT NOT NULL,
+    FOREIGN KEY (`colorId`) REFERENCES `Colors`(`colorId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `Color_Images` (
-    image_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    image_data BLOB NOT NULL,
-    color_id INTEGER NOT NULL,
-    FOREIGN KEY (color_id) REFERENCES Colors(color_id)
+-- Images Table
+CREATE TABLE IF NOT EXISTS `Images` (
+    `imageId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `colorId` INT NOT NULL,
+    `image` LONGBLOB NOT NULL,
+    FOREIGN KEY (`colorId`) REFERENCES `Colors`(`colorId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Reviews Table
+CREATE TABLE IF NOT EXISTS `Reviews` (
+    `reviewId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `userId` INT NOT NULL,
+    `description` VARCHAR(255) NOT NULL COLLATE utf8mb4_unicode_ci,
+    `productId` INT NOT NULL,
+    FOREIGN KEY (`userId`) REFERENCES `Users`(`userId`),
+    FOREIGN KEY (`productId`) REFERENCES `Products`(`productId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Payments Table
+CREATE TABLE IF NOT EXISTS `Payments` (
+    `paymentId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `methodPayment` VARCHAR(255) NOT NULL COLLATE utf8mb4_unicode_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Deliveries Table
+CREATE TABLE IF NOT EXISTS `Deliveries` (
+    `deliveryId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `fee` FLOAT NOT NULL,
+    `name` VARCHAR(255) NOT NULL COLLATE utf8mb4_unicode_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Orders Table
 CREATE TABLE IF NOT EXISTS `Orders` (
-    idOrder INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    orderDate DATE NOT NULL,
-    gmail VARCHAR(255) NOT NULL,
-    address_shipping VARCHAR(255) NOT NULL,
-    totalPrice FLOAT NOT NULL,
-    idShipping FLOAT NOT NULL,
-    FOREIGN KEY (gmail) REFERENCES Users(gmail),
-    FOREIGN KEY (idShipping) REFERENCES Shipping(idShipping)
+    `orderId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `orderDate` DATE NOT NULL,
+    `deliveryAddress` VARCHAR(255) NOT NULL COLLATE utf8mb4_unicode_ci,
+    `totalPrice` FLOAT NOT NULL,
+    `userId` INT NOT NULL,
+    `paymentId` INT NOT NULL,
+    `deliveryId` INT NOT NULL,
+    FOREIGN KEY (`userId`) REFERENCES `Users`(`userId`),
+    FOREIGN KEY (`paymentId`) REFERENCES `Payments`(`paymentId`),
+    FOREIGN KEY (`deliveryId`) REFERENCES `Deliveries`(`deliveryId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `Shipping` (
-    idShipping FLOAT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    shippingfee FLOAT NOT NULL
+-- Shopping Cart Items Table
+CREATE TABLE IF NOT EXISTS `ShoppingCartItems` (
+    `shoppingCartItemId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `quantity` INT NOT NULL,
+    `sizeId` INT NOT NULL,
+    `userId` INT NOT NULL,
+    FOREIGN KEY (`sizeId`) REFERENCES `Sizes`(`sizeId`),
+    FOREIGN KEY (`userId`) REFERENCES `Users`(`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `ShoppingCartItem` (
-    idShoppingcartitem INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    quantity INTEGER NOT NULL,
-    idproduct INTEGER NOT NULL,
-    idOrder INTEGER NOT NULL,
-    FOREIGN KEY (idproduct) REFERENCES Products(idproduct),
-    FOREIGN KEY (idOrder) REFERENCES Orders(idOrder)
+-- Statuses Table
+CREATE TABLE IF NOT EXISTS `Statuses` (
+    `statusId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `name` VARCHAR(255) NOT NULL COLLATE utf8mb4_unicode_ci,
+    `orderId` INT NOT NULL,
+    `description` VARCHAR(255) NOT NULL COLLATE utf8mb4_unicode_ci,
+    FOREIGN KEY (`orderId`) REFERENCES `Orders`(`orderId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Shopping Cart Items Order Table
+CREATE TABLE IF NOT EXISTS `ShoppingCartItemsOrder` (
+    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `paymentId` INT,
+    `quantity` INT,
+    `orderId` INT,
+    `sizeId` INT,
+    FOREIGN KEY (`paymentId`) REFERENCES `Payments`(`paymentId`),
+    FOREIGN KEY (`orderId`) REFERENCES `Orders`(`orderId`),
+    FOREIGN KEY (`sizeId`) REFERENCES `Sizes`(`sizeId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-/*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
-/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
-/*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;
+-- Sample Data for Product Categories
+INSERT INTO `ProductCategory` (`name`, `description`) 
+VALUES 
+    ('Unclassified', 'unclassified'),
+    ('Clothing', 'Apparel and accessories');
+
+INSERT INTO `payments` (`methodPayment`) 
+VALUES 
+    ('Cod' );
+INSERT INTO `deliveries` (`fee`,`name`) 
+VALUES 
+    (10,"Hoả Tốc" );
+

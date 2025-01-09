@@ -36,7 +36,7 @@ public class UserDao {
 
             // Set parameters
             st.setString(1, userModel.getGmail());
-            st.setString(2, hashPassword(userModel.getPassword())); // Hash the password before storing
+            st.setString(2, userModel.getPassword()); // Hash the password before storing
             st.setString(3, userModel.getRole());
             st.setString(4, now.format(formatter));
 
@@ -49,12 +49,7 @@ public class UserDao {
         }
     }
 
-    // Example password hashing method (BCrypt recommended)
-    private String hashPassword(String password) {
-        // Use a library like BCrypt to hash passwords securely
-        // Example: return BCrypt.hashpw(password, BCrypt.gensalt());
-        return password; // Replace with actual hash implementation
-    }
+
 
     /**
      * Thêm danh sách người dùng vào CSDL.
@@ -75,6 +70,11 @@ public class UserDao {
      * @return UserModel nếu tìm thấy, null nếu không tồn tại.
      */
     public UserModel selectByGmail(String gmail) {
+        // Kiểm tra tham số đầu vào
+        if (gmail == null || gmail.isEmpty()) {
+            throw new IllegalArgumentException("Gmail không được để trống");
+        }
+
         String sql = "SELECT * FROM users WHERE gmail = ?";
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
@@ -84,17 +84,36 @@ public class UserDao {
             try (ResultSet rs = st.executeQuery()) {
                 if (rs.next()) {
                     return new UserModel(
-                            rs.getInt("id"),
-                            rs.getString("gmail"),
-                            "******",
-                            rs.getString("role")
+                            rs.getInt("userId"), // Lấy ID từ cơ sở dữ liệu
+                            rs.getString("gmail"), // Lấy Gmail từ cơ sở dữ liệu
+                            rs.getString("role") // Lấy vai trò người dùng
                     );
                 }
             }
         } catch (SQLException e) {
+            // Log lỗi chi tiết và không che giấu thông tin hữu ích
+            System.err.println("Error while selecting user by Gmail: " + e.getMessage());
             e.printStackTrace();
         }
-        return null; // Không tìm thấy người dùng
+        return null; // Trả về null nếu không tìm thấy người dùng
+    }
+
+
+    public boolean isGmailExists(String gmail) {
+        String sql = "SELECT COUNT(*) FROM users WHERE gmail = ?";
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+            st.setString(1, gmail);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // Trả về true nếu Gmail tồn tại
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error while checking Gmail: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false; // Trả về false nếu có lỗi hoặc không tồn tại
     }
 
     /**

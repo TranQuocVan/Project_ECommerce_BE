@@ -98,17 +98,30 @@ const updateLoginStatus = () => {
 };
 updateLoginStatus();
 
-// Check and update admin role
+// Initialize the `isAdmin` variable based on localStorage
 let isAdmin = localStorage.getItem('currentRole') === 'admin';
 
+// Function to update the role status based on the element content
 const updateRoleStatus = () => {
     const roleElement = document.getElementById("role");
-    if (roleElement && roleElement.innerText === "admin") {
-        localStorage.setItem("currentRole", "admin");
-        isAdmin = true; // Update local variable after storing in localStorage
+
+    if (roleElement) {
+        const role = roleElement.innerText.trim().toLowerCase(); // Normalize input
+        if (role === "admin") {
+            localStorage.setItem("currentRole", "admin");
+            isAdmin = true; // Update local variable
+        } else {
+            localStorage.setItem("currentRole", "user"); // Default role or fallback
+            isAdmin = false;
+        }
+    } else {
+        console.warn("Role element not found.");
     }
 };
+
+// Call the function to update role status
 updateRoleStatus();
+
 
 let urlLogo = "assets/logo2.svg";
 checkImageExists(urlLogo)
@@ -126,17 +139,13 @@ const renderNavigation = () => {
             <div class="container">
                 <div style="font-size: 20px;" class="row">
                     <div class="col-md-9 flex-align-items-center dropdown">
-                        <span class="navigation"><a href="index.html"><img style="width: 20px;" src="${urlLogo}" alt="logo"></a></span>
-                        <span class="navigation" id="shop"><a href="index.jsp">Cửa hàng</a></span>
+                        <span class="navigation"><a href="IndexController"><img style="width: 20px;" src="${urlLogo}" alt="logo"></a></span>
+                        <span class="navigation" id="shop"><a href="IndexController">Cửa hàng</a></span>
                         <span class="navigation" id="shoe"><a href="productDetails.jsp">Giày</a></span>
                         <span class="navigation" id="sandal"><a href="#">Dép</a></span> 
                         <span class="navigation"><a href="GetProductByCategoryNameController">Sản phẩm theo loại hàng</a></span>
                         <span class="navigation"> ${isAdmin  ? `<a href='adminPages/adminHome.jsp'>Admin</a>` : ``}</span>
-                       
-              
-                        
-                       
-                        
+                                                           
                     </div>
                     <div class="col-md-3 flex-align-items-center" style="justify-content: end;">
                         ${isLogin ? `<a href='./userInfo.jsp'><i class="fa-regular fa-user"></i></i></a> 
