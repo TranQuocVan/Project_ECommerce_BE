@@ -39,7 +39,7 @@ public class ProductCategoryDao {
 
             // Set parameters for the query
             st.setString(1, productCategoryModel.getName());
-            st.setString(2,"This is description" );
+            st.setString(2,productCategoryModel.getDescription() );
 
             // Execute the update
             int rowsAffected = st.executeUpdate();

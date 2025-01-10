@@ -35,13 +35,14 @@ public class GroupProductDao {
 
 
     public boolean addGroupProduct(GroupProductModel groupProductModel) {
-        String sql = "INSERT INTO GroupProducts (name, image) VALUES (?, ?)";
+        String sql = "INSERT INTO GroupProducts (name, image, description) VALUES (?, ?, ?)";
 
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
 
             st.setString(1, groupProductModel.getName());
             st.setBinaryStream(2, groupProductModel.getImage());
+            st.setString(3, groupProductModel.getDescription());
 
             // Kiểm tra nếu số dòng bị ảnh hưởng là 1
             return st.executeUpdate() == 1;

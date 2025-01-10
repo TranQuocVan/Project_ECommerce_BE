@@ -17,6 +17,7 @@ public class ProductCategoryService {
     }
 
 
+
     public boolean addProductCategory(ProductCategoryModel productCategoryModel) {
         ProductCategoryDao dao = new ProductCategoryDao();
         return dao.addProductCategory(productCategoryModel);

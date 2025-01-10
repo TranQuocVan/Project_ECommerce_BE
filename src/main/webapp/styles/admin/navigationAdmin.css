@@ -7,7 +7,7 @@
     font-weight: 700;
 }
 
-.navAdmin-item {
+.navAdmin-item , .navAdmin-subItem {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -18,7 +18,7 @@
 }
 
 
-.navAdmin-item:hover {
+.navAdmin-item:hover , .navAdmin-subItem:hover{
     background-color: black;
     color: white;
 
@@ -31,4 +31,20 @@
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 10px;
+}
+
+.subMenu {
+    background-color: #f9f9f9;
+    border-left: 2px solid #ddd;
+    margin-top: 5px;
+    padding-left: 20px;
+    overflow: hidden; /* Giúp ẩn nội dung vượt quá khi chưa hiển thị */
+    height: 0; /* Ẩn menu ban đầu */
+    opacity: 0;
+    transition: height 1s ease, opacity 0.5s ease; /* Tạo hiệu ứng trượt lên và mờ dần */
+}
+
+.subMenu.show {
+    height: auto; /* Đặt lại chiều cao tự động khi mở menu */
+    opacity: 1;
 }

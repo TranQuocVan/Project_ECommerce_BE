@@ -10,6 +10,7 @@ import model.ProductModel;
 import java.util.List;
 
 public class GroupProductService {
+
     public List<GroupProductModel> getAllProductCategory(){
         GroupProductDao dao = new GroupProductDao();
         return dao.getAllGroupProduct();
