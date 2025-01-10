@@ -19,13 +19,13 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <link rel="stylesheet" href="./styles/admin/payment.css">
-    <link rel="stylesheet" href="./styles/globa.css">
-    <link rel="stylesheet" href="./styles/slider.css">
-    <link rel="stylesheet" href="./styles/navigation.css">
-    <link rel="stylesheet" href="./styles/admin/navigationAdmin.css">
-    <link rel="stylesheet" href="./styles/global.css">
-    <link rel="stylesheet" href="./styles/admin/globaladmin.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/admin/payment.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/globa.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/slider.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/navigation.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/admin/navigationAdmin.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/global.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/admin/globaladmin.css">
 
 </head>
 
@@ -87,10 +87,10 @@
 </body>
 
 
-<script src="./scripts/admin/payment.js"></script>
-<script src="./components/navigation.js"></script>
-<script src="./components/footer.js"></script>
-<script src="./scripts/scroll.js"></script>
-<script src="./components/navigationadmin.js"></script>
+<script src="${pageContext.request.contextPath}/scripts/admin/payment.js"></script>
+<script src="${pageContext.request.contextPath}/components/navigation.js"></script>
+<script src="${pageContext.request.contextPath}/components/footer.js"></script>
+<script src="${pageContext.request.contextPath}/scripts/scroll.js"></script>
+<script src="${pageContext.request.contextPath}/components/navigationadmin.js"></script>
 
 </html>

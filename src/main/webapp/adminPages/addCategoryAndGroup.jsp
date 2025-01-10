@@ -11,7 +11,7 @@
 <body>
 
 <div class="GroupProduct">
-    <form action="${pageContext.request.contextPath}/AddCategoryAndGroupController" method="post" enctype="multipart/form-data">
+    <form action="${pageContext.request.contextPath}/AddGroupController" method="post" enctype="multipart/form-data">
         <input type="text" name="AddGroupProduct" placeholder="Add Group Product" required>
         <input type="file" name="image" accept="image/*" required><br>
         <button type="submit">Add Group Product</button>

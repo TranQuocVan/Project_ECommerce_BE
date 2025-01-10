@@ -20,13 +20,13 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="./styles/admin/addProductCategory.css">
-  <link rel="stylesheet" href="./styles/globa.css">
-  <link rel="stylesheet" href="./styles/slider.css">
-  <link rel="stylesheet" href="./styles/navigation.css">
-  <link rel="stylesheet" href="./styles/admin/navigationAdmin.css">
-  <link rel="stylesheet" href="./styles/global.css">
-  <link rel="stylesheet" href="./styles/admin/globaladmin.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/admin/addProductCategory.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/globa.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/slider.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/navigation.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/admin/navigationAdmin.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/global.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/admin/globaladmin.css">
 </head>
 
 <body>
@@ -34,9 +34,9 @@
   <nav></nav>
   <div class="under-navigation">
     <div class="container ">
-      <div class="row">
+      <div class="row mt-5">
 
-        <h5 class="titlePageAdmin">Admin add new product category</h5>
+        <h5 class="titlePageAdmin">Thêm nhóm sản phẩm </h5>
 
         <!-- AdminController Navigation -->
         <div class="col-md-3">
@@ -47,20 +47,14 @@
         <!-- Form Section -->
         <div class="col-9">
           <div class="form-container">
-            <form id="categoryForm" class="category-form">
-              <label for="name" class="form-label">Category Name:</label>
+            <form action="${pageContext.request.contextPath}/AddCatalogController" method="post">
+              <label for="name" class="form-label">Tên nhóm sản phẩm:</label>
               <input type="text" id="name" name="name" class="form-input"
                      placeholder="Enter category name" required>
 
               <label for="description" class="form-label">Description:</label>
               <textarea id="description" name="description" class="form-textarea" rows="3"
                         placeholder="Enter description" required></textarea>
-
-              <label for="picture" class="upload">Upload Picture</label>
-              <div class="custom-file-upload">
-                <input type="file" id="picture" name="picture" class="custom-file-input"
-                       accept="image/*" required="">
-              </div>
 
               <button type="submit" class="form-button">Submit</button>
               <div class="message" id="message"></div>
@@ -77,11 +71,11 @@
 
 </body>
 
-<script type="module" src="./scripts/admin/addProductCategory.js"></script>
-<script src="./components/navigation.js"></script>
-<script src="./components/footer.js"></script>
-<script src="./scripts/scroll.js"></script>
-<script src="./components/navigationadmin.js"></script>
+<script type="module" src="${pageContext.request.contextPath}/scripts/admin/addProductCategory.js"></script>
+<script src="${pageContext.request.contextPath}/components/navigation.js"></script>
+<script src="${pageContext.request.contextPath}/components/footer.js"></script>
+<script src="${pageContext.request.contextPath}/scripts/scroll.js"></script>
+<script src="${pageContext.request.contextPath}/components/navigationadmin.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
