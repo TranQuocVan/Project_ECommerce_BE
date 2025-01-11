@@ -46,16 +46,40 @@ const addNavigationAdmin = () => {
                     </div>
                 </div>
 
-                <a href="./addProducts.jsp">
-                    <div class="navAdmin-item">
-                        <div class="navAdmin-text">
-                            Add Product
-                        </div>
-                        <div class="navAdmin-icon">
-                            <i class="fa-solid fa-chevron-right"></i>
-                        </div>
+
+                <div class="navAdmin-item" id="orderToggle">
+                    <div class="navAdmin-text">
+                       <a>Don hang</a> 
                     </div>
-                </a>
+                    <div class="navAdmin-icon">
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                </div>
+                
+                <div class="subMenu" id="orderOptions">
+                <a href="OrderAdminController">
+                    <div class="navAdmin-subItem">
+                        Quan li don hang theo bộ lọc
+                    </div>
+                    </a>
+                    
+                     <a href="./addProductCatelogy.jsp">
+                    <div class="navAdmin-subItem">
+                        Thêm loại sản phẩm
+                    </div>
+                    </a>
+
+                     <a href="../AddProductController">
+                    <div class="navAdmin-subItem">
+                        Thêm sản phẩm 
+                    </div>
+                    </a>
+                    
+                    <div class="navAdmin-subItem">
+                        <a>Quản lí sản phẩm</a>
+                    </div>
+                </div>
+
 
                 <a href="./delivery.jsp">
                     <div class="navAdmin-item">
@@ -90,6 +114,13 @@ const addNavigationAdmin = () => {
         setTimeout(() => {
             categoryOptions.classList.toggle("show");
         }, 200); // Delay 200ms trước khi bắt đầu hiệu ứng
+    });
+
+    // Xử lý toggle cho "Đơn hàng"
+    const orderToggle = document.getElementById("orderToggle");
+    const orderOptions = document.getElementById("orderOptions");
+    orderToggle.addEventListener("click", () => {
+        orderOptions.classList.toggle("show");
     });
 };
 
