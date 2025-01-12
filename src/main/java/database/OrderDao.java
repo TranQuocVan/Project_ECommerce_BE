@@ -105,7 +105,8 @@ public class OrderDao {
                         formattedDate, // Ngày đã được định dạng
                         rs.getString("deliveryAddress"),
                         rs.getFloat("totalPrice"),
-                        deliveryName(rs.getInt("deliveryId"))
+                        deliveryName(rs.getInt("deliveryId")),
+                        deliveryFee(rs.getInt("deliveryId"))
                 );
 
                 orders.add(orderModel);
@@ -216,7 +217,8 @@ public class OrderDao {
                         formattedDate, // Ngày đã được định dạng
                         rs.getString("deliveryAddress"),
                         rs.getFloat("totalPrice"),
-                        deliveryName(rs.getInt("deliveryId"))
+                        deliveryName(rs.getInt("deliveryId")),
+                        deliveryFee(rs.getInt("deliveryId"))
                 );
             }
 

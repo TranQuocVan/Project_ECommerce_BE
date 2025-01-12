@@ -23,6 +23,8 @@ public class ViewOrderProductsService {
         ShoppingCartItemOrdersDao shoppingCartItemOrdersDao = new ShoppingCartItemOrdersDao();
         List<ShoppingCartItemOrderModel> shoppingCartItemsModels = shoppingCartItemOrdersDao.getShoppingCartItemsByOrderId(id);
 
+
+
         StatusDao statusDao = new StatusDao();
         orderModel.setStatusModels(statusDao.getStatusesByOrderId(id));
 
@@ -33,7 +35,7 @@ public class ViewOrderProductsService {
             ProductDao productDao = new ProductDao();
             ProductModel product = productDao.getProductBySizeId(sizeId); // Lấy thông tin sản phẩm dựa trên sizeId
             if (product != null) {
-                // Thêm sản phẩm vào danh sách sản phẩm của đơn hàng
+                product.setPurchaseQuantity(shoppingCartItem.getQuantity());
                 products.add(product);
             }
         }

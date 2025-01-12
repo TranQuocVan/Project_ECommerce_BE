@@ -2,10 +2,7 @@ package database;
 
 import model.StatusModel;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 
 public class StatusDao {
@@ -32,7 +29,6 @@ public class StatusDao {
 
     public List<StatusModel> getStatusesByOrderId(int orderId) {
         String sql = "SELECT * FROM Statuses WHERE orderId = ?";
-
         List<StatusModel> statuses = new ArrayList<>();
 
         try (Connection con = JDBCUtil.getConnection();
@@ -50,6 +46,13 @@ public class StatusDao {
                     status.setOrderId(rs.getInt("orderId"));
                     status.setDescription(rs.getString("description"));
 
+                    // Lấy `startDate` và `endDate`
+                    status.setStartDate(rs.getTimestamp("startDate")); // Sử dụng Timestamp
+                    Timestamp endDate = rs.getTimestamp("endDate");
+                    if (endDate != null) {
+                        status.setEndDate(endDate);
+                    }
+
                     statuses.add(status); // Thêm đối tượng StatusModel vào danh sách
                 }
             }
@@ -59,6 +62,7 @@ public class StatusDao {
 
         return statuses; // Trả về danh sách các StatusModel
     }
+
 
 
 }
