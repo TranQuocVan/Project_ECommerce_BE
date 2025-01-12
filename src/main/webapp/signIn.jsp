@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Text&display=swap" rel="stylesheet">
 
 
-    <link rel="stylesheet" href="styles/login.css">
+    <link rel="stylesheet" href="styles/login.css?v=${System.currentTimeMillis()}">
     <link rel="stylesheet" href="styles/navigation.css">
     <link rel="stylesheet" href="styles/global.css">
 
