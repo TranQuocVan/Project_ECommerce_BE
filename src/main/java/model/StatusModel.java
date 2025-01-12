@@ -1,30 +1,32 @@
 package model;
 
+import java.sql.Timestamp; // Đảm bảo import đúng java.sql.Timestamp
+
 public class StatusModel {
-    private int id;       // ID của trạng thái (khóa chính)
-    private String name;        // Tên của trạng thái
-    private int orderId;        // ID của đơn hàng liên quan
-    private String description; // Mô tả trạng thái
+    private int id;              // ID của trạng thái (khóa chính)
+    private String name;         // Tên của trạng thái
+    private int orderId;         // ID của đơn hàng liên quan
+    private String description;  // Mô tả trạng thái
+    private Timestamp startDate; // Ngày bắt đầu
+    private Timestamp endDate;   // Ngày kết thúc
 
     // Constructor không tham số
     public StatusModel() {
     }
 
     // Constructor có tham số
-    public StatusModel(int statusId, String name, int orderId, String description) {
-        this.id = statusId;
+    public StatusModel(int id, String name, int orderId, String description, Timestamp startDate, Timestamp endDate) {
+        this.id = id;
         this.name = name;
         this.orderId = orderId;
         this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
-    // Getter và Setter cho statusId
-    public int getStatusId() {
+    // Getter và Setter cho id
+    public int getId() {
         return id;
-    }
-
-    public void setStatusId(int statusId) {
-        this.id = statusId;
     }
 
     public void setId(int id) {
@@ -58,4 +60,21 @@ public class StatusModel {
         this.description = description;
     }
 
+    // Getter và Setter cho startDate
+    public Timestamp getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Timestamp startDate) {
+        this.startDate = startDate;
+    }
+
+    // Getter và Setter cho endDate
+    public Timestamp getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Timestamp endDate) {
+        this.endDate = endDate;
+    }
 }

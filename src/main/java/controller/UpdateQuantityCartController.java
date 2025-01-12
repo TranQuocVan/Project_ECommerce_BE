@@ -44,7 +44,6 @@ public class UpdateQuantityCartController extends HttpServlet {
             boolean isDecreaseQuantity = productJson.optBoolean("isDecreaseQuantity", false);
 
             // Gọi Service để lưu sản phẩm
-            OrderService orderService = new OrderService();
             ShoppingCartService shoppingCartService = new ShoppingCartService();
 
             // Thêm sản phẩm vào giỏ hàng

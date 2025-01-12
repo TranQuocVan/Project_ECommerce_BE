@@ -1,0 +1,138 @@
+:root {
+    --timeline-width: 190px; /* Rộng của cột timeline */
+    --timeline-line-thickness: 5px; /* Độ dày của dòng */
+    --margin-bottom: 40px;
+    --padding-horizontal: 16px; /* Padding mặc định cho container */
+    --border-radius: 10px;
+    --border-color: #000; /* Đổi dễ dàng */
+    --status-line-color: red; /* Màu trạng thái */
+    --background-neutral: #f9f9f9; /* Màu nền nhẹ */
+    --text-primary: #333;
+    --text-secondary: #555;
+    --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --table-header-bg: #f0f0f0;
+    --table-row-hover-bg: #fafafa;
+}
+
+.order-summary {
+    padding: var(--padding-horizontal);
+    background-color: #fff; /* Màu nền giống .order-status */
+    color: var(--text-primary); /* Màu chữ giống .order-status */
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.5;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+
+.order-status {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px var(--padding-horizontal); /* Thêm padding ngang */
+    margin-bottom: var(--margin-bottom);
+    background-color: #fff;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.order-status:after {
+    content: "";
+    position: absolute;
+    width: var(--timeline-line-thickness);
+    height: 100%;
+    top: 100%;
+    left: 50%;
+    background-color: var(--status-line-color);
+    transform: translateX(-50%);
+}
+
+.timeLine {
+    width: var(--timeline-width);
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.info {
+    flex: 1;
+    margin-left: 16px;
+    font-size: 14px;
+    color: var(--text-primary);
+    line-height: 1.5;
+    text-align: end;
+}
+
+.order-status:last-child:after {
+    display: none; /* Ẩn dòng trạng thái cuối cùng */
+}
+
+
+/* Container */
+.product-table-container {
+    margin: 20px 0;
+    overflow-x: auto; /* Đảm bảo cuộn ngang trên màn hình nhỏ */
+}
+
+/* Table */
+.product-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+    background-color: var(--background-neutral);
+}
+
+/* Header */
+.product-table-header {
+    text-align: left;
+    padding: 12px;
+    font-weight: bold;
+    color: var(--text-primary);
+    background-color: var(--table-header-bg);
+    border-bottom: 2px solid var(--table-border-color);
+}
+
+/* Rows */
+.product-table-row {
+    border-bottom: 1px solid var(--table-border-color);
+    transition: background-color 0.2s ease;
+}
+
+.product-table-row:hover {
+    background-color: var(--table-row-hover-bg);
+}
+
+/* Cells */
+.product-table-cell {
+    padding: 12px;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+/* Color Box */
+.color-box{
+    display: flex;
+    align-items: center;
+
+}
+.color-boxSpan {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    margin-left: 5px;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+}
+
+/* Product Image */
+.product-image {
+    max-width: 100px;
+    height: auto;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-top: 5px;
+}
