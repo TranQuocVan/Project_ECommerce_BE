@@ -293,4 +293,100 @@ public class ProductDao {
         }
     }
 
+    public ProductModel getProductBySizeId(int sizeId) throws SQLException {
+        String query = """
+        SELECT 
+            p.productId, 
+            p.name AS productName, 
+            p.price, 
+            p.discount, 
+            p.productCategoryId, 
+            p.groupProductId,
+            c.colorId, 
+            c.name AS colorName, 
+            c.hexCode,
+            s.sizeId, 
+            s.size, 
+            s.stock,
+            i.imageId, 
+            i.image
+        FROM sizes s
+        INNER JOIN colors c ON s.colorId = c.colorId
+        INNER JOIN products p ON c.productId = p.productId
+        LEFT JOIN images i ON c.colorId = i.colorId
+        WHERE s.sizeId = ?
+    """;
+
+        try (Connection con = JDBCUtil.getConnection()) {
+            ProductModel product = null;
+
+            try (PreparedStatement stmt = con.prepareStatement(query)) {
+                stmt.setInt(1, sizeId); // Chỉ truyền vào sizeId được yêu cầu
+
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        // Khởi tạo Product nếu chưa được khởi tạo
+                        if (product == null) {
+                            product = new ProductModel();
+                            product.setId(rs.getInt("productId"));
+                            product.setName(rs.getString("productName"));
+                            product.setPrice(rs.getDouble("price"));
+                            product.setDiscount(rs.getFloat("discount"));
+                            product.setProductCategoryId(rs.getInt("productCategoryId"));
+                            product.setGroupProductId(rs.getInt("groupProductId"));
+                        }
+
+                        // Xử lý Color (chỉ có một color tương ứng với sizeId)
+                        ColorModel color = new ColorModel();
+                        color.setId(rs.getInt("colorId"));
+                        color.setName(rs.getString("colorName"));
+                        color.setHexCode(rs.getString("hexCode"));
+
+                        // Xử lý Size (size cụ thể của sizeId)
+                        SizeModel size = new SizeModel();
+                        size.setId(rs.getInt("sizeId"));
+                        size.setSize(rs.getString("size"));
+                        size.setStock(rs.getInt("stock"));
+                        color.getSizeModels().add(size);
+
+                        // Xử lý Image (nếu tồn tại)
+                        int imageId = rs.getInt("imageId");
+                        if (!rs.wasNull()) {
+                            ImageModel image = new ImageModel();
+                            image.setId(imageId);
+
+                            // Chuyển đổi image sang Base64
+                            InputStream imageStream = rs.getBinaryStream("image");
+                            if (imageStream != null) {
+                                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                                byte[] buffer = new byte[1024];
+                                int bytesRead;
+                                while ((bytesRead = imageStream.read(buffer)) != -1) {
+                                    outputStream.write(buffer, 0, bytesRead);
+                                }
+                                byte[] imageBytes = outputStream.toByteArray();
+                                String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+                                image.setImageBase64(base64Image);
+                            }
+
+                            color.getImageModels().add(image);
+                        }
+
+                        // Gán Color cho Product
+                        product.setColorModels(Collections.singletonList(color));
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            return product;
+        }
+    }
+
+
+
+
+
+
 }

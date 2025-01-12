@@ -152,7 +152,7 @@ h5 {
 }
 /* Đảm bảo cả hai phần tử có cùng kích thước */
 .shopify-icon {
-    font-size: 50px;
+    font-size: 40px;
     width: 50px; /* Đặt chiều rộng cho phần tử i */
     height: 50px; /* Đặt chiều cao cho phần tử i */
     display: flex;
@@ -229,6 +229,10 @@ h5 {
 
 .close:hover {
     color: #000;
+}
+
+.viewOrderProduct{
+    font-size: 14px;
 }
 
 

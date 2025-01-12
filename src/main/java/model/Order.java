@@ -1,6 +1,7 @@
 package model;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 public class Order
 {
@@ -11,6 +12,8 @@ public class Order
     float totalPrice ;
     int userId ;
     int deliveryId ;
+
+
 
     public Order(int paymentId, Timestamp orderDate, String deliveryAddress, float totalPrice, int userId, int deliveryId) {
 
@@ -59,6 +62,13 @@ public class Order
     public int getDeliveryId() {
         return deliveryId;
     }
+
+//    public List<ShoppingCartItemOrders> getShoppingCartItemOrders() {
+//        return shoppingCartItemOrders;
+//    }
+//    public void setShoppingCartItemOrders(List<ShoppingCartItemOrders> shoppingCartItemOrders) {
+//        this.shoppingCartItemOrders = shoppingCartItemOrders;
+//    }
 
 
 }

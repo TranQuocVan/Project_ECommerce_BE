@@ -2,39 +2,69 @@ package database;
 
 import model.Order;
 import model.OrderModel;
+import model.StatusModel;
 
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDao {
     public int addOrder(Order order) {
-        String sql = "INSERT INTO orders (paymentId, orderDate, deliveryAddress, totalPrice, userId, deliveryId) VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection con = JDBCUtil.getConnection();
-             PreparedStatement st = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
-            // Gán giá trị cho các tham số trong câu lệnh SQL
-            st.setInt(1, order.getPaymentId());
-            st.setTimestamp(2, order.getOrderDate());
-            st.setString(3, order.getDeliveryAddress());
-            st.setFloat(4, order.getTotalPrice());
-            st.setInt(5, order.getUserId());
-            st.setInt(6, order.getDeliveryId());
+        String orderSql = "INSERT INTO orders (paymentId, orderDate, deliveryAddress, totalPrice, userId, deliveryId) VALUES (?, ?, ?, ?, ?, ?)";
 
-            // Thực thi câu lệnh INSERT
-            int affectedRows = st.executeUpdate();
-            if (affectedRows > 0) {
-                // Lấy giá trị OrderId (khóa chính tự tăng)
-                try (ResultSet rs = st.getGeneratedKeys()) {
+        try (Connection con = JDBCUtil.getConnection()) {
+            try (PreparedStatement orderSt = con.prepareStatement(orderSql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+                // Set parameters for the orders table
+                orderSt.setInt(1, order.getPaymentId());
+                orderSt.setTimestamp(2, order.getOrderDate());
+                orderSt.setString(3, order.getDeliveryAddress());
+                orderSt.setFloat(4, order.getTotalPrice());
+                orderSt.setInt(5, order.getUserId());
+                orderSt.setInt(6, order.getDeliveryId());
+
+                // Execute the order insertion
+                int affectedRows = orderSt.executeUpdate();
+                if (affectedRows == 0) {
+                    throw new SQLException("Creating order failed, no rows affected.");
+                }
+
+                // Retrieve the generated orderId
+                try (ResultSet rs = orderSt.getGeneratedKeys()) {
                     if (rs.next()) {
-                        return rs.getInt(1); // Trả về giá trị của cột tự động tăng (OrderId)
+                        int orderId = rs.getInt(1);
+
+                        // Add a status for the order
+                        StatusModel status = new StatusModel();
+                        status.setName("Đặt hàng thành công");
+                        status.setOrderId(orderId);
+                        status.setDescription("Chờ người bán xác nhận");
+
+                        StatusDao statusDao = new StatusDao();
+                        boolean statusAdded = statusDao.addStatus(status);
+
+                        if (statusAdded) {
+                            return orderId; // Return orderId if status addition succeeds
+                        } else {
+                            throw new SQLException("Adding status failed.");
+                        }
+                    } else {
+                        throw new SQLException("Creating order failed, no ID obtained.");
                     }
                 }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return -1;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            return -1;
         }
-        return -1; // Trả về -1 nếu có lỗi hoặc không lấy được OrderId
     }
+
+
+
+
 
     public boolean checkOrder(int userId) {
         String sql = "select * from orders where userId = ?";
@@ -59,11 +89,20 @@ public class OrderDao {
              PreparedStatement st = con.prepareStatement(sql)) {
             st.setInt(1, userId);
             ResultSet rs = st.executeQuery();
+
+            // Định dạng ngày
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+
             while (rs.next()) {
+                // Lấy ngày từ ResultSet
+                Timestamp orderDateTimestamp = rs.getTimestamp("orderDate");
+                String formattedDate = orderDateTimestamp != null ?
+                        dateFormatter.format(orderDateTimestamp) : "N/A"; // Nếu null, trả về "N/A"
+
                 OrderModel orderModel = new OrderModel(
                         rs.getInt("orderId"),
                         methodPayment(rs.getInt("paymentId")),
-                        rs.getTimestamp("orderDate"),
+                        formattedDate, // Ngày đã được định dạng
                         rs.getString("deliveryAddress"),
                         rs.getFloat("totalPrice"),
                         deliveryName(rs.getInt("deliveryId"))
@@ -150,6 +189,43 @@ public class OrderDao {
         totalPrice += deliveryFee(paymentId);
         return  totalPrice ;
     }
+
+
+    public OrderModel getOrderById(int orderId) {
+        String sql = "select * from orders where orderId = ?";
+        OrderModel orderModel = null;
+
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, orderId);
+            ResultSet rs = st.executeQuery();
+
+            // Định dạng ngày
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+
+            if (rs.next()) {
+                // Lấy ngày từ ResultSet
+                Timestamp orderDateTimestamp = rs.getTimestamp("orderDate");
+                String formattedDate = orderDateTimestamp != null ?
+                        dateFormatter.format(orderDateTimestamp) : "N/A"; // Nếu null, trả về "N/A"
+
+                // Tạo đối tượng OrderModel
+                orderModel = new OrderModel(
+                        rs.getInt("orderId"),
+                        methodPayment(rs.getInt("paymentId")),
+                        formattedDate, // Ngày đã được định dạng
+                        rs.getString("deliveryAddress"),
+                        rs.getFloat("totalPrice"),
+                        deliveryName(rs.getInt("deliveryId"))
+                );
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return orderModel;
+    }
+
 
 }
 

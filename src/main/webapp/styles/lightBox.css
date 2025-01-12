@@ -9,9 +9,10 @@
 }
 
 #modalImage {
-    max-width: 100%;
-    height: auto;
+    width: 400px;
+    height: 500px;
     display: block;
+    object-fit: contain;
 }
 
 .buy-button-container {
@@ -80,3 +81,5 @@
     padding: 5px 15px;
     border-radius: 5px;
 }
+
+

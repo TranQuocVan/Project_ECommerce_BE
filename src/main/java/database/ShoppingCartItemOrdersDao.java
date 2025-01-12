@@ -1,67 +1,77 @@
 package database;
 
-import model.ShoppingCartItemOrders;
+
+import model.ShoppingCartItemOrderModel;
+
 
 import java.sql.*;
+import java.util.*;
 
 public class ShoppingCartItemOrdersDao {
 
-    public boolean addShoppingCartItemOrders(ShoppingCartItemOrders order, int userId) {
-        // Dùng transaction để đảm bảo tính nhất quán của dữ liệu
-        String insertSql = "INSERT INTO shoppingcartitemsorder (paymentId, quantity, orderId, sizeId) VALUES(?, ?, ?, ?)";
+    public boolean addShoppingCartItemOrders(List<Integer> sizes, int userId, int orderId) {
+        String selectSql = "SELECT quantity FROM shoppingcartitems WHERE sizeId = ? AND userId = ?";
+        String insertSql = "INSERT INTO shoppingcartitemsorder (quantity, orderId, sizeId) VALUES (?, ?, ?)";
 
-        try (Connection con = JDBCUtil.getConnection()) {
-            // Bắt đầu giao dịch
-            con.setAutoCommit(false);  // Tắt auto commit để bắt đầu giao dịch
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement selectStmt = con.prepareStatement(selectSql);
+             PreparedStatement insertStmt = con.prepareStatement(insertSql)) {
 
-            try (PreparedStatement st = con.prepareStatement(insertSql)) {
-                for (Integer sizeId : order.getListSizeId()) {
-                    String sql = "select quantity from shoppingcartitems where sizeId = ? and userId = ?";
-                    try (PreparedStatement ps = con.prepareStatement(sql)) {
-                        ps.setInt(1, sizeId);
-                        ps.setInt(2, userId);
-                        ResultSet rs = ps.executeQuery();
-                        if (rs.next()) {
-                            // Thiết lập các tham số cho mỗi dòng chèn
-                            st.setInt(1, order.getPaymentId());        // paymentId
-                            st.setInt(2, rs.getInt(1));   // quantity
-                            st.setInt(3, order.getOrderId());       // orderId
-                            st.setInt(4, sizeId);                  // sizeId
-                            // Thực hiện insert
-                            st.addBatch();  // Thêm câu lệnh vào batch
-                        }
-                    }
+            for (Integer sizeId : sizes) {
+                // Lấy quantity từ bảng shoppingcartitems
+                selectStmt.setInt(1, sizeId);
+                selectStmt.setInt(2, userId);
 
-                }
+                try (ResultSet rs = selectStmt.executeQuery()) {
+                    if (rs.next()) {
+                        int quantity = rs.getInt("quantity");
 
-                // Thực thi batch insert
-                int[] updateCounts = st.executeBatch();
+                        // Thêm vào bảng shoppingcartitemsorder
+                        insertStmt.setInt(1, quantity);
+                        insertStmt.setInt(2, orderId);
+                        insertStmt.setInt(3, sizeId);
 
-                // Kiểm tra kết quả batch insert, nếu có lỗi, throw exception
-                for (int count : updateCounts) {
-                    if (count == PreparedStatement.EXECUTE_FAILED) {
-                        // Nếu bất kỳ câu lệnh nào thất bại, rollback toàn bộ giao dịch
-                        con.rollback();
-                        return false;  // Trả về false nếu có lỗi
+                        insertStmt.executeUpdate();
                     }
                 }
-
-                // Nếu tất cả insert thành công, commit giao dịch
-                con.commit();
-                return true;
-
-            } catch (SQLException e) {
-                // Nếu có lỗi trong quá trình thêm dữ liệu, rollback giao dịch
-                con.rollback();
-                e.printStackTrace();
-                return false;
             }
+
+            return true;
+
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
-
     }
 
+
+
+    public List<ShoppingCartItemOrderModel> getShoppingCartItemsByOrderId(int orderId) {
+        String query = "SELECT quantity, orderId, sizeId FROM shoppingcartitemsorder WHERE orderId = ?";
+        List<ShoppingCartItemOrderModel> items = new ArrayList<>();
+
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement stmt = con.prepareStatement(query)) {
+
+            stmt.setInt(1, orderId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    // Tạo một đối tượng ShoppingCartItemOrder
+                    ShoppingCartItemOrderModel item = new ShoppingCartItemOrderModel();
+                    item.setQuantity(rs.getInt("quantity"));
+                    item.setOrderId(rs.getInt("orderId"));
+                    item.setSizeId(rs.getInt("sizeId"));
+
+                    // Thêm vào danh sách
+                    items.add(item);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return items;
+    }
 
 }
