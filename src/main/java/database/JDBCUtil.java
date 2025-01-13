@@ -18,9 +18,9 @@ public class JDBCUtil {
             // Các thông số
             String url = "jdbc:mySQL://localhost:3306/shoesql";
             String username = "root";
-//            String password = "van3";
+            String password = "van3";
 
-            String password = "123456";
+//            String password = "123456";
 
 
 

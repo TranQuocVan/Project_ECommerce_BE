@@ -7,15 +7,16 @@ import java.util.*;
 
 public class StatusDao {
     public boolean addStatus(StatusModel status) {
-        String sql = "INSERT INTO Statuses (name, orderId, description) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO Statuses ( orderId, statusTypeId) VALUES (?, ?)";
 
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
 
             // Thiết lập các tham số cho câu lệnh SQL
-            st.setString(1, status.getName());
-            st.setInt(2, status.getOrderId());
-            st.setString(3, status.getDescription());
+//            st.setString(1, status.getName());
+            st.setInt(1, status.getOrderId());
+//            st.setString(3, status.getDescription());
+            st.setInt(2, status.getStatusTypeId());
 
             // Thực thi câu lệnh và kiểm tra kết quả
             int rowsAffected = st.executeUpdate();
@@ -27,8 +28,10 @@ public class StatusDao {
         return false; // Trả về false nếu có lỗi
     }
 
+
+    //check
     public List<StatusModel> getStatusesByOrderId(int orderId) {
-        String sql = "SELECT * FROM Statuses WHERE orderId = ?";
+        String sql = "SELECT * FROM Statuses s LEFT JOIN statusestype st on s.statusTypeId = st.id WHERE orderId = ?";
         List<StatusModel> statuses = new ArrayList<>();
 
         try (Connection con = JDBCUtil.getConnection();
@@ -42,7 +45,7 @@ public class StatusDao {
                 while (rs.next()) {
                     StatusModel status = new StatusModel();
                     status.setId(rs.getInt("statusId"));
-                    status.setName(rs.getString("name"));
+                    status.setName(rs.getString("nameType"));
                     status.setOrderId(rs.getInt("orderId"));
                     status.setDescription(rs.getString("description"));
 

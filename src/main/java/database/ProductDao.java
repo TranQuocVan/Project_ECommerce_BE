@@ -111,7 +111,7 @@ public class ProductDao {
                         product = new ProductModel();
                         product.setId(rs.getInt("productId"));
                         product.setName(rs.getString("name"));
-                        product.setPrice(rs.getDouble("price"));
+                        product.setPrice(rs.getFloat("price"));
                         product.setDiscount(rs.getFloat("discount"));
                         product.setProductCategoryId(rs.getInt("productCategoryId"));
                         product.setGroupProductId(rs.getInt("groupProductId"));
@@ -229,7 +229,7 @@ public class ProductDao {
                             product = new ProductModel();
                             product.setId(rs.getInt("productId"));
                             product.setName(rs.getString("productName"));
-                            product.setPrice(rs.getDouble("price"));
+                            product.setPrice(rs.getFloat("price"));
                             product.setDiscount(rs.getFloat("discount"));
                             product.setProductCategoryId(rs.getInt("productCategoryId"));
                             product.setGroupProductId(rs.getInt("groupProductId"));
@@ -330,7 +330,7 @@ public class ProductDao {
                             product = new ProductModel();
                             product.setId(rs.getInt("productId"));
                             product.setName(rs.getString("productName"));
-                            product.setPrice(rs.getDouble("price"));
+                            product.setPrice(rs.getFloat("price"));
                             product.setDiscount(rs.getFloat("discount"));
                             product.setProductCategoryId(rs.getInt("productCategoryId"));
                             product.setGroupProductId(rs.getInt("groupProductId"));

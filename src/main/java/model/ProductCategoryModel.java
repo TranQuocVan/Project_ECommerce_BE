@@ -13,6 +13,9 @@ public class ProductCategoryModel {
         this.description = description;
     }
 
+    public ProductCategoryModel() {
+    }
+
     public int getId() {
         return id;
     }

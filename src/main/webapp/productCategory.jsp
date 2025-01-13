@@ -185,7 +185,7 @@
                                                                         <span class="idProduct" style="display: none">${product.id}</span>
                                                                         <span class="fw-bold sizeName">${sizes.size}</span>
                                                                     </button>
-                                                                </c:forEach>[
+                                                                </c:forEach>
                                                             </div>
                                                         </div>
                                                     </c:forEach>

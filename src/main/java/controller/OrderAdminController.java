@@ -33,12 +33,14 @@ public class OrderAdminController extends HttpServlet {
         request.setAttribute("statusAdminModels", statusAdminModels);
 
         request.getRequestDispatcher("adminPages/managerOrderWithFilter.jsp").forward(request, response);
+
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int paymentId = Integer.parseInt(request.getParameter("paymentId"));
         int deliveryId = Integer.parseInt(request.getParameter("deliveryId"));
+        int statusTypeId =  Integer.parseInt(request.getParameter("statusTypeId")) ;
         String dateString = request.getParameter("orderDate");
         Date sqlDate = null;
 
@@ -55,10 +57,9 @@ public class OrderAdminController extends HttpServlet {
             }
         }
 
-            String nameStatus = request.getParameter("nameStatus");
             OrderAdminService orderAdminService = new OrderAdminService();
             try {
-               List<OrderAdminModel> od =  orderAdminService.getAllOrders(paymentId, deliveryId, sqlDate, nameStatus);
+               List<OrderAdminModel> od =  orderAdminService.getAllOrders(paymentId, deliveryId, sqlDate, statusTypeId);
                 ShoppingCartService shoppingCartService = new ShoppingCartService();
                 List<PaymentModel> listPaymentModels = shoppingCartService.getAllPayments();
                 List<DeliveriesModel> listDeliveriesModels = shoppingCartService.getAllDeliveries();
