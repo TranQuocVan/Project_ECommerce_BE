@@ -6,6 +6,7 @@ import model.StatusModel;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,9 +62,6 @@ public class OrderDao {
             return -1;
         }
     }
-
-
-
 
 
     public boolean checkOrder(int userId) {
@@ -148,6 +146,7 @@ public class OrderDao {
         }
         return "Trống";
     }
+
     public float deliveryFee(int deliveryId) {
         String sql = "select fee from deliveries where deliveryId = ?";
         try (Connection con = JDBCUtil.getConnection();
@@ -181,14 +180,14 @@ public class OrderDao {
                 st.setInt(2, userId);
                 ResultSet rs = st.executeQuery();
                 if (rs.next()) {
-                    totalPrice += rs.getFloat("price")*rs.getInt("quantity");
+                    totalPrice += rs.getFloat("price") * rs.getInt("quantity");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
         totalPrice += deliveryFee(paymentId);
-        return  totalPrice ;
+        return totalPrice;
     }
 
 
@@ -228,7 +227,89 @@ public class OrderDao {
         return orderModel;
     }
 
+    public List<OrderModel> findByIdOrder(int userId) {
+        String sql = "select * from orders where userId = ?";
+        List<OrderModel> orders = new ArrayList<>();
 
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, userId);
+            ResultSet rs = st.executeQuery();
+
+
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+
+            while (rs.next()) {
+
+                Timestamp orderDateTimestamp = rs.getTimestamp("orderDate");
+                String formattedDate = orderDateTimestamp != null ?
+                        dateFormatter.format(orderDateTimestamp) : "N/A"; // Nếu null, trả về "N/A"
+
+                OrderModel orderModel = new OrderModel(
+                        rs.getInt("orderId"),
+                        methodPayment(rs.getInt("paymentId")),
+                        formattedDate, // Ngày đã được định dạng
+                        rs.getString("deliveryAddress"),
+                        rs.getFloat("totalPrice"),
+                        deliveryName(rs.getInt("deliveryId")),
+//                        deliveryFee(rs.getInt("deliveryId")),
+                        rs.getString("nameStatus")
+                );
+
+                orders.add(orderModel);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return orders;
+    }
+// bug
+    public List<OrderModel> getOrderByDate(Timestamp orderDate) {
+        List<OrderModel> orders = new ArrayList<>();
+        String query = "SELECT * FROM orders WHERE orderDate BETWEEN ? AND ?";
+
+        try (Connection connection = JDBCUtil.getConnection();
+             PreparedStatement ps = connection.prepareStatement(query)) {
+
+            // Tính khoảng thời gian trong ngày
+            LocalDateTime orderDateTime = orderDate.toLocalDateTime();
+            LocalDateTime startOfDay = orderDateTime.toLocalDate().atStartOfDay();
+            LocalDateTime endOfDay = orderDateTime.toLocalDate().atTime(23, 59, 59);
+
+            Timestamp startTimestamp = Timestamp.valueOf(startOfDay);
+            Timestamp endTimestamp = Timestamp.valueOf(endOfDay);
+
+            // Gán tham số cho PreparedStatement
+            ps.setTimestamp(1, startTimestamp);
+            ps.setTimestamp(2, endTimestamp);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                // Lấy ngày từ ResultSet
+                Timestamp orderDateTimestamp = rs.getTimestamp("orderDate");
+                String formattedDate = (orderDateTimestamp != null) ?
+                        orderDate.toGMTString() : "N/A"; // Nếu null, trả về "N/A"
+
+                OrderModel orderModel = new OrderModel(
+                        rs.getInt("orderId"),
+                        methodPayment(rs.getInt("paymentId")),
+                        formattedDate, // Ngày đã được định dạng
+                        rs.getString("deliveryAddress"),
+                        rs.getFloat("totalPrice"),
+                        deliveryName(rs.getInt("deliveryId")),
+//                        deliveryFee(rs.getInt("deliveryId")),
+                        rs.getString("nameStatus")
+                );
+
+                orders.add(orderModel);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return orders;
+    }
 }
 
 

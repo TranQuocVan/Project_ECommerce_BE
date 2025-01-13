@@ -5,6 +5,7 @@ import model.Order;
 import model.OrderModel;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 public class OrderService {
@@ -23,4 +24,13 @@ public List<OrderModel> getAllOrders(int userId){
 
     }
 
+    public List<OrderModel> findByIdOrder(int userId) {
+        OrderDao orderDao = new OrderDao();
+        return  orderDao.findByIdOrder(userId);
+    }
+
+    public List<OrderModel> getOrderByDate(Timestamp timestamp) {
+        OrderDao orderDao = new OrderDao();
+        return orderDao.getOrderByDate(timestamp);
+    }
 }
