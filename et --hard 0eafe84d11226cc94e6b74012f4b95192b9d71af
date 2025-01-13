@@ -1,0 +1,193 @@
+[33mcommit b0f3fe23944c29c52f31b8e80c0755a56f4f6b75[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mvinh[m[33m)[m
+Author: unknown <22130326@st.hcmuaf.edu.vn>
+Date:   Mon Jan 13 09:43:04 2025 +0700
+
+    merge main into vinh
+
+[33mcommit 0eafe84d11226cc94e6b74012f4b95192b9d71af[m
+Merge: d9def56 5e0f04e
+Author: unknown <22130326@st.hcmuaf.edu.vn>
+Date:   Mon Jan 13 09:40:53 2025 +0700
+
+    Merge branch 'main' of https://github.com/TranQuocVan/Project_ECommerce_BE into vinh
+
+[33mcommit 5e0f04ef47fb413fd2ba7bcf23be7ed9d2f9352a[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Huy Vu <huyvu6937@gmail.com>
+Date:   Sun Jan 12 17:54:39 2025 +0700
+
+    finish order detail
+
+[33mcommit a3190853195f6fa33281a0496ece4bb07d2c6a51[m
+Author: Huy Vu <huyvu6937@gmail.com>
+Date:   Sun Jan 12 14:12:03 2025 +0700
+
+    fix
+
+[33mcommit e6832ff199490a8a58fed59c2d3a7acd780cc95a[m
+Author: Tran Quoc Van <22130320@st.hcmuaf.edu.vn>
+Date:   Sun Jan 12 00:32:50 2025 +0700
+
+    update view and func Order for page admin
+
+[33mcommit 40088daab144981c9ac497fa9197e5622a895fe7[m
+Author: Tran Quoc Van <22130320@st.hcmuaf.edu.vn>
+Date:   Fri Jan 10 17:54:21 2025 +0700
+
+    update func admin manager product
+
+[33mcommit 2e41550cc0bd7588028201ca0464b18f3832d8b5[m
+Author: Tran Quoc Van <22130320@st.hcmuaf.edu.vn>
+Date:   Thu Jan 9 23:52:23 2025 +0700
+
+    fix logic Cart and update view admin
+
+[33mcommit d9def56f872fe1140e287653563fff37ec3ce535[m[33m ([m[1;31morigin/vinh[m[33m)[m
+Author: unknown <22130326@st.hcmuaf.edu.vn>
+Date:   Thu Jan 9 22:50:48 2025 +0700
+
+    update findByIdOrder
+
+[33mcommit 02d93e8af5ddbe09614617c361bda14d8f0edcc5[m[33m ([m[1;32mmain[m[33m)[m
+Merge: eef64a9 d360035
+Author: Tran Quoc Van <22130320@st.hcmuaf.edu.vn>
+Date:   Thu Jan 9 15:12:10 2025 +0700
+
+    Merge branch 'main' of https://github.com/TranQuocVan/Project_ECommerce_BE
+
+[33mcommit eef64a976e2c67a4ec8fbf7d32040594bddf8d55[m
+Author: Tran Quoc Van <22130320@st.hcmuaf.edu.vn>
+Date:   Thu Jan 9 15:12:04 2025 +0700
+
+    update AJAX and logic cart
+
+[33mcommit 21ee3d1d67129402a5316bc21207bc7d5cbcf82c[m
+Author: Tran Quoc Van <22130320@st.hcmuaf.edu.vn>
+Date:   Thu Jan 9 15:10:59 2025 +0700
+
+    update AJAX and logic cart
+
+[33mcommit d36003509eccf49eb54ff60be17fc0451fa1ab15[m
+Author: Huy Vu <huyvu6937@gmail.com>
+Date:   Thu Jan 9 14:53:12 2025 +0700
+
+    fix detail
+
+[33mcommit d6b415a981970a3f44a90e0010632266faed171e[m
+Author: Huy Vu <huyvu6937@gmail.com>
+Date:   Thu Jan 9 14:43:04 2025 +0700
+
+    fix check gmail and hass password
+
+[33mcommit 5e6f56a32190196fcba07db60af7bc22bc351a4a[m
+Author: Huy Vu <huyvu6937@gmail.com>
+Date:   Thu Jan 9 12:43:54 2025 +0700
+
+    fix search
+
+[33mcommit e2bade95a0fc1891ff543cc9e44a1449edee0074[m
+Author: Huy Vu <huyvu6937@gmail.com>
+Date:   Thu Jan 9 11:15:28 2025 +0700
+
+    standard sql
+
+[33mcommit 6f035d1a46a4835784b73de0e33c47f6b87afdf7[m
+Author: Huy Vu <huyvu6937@gmail.com>
+Date:   Thu Jan 9 11:05:18 2025 +0700
+
+    fix nav
+
+[33mcommit 7f4f407dc10ccb6b05072ba9507cb28ee876c885[m
+Author: Huy Vu <huyvu6937@gmail.com>
+Date:   Thu Jan 9 10:58:00 2025 +0700
+
+    add feature
+
+[33mcommit 3741d848f5f3a6dbb819e4b1729b841e1689df25[m
+Author: Tran Quoc Van <22130320@st.hcmuaf.edu.vn>
+Date:   Tue Jan 7 23:51:20 2025 +0700
+
+    Handle js to save cartOrderItems
+
+[33mcommit d9ea1c41f5563b970c7fe81a5b7c88d6b0f7f18d[m
+Author: Tran Quoc Van <22130320@st.hcmuaf.edu.vn>
+Date:   Tue Jan 7 15:39:24 2025 +0700
+
+    update popup and notifi addToCart
+
+[33mcommit 26c827349caa96ccc575d49a54468b3bca5c13b6[m
+Author: Tran Quoc Van <22130320@st.hcmuaf.edu.vn>
+Date:   Mon Jan 6 23:29:50 2025 +0700
+
+    update notify update CartItem and OrderItem
+
+[33mcommit 703a99db94c0d6f73d1c246e234e2257b0703c86[m
+Author: Tran Quoc Van <22130320@st.hcmuaf.edu.vn>
+Date:   Tue Dec 24 17:24:01 2024 +0700
+
+    Update addToCart and OrderItems
+
+[33mcommit 031b11012d573c32792ea8514da958e5054d4f94[m
+Author: Tran Quoc Van <22130320@st.hcmuaf.edu.vn>
+Date:   Sat Dec 21 22:36:01 2024 +0700
+
+    upload ShoppingCartItemsController and ShoppingCartItems.jsp
+
+[33mcommit d54ec852923d69892f9363c7486ccc9066e20a79[m
+Author: Tran Quoc Van <22130320@st.hcmuaf.edu.vn>
+Date:   Sat Dec 21 20:16:11 2024 +0700
+
+    add product to cart
+
+[33mcommit 2c95327e6854456d3b4b7eb0cad43efc9b26611f[m
+Author: Huy Vu <huyvu6937@gmail.com>
+Date:   Sat Dec 14 04:56:33 2024 +0700
+
+    Optimize popup to fix logic errors
+
+[33mcommit 1e1f2c048e5590c90246ef3aeda5ba63cd71aadf[m
+Author: Huy Vu <huyvu6937@gmail.com>
+Date:   Sat Dec 14 02:06:01 2024 +0700
+
+    fix bug
+
+[33mcommit b20b5847c00cf8f447288616d8c67bf91b0e0c09[m
+Author: Huy Vu <huyvu6937@gmail.com>
+Date:   Sat Dec 14 00:59:42 2024 +0700
+
+    fix bug size render
+
+[33mcommit c944fe592996606dcca9b92fac9eead3915a938d[m
+Author: Huy Vu <huyvu6937@gmail.com>
+Date:   Fri Dec 13 22:01:05 2024 +0700
+
+    Complete the page interface to view linked products and detail products, add an admin page next to the navigation
+
+[33mcommit 74a456d8248d14f98107e84a98c518e557c82dcb[m
+Author: Huy Vu <huyvu6937@gmail.com>
+Date:   Wed Dec 11 22:58:01 2024 +0700
+
+    add function to get product by row name pagination Get product by id to view product details Add image to product category Fix bug
+
+[33mcommit e3f7564b6d5b1f141422aa8743cc6d575b619d25[m
+Author: Huy Vu <huyvu6937@gmail.com>
+Date:   Wed Dec 11 22:56:59 2024 +0700
+
+    [200~
+
+[33mcommit c239dc576f3e6158188133c69c34609436faa948[m
+Author: Huy Vu <huyvu6937@gmail.com>
+Date:   Fri Dec 6 23:07:53 2024 +0700
+
+    add Product and get product has groupProductId
+
+[33mcommit 45b52b8c97dacd15d6a3a4ddfd4719795900790d[m
+Author: Huy Vu <huyvu6937@gmail.com>
+Date:   Fri Dec 6 10:39:14 2024 +0700
+
+    Init2
+
+[33mcommit 2d6f6c2da6378fb00b80bbb018041133f0d74b48[m
+Author: Huy Vu <huyvu6937@gmail.com>
+Date:   Wed Nov 27 21:01:43 2024 +0700
+
+    init
