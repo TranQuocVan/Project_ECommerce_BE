@@ -7,15 +7,17 @@ public class GroupProductModel {
     private String name;
     private InputStream image;
     private String imageBase64;
+    private String description;
 
     public GroupProductModel() {}
 
     public GroupProductModel(String name) {
         this.name = name;
     }
-    public GroupProductModel(String name, InputStream image) {
+    public GroupProductModel(String name, InputStream image, String description) {
         this.name = name;
         this.image = image;
+        this.description = description;
 
     }
 
@@ -48,4 +50,12 @@ public class GroupProductModel {
     public void setImage(InputStream image) {
         this.image = image;
     }
+
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
 }

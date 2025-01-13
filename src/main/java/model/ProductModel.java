@@ -13,6 +13,8 @@ public class ProductModel {
     private int groupProductId;
     private  int productCategoryId;
 
+    private int purchaseQuantity;
+
     private List<ColorModel> ColorModels =  new ArrayList<ColorModel>();
 
     public ProductModel() {
@@ -101,4 +103,16 @@ public class ProductModel {
     public void setDiscount(float discount) {
         this.discount = discount;
     }
+
+    public int getPurchaseQuantity() {
+        return purchaseQuantity;
+    }
+    public void setPurchaseQuantity(int purchaseQuantity) {
+        this.purchaseQuantity = purchaseQuantity;
+    }
+
+
+
+
+
 }

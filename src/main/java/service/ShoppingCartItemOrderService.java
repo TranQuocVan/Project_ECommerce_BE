@@ -1,14 +1,16 @@
 package service;
 
 import database.ShoppingCartItemOrdersDao;
-import model.ShoppingCartItemOrders;
+import database.StatusDao;
+
 
 import java.sql.Timestamp;
+import java.util.List;
 
 public class ShoppingCartItemOrderService {
-    public boolean addShoppingCartItemOrders(ShoppingCartItemOrders order){
+    public boolean addShoppingCartItemOrders(List<Integer> sizes, int userId ,int orderId){
         ShoppingCartItemOrdersDao dao = new ShoppingCartItemOrdersDao();
-        return dao.addShoppingCartItemOrders(order);
+        return dao.addShoppingCartItemOrders(sizes,userId,orderId);
     }
 
 

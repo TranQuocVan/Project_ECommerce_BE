@@ -17,10 +17,7 @@ public class ShoppingCartService {
         ShoppingCartItemsDao shoppingCartItemsDao = new ShoppingCartItemsDao();
         return shoppingCartItemsDao.getAllShoppingCartItems(userId);
     }
-    public float totalPrice (int sizeId){
-        ShoppingCartItemsDao shoppingCartItemsDao = new ShoppingCartItemsDao();
-        return shoppingCartItemsDao.totalPrice(sizeId);
-    }
+
     public boolean deleteProductToShoppingCart( int sizeId, int userId) {
         ShoppingCartItemsDao shoppingCartItemsDao = new ShoppingCartItemsDao();
         return shoppingCartItemsDao.deleteProductToShoppingCart(sizeId,userId);
@@ -41,11 +38,20 @@ public class ShoppingCartService {
         ShoppingCartItemsDao shoppingCartItemsDao = new ShoppingCartItemsDao();
         return shoppingCartItemsDao.getAllDeliveries();
     }
-    public boolean updateProductToShoppingCart(int quantity, int sizeId, int userId) {
+    public boolean updateProductToShoppingCart(int quantity, int sizeId, int userId, boolean isDecreaseQuantity) {
+
         ShoppingCartItemsDao shoppingCartItemsDao = new ShoppingCartItemsDao();
-        return shoppingCartItemsDao.updateProductToShoppingCart(quantity, sizeId, userId);
+        if(isDecreaseQuantity){
+            return shoppingCartItemsDao.updateProductToShoppingCart(quantity, sizeId, userId);
+        }
+        if(shoppingCartItemsDao.checkStockProduct(sizeId, quantity)){
+            return shoppingCartItemsDao.updateProductToShoppingCart(quantity, sizeId, userId);
+        }
+
+
+        return false;
     }
-    }
+}
 
 
 

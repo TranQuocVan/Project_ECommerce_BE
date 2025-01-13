@@ -1,29 +1,47 @@
-function increaseQuantity(button) {
-    var input = button.parentNode.querySelector('input[type=number]');
-    var currentValue = parseInt(input.value);
-    var maxValue = parseInt(input.getAttribute('max'));
+async function increaseQuantity(button, event) {
+    event.stopPropagation();
 
-    // Lấy container của item hiện tại
+    // Get the input field and calculate the new quantity
+    var input = button.parentNode.querySelector('input[type=number]');
+    var currentValue = parseInt(input.value) + 1;
+
+    // Get the sizeId from the current item's container
     var itemContainer = button.closest('.items');
     var sizeId = itemContainer.querySelector('input[name="sizeId"]').value;
 
-    if (currentValue < maxValue) {
-        input.value = currentValue + 1;
+    try {
+        // Wait for the database update result
+        const isUpdated = await updateQuantityInDatabase(sizeId, currentValue);
+        console.log(isUpdated)
 
-        // Gửi AJAX request để cập nhật số lượng
-        updateQuantityInDatabase(sizeId, input.value);
-    } else {
+        if (isUpdated) {
+            input.value = currentValue; // Update the input field with the new quantity
+        } else {
+            // Show a message if the update fails due to inventory limits
+            Swal.fire({
+                icon: 'info',
+                title: 'Thông báo',
+                text: 'Số lượng sản phẩm đã đạt giới hạn tồn kho.',
+                confirmButtonText: 'OK'
+            });
+        }
+
+        // Call the quantity change handler regardless of success or failure
+        handleQuantityChange(input);
+    } catch (error) {
+        // Handle errors (e.g., network issues)
+        console.error('Failed to update quantity:', error);
         Swal.fire({
-            icon: 'info',
-            title: 'Thông báo',
-            text: 'Số lượng sản phẩm đã đạt giới hạn tồn kho.',
+            icon: 'error',
+            title: 'Lỗi',
+            text: 'Đã xảy ra lỗi khi cập nhật số lượng. Vui lòng thử lại sau.',
             confirmButtonText: 'OK'
         });
     }
-    handleQuantityChange(input);
 }
 
-function decreaseQuantity(button) {
+function decreaseQuantity(button,event) {
+    event.stopPropagation();
     var input = button.parentNode.querySelector('input[type=number]');
     var currentValue = parseInt(input.value);
     var minValue = parseInt(input.getAttribute('min'));
@@ -36,7 +54,7 @@ function decreaseQuantity(button) {
         input.value = currentValue - 1;
 
         // Gửi AJAX request để cập nhật số lượng
-        updateQuantityInDatabase(sizeId, input.value);
+        updateQuantityInDatabase(sizeId, input.value,true);
     } else {
         Swal.fire({
             icon: 'info',
@@ -49,22 +67,40 @@ function decreaseQuantity(button) {
 }
 
 
-function updateQuantityInDatabase(sizeId, quantity) {
-    $.ajax({
-        url: '/Shoe_war_exploded/UpdateQuantityCartController', // URL đến server endpoint xử lý cập nhật
-        type: 'POST',
-        contentType: 'application/json', // Đảm bảo dữ liệu được gửi dưới dạng JSON
-        data: JSON.stringify({ // Chuyển đổi dữ liệu sang JSON
-            idSize: sizeId,
-            quantity: quantity
-        }),
-        success: function(response) {
-            // Xử lý nếu cập nhật thành công (ví dụ: hiển thị thông báo)
-            console.log('Số lượng đã được cập nhật thành công.');
-        },
-
+function updateQuantityInDatabase(sizeId, quantity,isDecreaseQuantity = false) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: '/Shoe_war_exploded/UpdateQuantityCartController', // Server endpoint
+            type: 'POST',
+            contentType: 'application/json', // Ensure data is sent as JSON
+            data: JSON.stringify({
+                idSize: sizeId,
+                quantity: quantity,
+                isDecreaseQuantity: isDecreaseQuantity, // This will always be true, no need to pass as a parameter
+            }),
+            success: function (response) {
+                if (response.status === "ok") {
+                    resolve(true); // Resolve promise with true if the operation was successful
+                } else {
+                    console.warn('Request failed due to server-side validation:', response.message);
+                    resolve(false); // Resolve promise with false if the operation failed
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Request error:', {
+                    status: status,
+                    error: error,
+                    responseText: xhr.responseText
+                });
+                reject(false); // Reject promise with false in case of an error
+            }
+        });
     });
 }
+
+
+
+
 
 
 
@@ -115,19 +151,22 @@ function updateQuantityInForm() {
 
 function orderButton(button, event) {
     event.preventDefault();
-
+    // Kiểm tra nếu không có sản phẩm nào được chọn
+    if (selectedItems.size === 0) {
+        Swal.fire({
+            title: 'Thông báo',
+            text: 'Bạn phải chọn ít nhất một sản phẩm để thanh toán!',
+            icon: 'info',
+            confirmButtonText: 'OK'
+        });
+        return; // Dừng thực thi nếu không có sản phẩm nào được chọn
+    }
     updateQuantityInForm();
 
     const form = document.getElementById('orderForm');
 
 
-    // Cập nhật giá trị 'totalAmount' vào hidden input
-    const totalAmountText = document.getElementById('totalAmount').textContent.replace(/[^\d.-]/g, '');
-    const totalAmountFloat = parseFloat(totalAmountText).toFixed(3); // 2 chữ số thập phân
 
-
-
-    document.getElementById('hiddenTotalAmount').value = totalAmountFloat;
 
     // Hiển thị hộp thoại SweetAlert để xác nhận
     Swal.fire({
@@ -140,7 +179,7 @@ function orderButton(button, event) {
         confirmButtonText: 'OK',
         cancelButtonText: 'Hủy'
     }).then((result) => {
-        if (result.isConfirmed) {
+        if (result.isConfirmed ) {
             // Cập nhật giá trị `selectedItems` vào form trước khi submit
             updateSelectedItemsInForm();
 
@@ -157,32 +196,29 @@ function orderButton(button, event) {
 
 const selectedItems = new Set();
 let totalPrice = 0;  // Khởi tạo tổng tiền
-let deliveryFee = 0; // Khởi tạo phí giao hàng
 
-// Hàm để tính tổng khi checkbox thay đổi hoặc số lượng thay đổi
+
 function updateTotalPrice() {
     let total = 0;
 
-    if (selectedItems.size === 0) {
-        total = 0;
-    }
-    else {
-        // Duyệt qua tất cả các item đã chọn
-        selectedItems.forEach(sizeId => {
-            const item = document.querySelector(`.items input[type="hidden"][value="${sizeId}"]`).closest('.items');
-            const price = parseFloat(item.querySelector('.select-item').getAttribute('data-price').replace(/[^0-9.-]+/g, ""));
-            const quantity = parseInt(item.querySelector('input[name="quantity"]').value, 10);  // Lấy số lượng từ input
-            total += price * quantity;  // Cập nhật tổng tiền
-        });
+    // Duyệt qua tất cả các item đã chọn
+    selectedItems.forEach(sizeId => {
+        const item = document.querySelector(`.items input[type="hidden"][value="${sizeId}"]`).closest('.items');
+        const price = parseFloat(item.querySelector('.select-item').getAttribute('data-price').replace(/[^0-9.-]+/g, ""));
+        const quantity = parseInt(item.querySelector('input[name="quantity"]').value, 10); // Lấy số lượng từ input
+        total += price * quantity; // Cập nhật tổng tiền
+    });
 
-        // Cộng phí vận chuyển vào tổng tiền
-        total += deliveryFee;
-    }
+    // Lấy phí vận chuyển
+    const feeDisplayText = document.querySelector("#feeDisplay").textContent;
+    const deliveryFee = parseFloat(feeDisplayText.replace(/[^\d.-]+/g, "")); // Chuyển phí vận chuyển sang số
+
+    console.log(deliveryFee)
+    // Cộng phí vận chuyển vào tổng tiền
+    total += deliveryFee/1000;
+
     // Cập nhật tổng tiền vào phần hiển thị
-    document.getElementById('totalAmount').textContent = new Intl.NumberFormat('vi-VN', {
-        style: 'currency',
-        currency: 'VND'
-    }).format(total);
+    document.getElementById('totalAmount').textContent = formatPrice(total);
 }
 
 // Hàm xử lý thay đổi số lượng
@@ -194,53 +230,65 @@ function handleQuantityChange(input) {
     updateTotalPrice();
 }
 
-function toggleSelection(checkbox) {
-    const item = checkbox.closest('.items');
-    const sizeId = item.querySelector('input[type="hidden"]').value;
 
-    // Cập nhật danh sách các item đã chọn
-    if (checkbox.checked) {
-        item.classList.add('selected');
-        selectedItems.add(sizeId);
-    } else {
-        item.classList.remove('selected');
-        selectedItems.delete(sizeId);
-    }
 
-    console.log('Selected sizeIds:', Array.from(selectedItems));
+const itemShoppingCart = document.querySelectorAll(".items")
+itemShoppingCart.forEach(item => {
+    item.addEventListener("click", () => {
+        const checkbox = item.querySelector(".checkbox"); // Tìm checkbox trong item
+        const sizeId = item.querySelector('input[type="hidden"]').value; // Lấy sizeId từ input hidden
 
-    // Cập nhật tổng tiền sau mỗi lần thay đổi
-    updateTotalPrice();
-}
+        if (selectedItems.has(sizeId)) {
+            // Nếu sizeId đã được chọn, bỏ chọn
+            selectedItems.delete(sizeId); // Xóa sizeId khỏi danh sách
+            item.classList.remove("selected"); // Xóa class "selected"
+
+        } else {
+            // Nếu sizeId chưa được chọn, thêm vào danh sách
+            selectedItems.add(sizeId); // Thêm sizeId vào danh sách
+            item.classList.add("selected"); // Thêm class "selected"
+
+        }
+
+        // Cập nhật tổng số mục đã chọn
+        const totalCount = selectedItems.size;
+        document.getElementById("totalSelectedItems").textContent = `${totalCount} món`;
+
+
+
+        // Cập nhật tổng tiền
+        updateTotalPrice();
+    });
+});
 
 // Theo dõi sự thay đổi của select phương thức giao hàng
+
 document.getElementById('deliverySelect').addEventListener('change', function() {
     const selectedOption = this.options[this.selectedIndex];  // Lấy option đã chọn
-    deliveryFee = parseFloat(selectedOption.getAttribute('data-fee')) || 0;  // Lấy phí giao hàng từ thuộc tính data-fee
+    const deliveryFee = parseFloat(selectedOption.getAttribute('data-fee')) || 0;  // Lấy phí giao hàng từ thuộc tính data-fee
 
     // Cập nhật phí giao hàng lên màn hình
-    document.getElementById('feeDisplay').textContent = `Phí vận chuyển: ${new Intl.NumberFormat('vi-VN', {
-        style: 'currency',
-        currency: 'VND'
-    }).format(deliveryFee)}`;
+    document.getElementById('feeDisplay').textContent = formatPrice(deliveryFee);
 
     // Cập nhật lại tổng tiền sau khi thay đổi phí
     updateTotalPrice();
 });
 
 // Tính tổng tiền khi trang được tải, bao gồm phí giao hàng mặc định
-window.addEventListener('load', function() {
-    const defaultOption = document.querySelector('#deliverySelect option:first-child');  // Lấy phương thức giao hàng mặc định
-    deliveryFee = parseFloat(defaultOption.getAttribute('data-fee')) || 0;  // Lấy phí giao hàng mặc định
+window.addEventListener('load', function () {
+    // Lấy phương thức giao hàng mặc định
+    const defaultOption = document.querySelector('#deliverySelect option:first-child');
 
-    // Cập nhật phí giao hàng mặc định lên màn hình
-    document.getElementById('feeDisplay').textContent = `Phí vận chuyển: ${new Intl.NumberFormat('vi-VN', {
-        style: 'currency',
-        currency: 'VND'
-    }).format(deliveryFee)}`;
+    // Lấy phí giao hàng mặc định từ thuộc tính data-fee
+    const deliveryFee = parseFloat(defaultOption?.getAttribute('data-fee')) || 0;
+
+    // Định dạng và hiển thị phí giao hàng mặc định kèm ".000đ"
+    document.getElementById('feeDisplay').textContent = formatPrice(deliveryFee)
 });
 
-
+const formatPrice = (price) => {
+    return `${new Intl.NumberFormat('vi-VN', { minimumFractionDigits: 3, maximumFractionDigits: 3 }).format(price)}đ`;
+};
 
 
 
@@ -263,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var formattedFee = new Intl.NumberFormat('vi-VN').format(fee);
 
         // Hiển thị giá với dấu phân cách và "đ" ở cuối
-        document.getElementById('feeDisplay').innerText = 'Giá: ' + formattedFee + 'đ';
+        document.getElementById('feeDisplay').innerText =  formatPrice(formattedFee);
     }
 
     // Gọi hàm để cập nhật giá ngay khi trang tải xong
@@ -274,6 +322,9 @@ document.addEventListener('DOMContentLoaded', function () {
         updateFeeDisplay();
     });
 });
+
+
+
 
 
 

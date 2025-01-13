@@ -114,12 +114,12 @@ public class ShoppingCartItemsDao {
 
     public boolean checkStockProduct(int sizeId, int userId, int quantityToAdd) {
         String sql = """
-    SELECT s.stock, IFNULL(SUM(spc.quantity), 0) AS cartQuantity
-    FROM Sizes s
-    LEFT JOIN ShoppingCartItems spc ON spc.sizeId = s.sizeId AND spc.userId = ?
-    WHERE s.sizeId = ?
-    GROUP BY s.sizeId
-    """;
+            SELECT s.stock, IFNULL(SUM(spc.quantity), 0) AS cartQuantity
+            FROM Sizes s
+            LEFT JOIN ShoppingCartItems spc ON spc.sizeId = s.sizeId AND spc.userId = ?
+            WHERE s.sizeId = ?
+            GROUP BY s.sizeId
+        """;
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
             st.setInt(1, userId);
@@ -131,6 +131,28 @@ public class ShoppingCartItemsDao {
                 int cartQuantity = rs.getInt("cartQuantity");
                 // Kiểm tra xem tổng số lượng sản phẩm trong giỏ hàng (cộng với số lượng sắp thêm) có vượt quá số lượng kho hay không
                 return (cartQuantity + quantityToAdd) <= stock;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean checkStockProduct(int sizeId, int quantityToAdd) {
+        String sql = """
+            SELECT stock
+            FROM Sizes
+            WHERE sizeId = ?
+            """;
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, sizeId);
+            ResultSet rs = st.executeQuery();
+
+            if (rs.next()) {
+                int stock = rs.getInt("stock");
+                // Kiểm tra xem số lượng sản phẩm sắp thêm có vượt quá số lượng kho hay không
+                return (quantityToAdd <= stock);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -300,26 +322,26 @@ public class ShoppingCartItemsDao {
     }
 
 
-    public float totalPrice (int sizeId){
-            String sql = """
-        SELECT p.price, spc.quantity
-        FROM Sizes s 
-        LEFT JOIN  ShoppingCartItems spc ON spc.sizeId = s.sizeId 
-        LEFT JOIN  Colors c ON c.colorId = s.colorId 
-        LEFT JOIN  Products p ON c.productId = p.productId 
-        WHERE  spc.sizeId = ?
-    """;
-            try (Connection con = JDBCUtil.getConnection()) {
-                try (PreparedStatement ps = con.prepareStatement(sql)) {
-                    ps.setInt(1, sizeId);
-                    ResultSet rs = ps.executeQuery();
-                    if (rs.next()) {
-                        return rs.getFloat("price") * rs.getInt("quantity");
-                    }
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return 0;
-    }
+//    public float totalPrice (int sizeId){
+//            String sql = """
+//        SELECT p.price, spc.quantity
+//        FROM Sizes s
+//        LEFT JOIN  ShoppingCartItems spc ON spc.sizeId = s.sizeId
+//        LEFT JOIN  Colors c ON c.colorId = s.colorId
+//        LEFT JOIN  Products p ON c.productId = p.productId
+//        WHERE  spc.sizeId = ?
+//    """;
+//            try (Connection con = JDBCUtil.getConnection()) {
+//                try (PreparedStatement ps = con.prepareStatement(sql)) {
+//                    ps.setInt(1, sizeId);
+//                    ResultSet rs = ps.executeQuery();
+//                    if (rs.next()) {
+//                        return rs.getFloat("price") * rs.getInt("quantity");
+//                    }
+//                }
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//            return 0;
+//    }
 }

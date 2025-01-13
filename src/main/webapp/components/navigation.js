@@ -144,7 +144,7 @@ const renderNavigation = () => {
                         <span class="navigation" id="shoe"><a href="productDetails.jsp">Giày</a></span>
                         <span class="navigation" id="sandal"><a href="#">Dép</a></span> 
                         <span class="navigation"><a href="GetProductByCategoryNameController">Sản phẩm theo loại hàng</a></span>
-                        <span class="navigation"> ${isAdmin  ? `<a href='adminPages/adminHome.jsp'>Admin</a>` : ``}</span>
+                        <span class="navigation"> ${isAdmin  ? `<a href='./adminPages/admin.jsp'>Admin</a>` : ``}</span>
                                                            
                     </div>
                     <div class="col-md-3 flex-align-items-center" style="justify-content: end;">

@@ -21,11 +21,11 @@ public class ProductController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            String productName = request.getParameter("productName");
+            String productName = request.getParameter("name");
             double price = Double.parseDouble(request.getParameter("price"));
             float discount = Float.parseFloat(request.getParameter("discount"));
-            int productCategory = Integer.parseInt(request.getParameter("productCategory"));
-            int groupProduct =Integer.parseInt(request.getParameter("groupProduct"));
+            int productCategory = Integer.parseInt(request.getParameter("category"));
+            int groupProduct =Integer.parseInt(request.getParameter("group"));
 
             List<ColorModel> colorModels = new ArrayList<>();
 

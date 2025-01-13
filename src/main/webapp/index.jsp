@@ -12,11 +12,11 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <link rel="stylesheet" href="styles/slider.css">
+    <link rel="stylesheet" href="styles/slider.css?v=${System.currentTimeMillis()}">
     <link rel="stylesheet" href="styles/navigation.css">
     <link rel="stylesheet" href="styles/index.css">
-    <link rel="stylesheet" href="styles/global.css">
-    <link rel="stylesheet" href="styles/lightBox.css">
+    <link rel="stylesheet" href="styles/global.css?v=${System.currentTimeMillis()}">
+    <link rel="stylesheet" href="styles/lightBox.css?v=${System.currentTimeMillis()}">
 </head>
 <body>
 
@@ -256,10 +256,9 @@
     </div>
 </header>
 
-<!--Light box1 -->
 <div class="modal fade" id="lightboxModal" tabindex="0" aria-labelledby="lightboxModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <div style="width: max-content" class="modal-content">
             <div class="modal-body">
                 <div class="lightbox-content mt-3">
                     <!-- Nút Mua ngay -->
@@ -271,7 +270,6 @@
                             </button>
                         </div>
                     </div>
-
 
                     <!-- Hiển thị ảnh -->
                     <div class="modal-image-container">

@@ -41,12 +41,13 @@ public class UpdateQuantityCartController extends HttpServlet {
             int sizeId = productJson.getInt("idSize"); // Nhận giá trị sizeId
             int quantity = productJson.getInt("quantity"); // Nhận giá trị quantity
 
+            boolean isDecreaseQuantity = productJson.optBoolean("isDecreaseQuantity", false);
+
             // Gọi Service để lưu sản phẩm
-            OrderService orderService = new OrderService();
             ShoppingCartService shoppingCartService = new ShoppingCartService();
 
             // Thêm sản phẩm vào giỏ hàng
-            boolean isUpdated = shoppingCartService.updateProductToShoppingCart(quantity, sizeId, user.getId());
+            boolean isUpdated = shoppingCartService.updateProductToShoppingCart(quantity, sizeId, user.getId(),isDecreaseQuantity);
             if (isUpdated) {
                 response.getWriter().write("{\"status\":\"ok\",\"message\":\"Quantity updated successfully\"}");
             } else {

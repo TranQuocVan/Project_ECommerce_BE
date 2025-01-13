@@ -54,15 +54,10 @@ public class ShoppingCartItemsController extends HttpServlet {
         List<DeliveriesModel> listDeliveriesModels = shoppingCartService.getAllDeliveries();
 
 
-        float totalPrice = shoppingCartService.totalPrice(sizeId);
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
         symbols.setGroupingSeparator('.');
 
-        DecimalFormat df = new DecimalFormat("#,###", symbols);
-        String formattedPrice = df.format(totalPrice) + "đ";
 
-        request.setAttribute("totalPriceFormat", formattedPrice);
-        request.setAttribute("totalPrice", totalPrice);
         request.setAttribute("shoppingCartItemsList", lists);
         request.setAttribute("listPaymentModels", listPaymentModels);
         request.setAttribute("listDeliveriesModels", listDeliveriesModels);

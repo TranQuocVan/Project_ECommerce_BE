@@ -108,22 +108,5 @@ public class GroupDao {
         }
     }
 
-    public static void main(String[] args) throws SQLException {
-        GroupDao groupDao = new GroupDao();
-        ProductModel product = groupDao.getGroupByName("van");
 
-        if (product != null) {
-            System.out.println("Product: " + product.getName());
-            System.out.println("Colors:");
-            for (ColorModel color : product.getColorModels()) {
-                System.out.println("- ColorID: " + color.getId() + ", Name: " + color.getName() + ", HexCode: " + color.getHexCode());
-                System.out.println("  Sizes:");
-                for (SizeModel size : color.getSizeModels()) {
-                    System.out.println("    - Size: " + size.getSize() + ", Stock: " + size.getStock());
-                }
-            }
-        } else {
-            System.out.println("No product found with the given name.");
-        }
-    }
 }
