@@ -11,6 +11,7 @@ public class OrderModel {
     float totalPrice ;;
     String deliveryName ;
     float deliveryPrice ;
+    String nameStatus ;
 
 
     private List<ProductModel> productModels ;
@@ -27,6 +28,15 @@ public class OrderModel {
         this.deliveryName = deliveryName;
         this.deliveryPrice = deliveryPrice;
 
+    }
+    public OrderModel(int id, String paymentName, String orderDate, String deliveryAddress, float totalPrice, String deliveryName, String nameStatus) {
+        this.id = id;
+        this.paymentName = paymentName;
+        this.orderDate = orderDate;
+        this.deliveryAddress = deliveryAddress;
+        this.totalPrice = totalPrice;
+        this.deliveryName = deliveryName;
+        this.nameStatus = nameStatus;
     }
 
     public int getId() {
