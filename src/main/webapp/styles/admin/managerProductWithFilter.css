@@ -1,0 +1,64 @@
+.product-table-cell {
+    display: flex;
+    flex-direction: column; /* Đặt chiều dọc cho các phần tử */
+    align-items: center; /* Căn giữa các phần tử */
+    position: relative; /* Để cho các phần tử con có thể chồng lên nhau */
+}
+
+.image-container {
+    position: relative; /* Để cho hình ảnh mới có thể chồng lên hình ảnh cũ */
+}
+.price-input {
+    width: 80px; /* Điều chỉnh chiều rộng theo ý muốn */
+    margin-top: 5px; /* Thêm khoảng cách trên input */
+}
+
+.product-image {
+    width: 100%; /* Hoặc kích thước cụ thể như 150px */
+    height: auto; /* Giữ tỷ lệ khung hình */
+    max-width: 150px; /* Giới hạn kích thước tối đa */
+    margin-bottom: 10px; /* Khoảng cách giữa các ảnh */
+}
+
+.image-preview-container {
+    position: absolute; /* Đặt vị trí tuyệt đối để chồng lên hình ảnh sản phẩm */
+    top: 0; /* Đặt ở trên cùng */
+    left: 0; /* Đặt ở bên trái */
+    display: flex; /* Sử dụng flexbox để sắp xếp ảnh xem trước */
+    flex-wrap: wrap; /* Cho phép ảnh xem trước xuống dòng nếu cần */
+    justify-content: center; /* Căn giữa các ảnh xem trước */
+    pointer-events: none; /* Ngăn chặn sự kiện chuột trên container này */
+}
+
+.image-preview-container img {
+    width: 100%; /* Đảm bảo ảnh xem trước có kích thước phù hợp */
+    height: auto; /* Giữ tỷ lệ khung hình */
+    max-width: 150px; /* Giới hạn kích thước tối đa */
+    margin-right: 5px; /* Khoảng cách giữa các ảnh xem trước */
+    margin-bottom: 5px; /* Khoảng cách giữa các ảnh xem trước */
+    pointer-events: auto; /* Cho phép sự kiện chuột trên ảnh xem trước */
+}
+
+.edit-list input[type="text"],
+.edit-list input[type="number"] {
+    width: 150px; /* Điều chỉnh chiều rộng của input */
+    margin-top: 5px; /* Thêm khoảng cách trên input */
+}
+
+.file-input {
+    display: none;
+}
+
+.custom-file-label {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.custom-file-label:hover {
+    background-color: #0056b3;
+
+}

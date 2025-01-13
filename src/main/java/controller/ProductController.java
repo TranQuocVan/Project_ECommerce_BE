@@ -22,7 +22,7 @@ public class ProductController extends HttpServlet {
             throws ServletException, IOException {
         try {
             String productName = request.getParameter("name");
-            double price = Double.parseDouble(request.getParameter("price"));
+            float price = Float.parseFloat(request.getParameter("price"));
             float discount = Float.parseFloat(request.getParameter("discount"));
             int productCategory = Integer.parseInt(request.getParameter("category"));
             int groupProduct =Integer.parseInt(request.getParameter("group"));
@@ -71,10 +71,10 @@ public class ProductController extends HttpServlet {
             ProductDao productDao = new ProductDao();
             productDao.addProduct(product);
 
-            response.getWriter().println("Product added successfully!");
+            response.sendRedirect("GetProductByCategoryNameController");
 
         } catch (Exception e) {
-            response.getWriter().println("Failed to add product: " + e.getMessage());
+            response.sendRedirect("GetProductByCategoryNameController");
         }
     }
 }

@@ -30,7 +30,9 @@
   <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/admin/navigationAdmin.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/global.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/admin/globaladmin.css">
-</head>p
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/admin/managerProductWithFilter.css?v=${System.currentTimeMillis()}">
+
+</head>
 
 <body>
 <header>
@@ -86,13 +88,13 @@
               <!-- Status Filter -->
               <div class="col-md-2">
                 <label for="statusFilter" class="form-label">Trạng thái</label>
-                <select class="form-select" id="statusFilter" name="nameStatus">
-                  <option selected value="">All</option>
+                <select class="form-select" id="statusFilter" name="statusTypeId">
+                  <option selected value="0">All</option>
 
                   <c:if test="${not empty statusAdminModels}">
                   <c:forEach var="item" items="${statusAdminModels}">
 
-                  <option value="${item.name}">${item.name}</option>
+                  <option value="${item.id}">${item.name}</option>
 
                   </c:forEach>
                   </c:if>
@@ -135,8 +137,28 @@
                         <!-- Trạng thái -->
                         <div class="col-md-2">
                           <p class="small text-muted mb-1">Trạng thái</p>
-                          <p class="lead fw-normal mb-0">${od.nameStatus}</p>
+                          <p class="status fw-normal mb-0">${od.nameStatus}</p>
+                          <div class="status-list" style="display: none;">
+                            <form action="AdminUpdateStatusController" method="post" class="edit-status-form">
+                              <input type="hidden" name="nameStatus" id="nameStatus" value="">
+                              <input type="hidden" name="orderId" value="${od.id}">
+                              <select class="form-select" onchange="updateHiddenStatus(this)">
+                                <c:if test="${not empty statusAdminModels}">
+                                  <c:forEach var="item" items="${statusAdminModels}">
+
+                                    <option value="${item.id}">${item.name}</option>
+
+                                  </c:forEach>
+                                </c:if>
+                              </select>
+                            </form>
+                          </div>
                         </div>
+
+
+
+
+
                         <!-- Phương thức -->
                         <div class="col-md-2">
                           <p class="small text-muted mb-1">Phương thức</p>
@@ -147,13 +169,12 @@
                           <p class="small text-muted mb-1">Vận chuyển</p>
                           <p class="lead fw-normal mb-0">${od.deliveryName}</p>
                         </div>
-                        <!-- Tổng tiền -->
+
                         <div class="col-md-2">
-                          <p class="small text-muted mb-1">Tổng tiền</p>
-                          <p class="lead fw-normal mb-0">${od.formattedTotalPrice}</p>
+                          <button type="button" class="btn btn-warning mt-2" onclick="editStatus(this)">Chỉnh sửa</button>
+                          <button type="button" class="btn btn-success mt-2" onclick="submitForm(this)" style="display: none;">Xác nhận</button>
                         </div>
                       </div>
-                    </div>
                   </div>
                 </div>
               </c:forEach>
@@ -165,6 +186,7 @@
         </div>
       </div>
     </div>
+  </div>
   </div>
 </header>
 
@@ -178,6 +200,8 @@
 <script src="${pageContext.request.contextPath}/components/footer.js"></script>
 <script src="${pageContext.request.contextPath}/scripts/scroll.js"></script>
 <script src="${pageContext.request.contextPath}/components/navigationadmin.js"></script>
+<script src="${pageContext.request.contextPath}/scripts/admin/editStatus.js"></script>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>

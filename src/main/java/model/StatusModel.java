@@ -9,19 +9,21 @@ public class StatusModel {
     private String description;  // Mô tả trạng thái
     private Timestamp startDate; // Ngày bắt đầu
     private Timestamp endDate;   // Ngày kết thúc
+    private int statusTypeId ;
 
     // Constructor không tham số
     public StatusModel() {
     }
 
     // Constructor có tham số
-    public StatusModel(int id, String name, int orderId, String description, Timestamp startDate, Timestamp endDate) {
+    public StatusModel(int id, String name, int orderId, String description, Timestamp startDate, Timestamp endDate,int statusTypeId) {
         this.id = id;
         this.name = name;
         this.orderId = orderId;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.statusTypeId = statusTypeId;
     }
 
     // Getter và Setter cho id
@@ -76,5 +78,13 @@ public class StatusModel {
 
     public void setEndDate(Timestamp endDate) {
         this.endDate = endDate;
+    }
+
+    public void setStatusTypeId(int statusTypeId) {
+        this.statusTypeId = statusTypeId;
+    }
+
+    public int getStatusTypeId() {
+        return statusTypeId;
     }
 }

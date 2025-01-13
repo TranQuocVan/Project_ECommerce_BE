@@ -3,7 +3,7 @@ const addNavigationAdmin = () => {
     navigationAdmin.innerHTML = `
             <div id="navAdmin">
                 <h4>Navigation Admin</h4>
-                <a href="./admin.jsp">
+                <a href="AdminController">
                     <div class="navAdmin-item">
                         <div class="navAdmin-text">
                             Admin Home
@@ -23,27 +23,30 @@ const addNavigationAdmin = () => {
                     </div>
                 </div>
                 <div class="subMenu" id="categoryOptions">
-                <a href="./addProductGroup.jsp">
+                <a href="http://localhost:8080/Shoe_war_exploded/adminPages/addProductGroup.jsp">
                     <div class="navAdmin-subItem">
                         Thêm nhóm sản phẩm
                     </div>
                     </a>
                     
-                     <a href="./addProductCatelogy.jsp">
+                     <a href="http://localhost:8080/Shoe_war_exploded/adminPages/addProductCatelogy.jsp">
                     <div class="navAdmin-subItem">
                         Thêm loại sản phẩm
                     </div>
                     </a>
 
-                     <a href="../AddProductController">
+                     <a href="http://localhost:8080/Shoe_war_exploded/AddProductController">
                     <div class="navAdmin-subItem">
                         Thêm sản phẩm 
                     </div>
                     </a>
                     
+                     <a href="http://localhost:8080/Shoe_war_exploded/ProductAdminController">
                     <div class="navAdmin-subItem">
-                        <a>Quản lí sản phẩm</a>
+                        Quản lí sản phẩm
                     </div>
+                     </a>
+
                 </div>
 
 
@@ -57,51 +60,38 @@ const addNavigationAdmin = () => {
                 </div>
                 
                 <div class="subMenu" id="orderOptions">
-                <a href="OrderAdminController">
+                <a href="http://localhost:8080/Shoe_war_exploded/OrderAdminController">
                     <div class="navAdmin-subItem">
-                        Quan li don hang theo bộ lọc
+                        Quan li trạng thái đơn hàng
                     </div>
                     </a>
                     
-                     <a href="./addProductCatelogy.jsp">
-                    <div class="navAdmin-subItem">
-                        Thêm loại sản phẩm
-                    </div>
-                    </a>
-
-                     <a href="../AddProductController">
-                    <div class="navAdmin-subItem">
-                        Thêm sản phẩm 
-                    </div>
-                    </a>
                     
-                    <div class="navAdmin-subItem">
-                        <a>Quản lí sản phẩm</a>
-                    </div>
+                         
                 </div>
 
 
-                <a href="./delivery.jsp">
-                    <div class="navAdmin-item">
-                        <div class="navAdmin-text">
-                            Delivery
-                        </div>
-                        <div class="navAdmin-icon">
-                            <i class="fa-solid fa-chevron-right"></i>
-                        </div>
-                    </div>
-                </a>
+<!--                <a href="./delivery.jsp">-->
+<!--                    <div class="navAdmin-item">-->
+<!--                        <div class="navAdmin-text">-->
+<!--                            Delivery-->
+<!--                        </div>-->
+<!--                        <div class="navAdmin-icon">-->
+<!--                            <i class="fa-solid fa-chevron-right"></i>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </a>-->
 
-                <a href="./payment.jsp">
-                    <div class="navAdmin-item">
-                        <div class="navAdmin-text">
-                            Payment
-                        </div>
-                        <div class="navAdmin-icon">
-                            <i class="fa-solid fa-chevron-right"></i>
-                        </div>
-                    </div>
-                </a>
+<!--                <a href="./payment.jsp">-->
+<!--                    <div class="navAdmin-item">-->
+<!--                        <div class="navAdmin-text">-->
+<!--                            Payment-->
+<!--                        </div>-->
+<!--                        <div class="navAdmin-icon">-->
+<!--                            <i class="fa-solid fa-chevron-right"></i>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </a>-->
             </div>
     `;
 

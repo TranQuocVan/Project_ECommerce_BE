@@ -47,7 +47,7 @@ public class GroupDao {
                     // Lấy thông tin sản phẩm
                     if (productModel == null) {
                         String productName = rs.getString("productName");
-                        double price = rs.getDouble("price");
+                        float price = rs.getFloat("price");
                         float discount = rs.getFloat("discount");
                         productModel = new ProductModel(productName, price, discount);
                     }

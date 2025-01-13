@@ -88,16 +88,21 @@
                   <label>Stock:</label>
                   <input type="number" name="stock0[]" required><br>
                 </div>
-                <button type="button" onclick="addSize(this)">Add Size</button>
+
+
 
                 <h3>Images</h3>
                 <input type="file" name="image0[]" accept="image/*" onchange="previewImage(event, 0)"><br>
                 <button type="button" onclick="addImage(this, 0)">Add Image</button>
                 <div id="imagePreview0" class="image-preview-container"></div> <!-- Preview Container -->
+                <button type="button" onclick="addSize(this)">Add Size</button>
+
               </div>
             </div>
             <button type="button" onclick="addColor()">Add Color</button>
             <br><br>
+
+
 
             <!-- Đóng Form chính xác -->
             <button type="submit">Submit</button>
@@ -115,5 +120,8 @@
 <script src="${pageContext.request.contextPath}/components/footer.js"></script>
 <script src="${pageContext.request.contextPath}/scripts/scroll.js"></script>
 <script src="${pageContext.request.contextPath}/components/navigationadmin.js"></script>
+<script src="${pageContext.request.contextPath}/scripts/addProduct.js"></script>
+
+
 </body>
 </html>
