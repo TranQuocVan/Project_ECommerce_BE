@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -59,16 +60,28 @@
                         <c:if test="${not empty product}">
                             <!-- Hiển thị thông tin sản phẩm -->
                             <div class="name">${product.name}</div>
-                            <div class="original-price">  ${product.price}đ</div>
-                            <div class="price">
+                            <div class="original-price">
+                                <fmt:setLocale value="vi_VN" />
+                                <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="đ" />
+                            </div>
+                                <div class="price">
                                 <c:choose>
                                     <c:when test="${product.discount > 0}">
-                                        <div class="price_sale">${product.price - (product.price * product.discount / 100)}đ</div>
+                                        <!-- Định dạng số tiền sau chiết khấu -->
+                                        <fmt:setLocale value="vi_VN" />
+                                        <div class="price_sale">
+                                            <fmt:formatNumber value="${product.price - (product.price * product.discount / 100)}" type="currency" currencySymbol="đ" />
+                                        </div>
                                     </c:when>
                                     <c:otherwise>
-                                        <div class="price_sale">${product.price}đ</div>
+                                        <!-- Định dạng số tiền không có chiết khấu -->
+                                        <fmt:setLocale value="vi_VN" />
+                                        <div class="price_sale">
+                                            <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="đ" />
+                                        </div>
                                     </c:otherwise>
                                 </c:choose>
+
                                 <div class="price_discount">${product.discount}%</div>
                             </div>
 
@@ -110,6 +123,8 @@
         </div>
 
 </header>
+
+
 
 <footer></footer>
 

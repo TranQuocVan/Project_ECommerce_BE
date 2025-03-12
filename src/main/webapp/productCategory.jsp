@@ -92,10 +92,10 @@
                                 <div class="col-md-12">
                                     <div id="search">
                                         <form action="GetProductByCategoryNameController" method="GET" id="searchForm">
-                                            <div style="display: flex" id="inputName" class="input-container">
+                                            <div style="display: flex ;width: 100% "   id="inputName" class="input-container">
                                                 <!-- Search input for 'name' -->
                                                 <input
-                                                        style="padding: 5px 0;"
+                                                        style="padding: 5px 0 ; "
                                                         type="text"
                                                         id="nameLogin"
                                                         class="floating-input"
@@ -158,12 +158,12 @@
                                                                                 class="image-item image-hover"
                                                                                 src="data:image/jpeg;base64,${color.imageModels[1].imageBase64}"
                                                                                 alt="Hover Image"
-                                                                                onerror="this.onerror=null; this.src='noImageAvailable.jpg';"/>
+                                                                                onerror="this.onerror=null; this.src='bg6.png';"/>
                                                                     </c:when>
                                                                     <c:otherwise>
                                                                         <img
                                                                                 class="image-item image-hover"
-                                                                                src="assets/default/noImageAvailable.jpg"
+                                                                                src="assets/default/bg6.png"
                                                                                 alt="Hover Image"/>
                                                                     </c:otherwise>
                                                                 </c:choose>
@@ -217,6 +217,7 @@
                                                         <p class="name-product">${product.name}</p>
                                                         <div class="priceDiv">
                                                             <p class="price">
+                                                                <fmt:setLocale value="vi_VN" />
                                                                 <fmt:formatNumber value="${product.price - (product.price * product.discount / 100)}" type="currency"/>
                                                             </p>
 
@@ -224,6 +225,7 @@
 
                                                             <c:if test="${product.discount > 0}">
                                                                 <p class="original-price">
+                                                                    <fmt:setLocale value="vi_VN" />
                                                                     <fmt:formatNumber value="${product.price}" type="currency"/>
                                                                 </p>
                                                             </c:if>

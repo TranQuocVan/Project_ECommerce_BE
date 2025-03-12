@@ -19,48 +19,54 @@ public class ProductAdminDAO {
 
     public List<ProductModel>getAllProduct(int groupProductID, int productCategoryId, String size, String nameColor ) throws SQLException {
         StringBuilder query = new StringBuilder("""
-        SELECT 
-            p.productId, 
-            p.name AS productName, 
-            p.price, 
-            p.discount, 
-            p.productCategoryId, 
-            pc.name AS productCategoryName,
-            p.groupProductId,
-            g.name AS productGroupName,
-            c.colorId, 
-            c.name AS colorName, 
-            c.hexCode,
-            s.sizeId, 
-            s.size, 
-            s.stock,
-            i.imageId, 
-            i.image
-        FROM sizes s
-        INNER JOIN colors c ON s.colorId = c.colorId
-        INNER JOIN products p ON c.productId = p.productId
-        LEFT JOIN images i ON c.colorId = i.colorId
-        LEFT JOIN groupproducts g ON p.groupProductID = g.groupProductID
-        LEFT JOIN productcategory pc ON p.productCategoryId = pc.productCategoryId
-        WHERE 1 = 1 
+        WITH RankedProducts AS (
+                                  SELECT
+                                        p.productId,
+                                        p.name AS productName,
+                                        p.price,
+                                        p.discount,
+                                        p.productCategoryId,
+                                        pc.name AS productCategoryName,
+                                        p.groupProductId,
+                                        g.name AS productGroupName,
+                                        c.colorId,
+                                        c.name AS colorName,
+                                        c.hexCode,
+                                        s.sizeId,
+                                        s.size,
+                                        s.stock,
+                                        i.imageId,
+                                        i.image,
+                                        ROW_NUMBER() OVER (PARTITION BY p.productId) AS rn
+                                    FROM sizes s
+                                    INNER JOIN colors c ON s.colorId = c.colorId
+                                    INNER JOIN products p ON c.productId = p.productId
+                                    LEFT JOIN images i ON c.colorId = i.colorId
+                                    LEFT JOIN groupproducts g ON p.groupProductID = g.groupProductID
+                                    LEFT JOIN productcategory pc ON p.productCategoryId = pc.productCategoryId
+                                )
+                                SELECT *
+                                FROM RankedProducts r
+                                WHERE rn = 1
+                
     """);
         List<Object> parameters = new ArrayList<>();
         List<ProductModel> products = new ArrayList<>();
 
         if (groupProductID!=0)  {
-            query.append(" AND g.groupProductID = ?");
+            query.append(" AND r.groupProductID = ?");
             parameters.add(groupProductID);
         }
         if (productCategoryId != 0) {
-            query.append(" AND pc.productCategoryId = ?");
+            query.append(" AND r.productCategoryId = ?");
             parameters.add(productCategoryId);
         }
         if (!"".equalsIgnoreCase(size)) {
-            query.append(" AND s.size = ?");
+            query.append(" AND r.size = ?");
             parameters.add(size);
         }
         if (!"".equalsIgnoreCase(nameColor)) {
-            query.append(" AND c.name = ?");
+            query.append(" AND r.colorName = ?");
             parameters.add(nameColor);
         }
 
@@ -182,7 +188,14 @@ public class ProductAdminDAO {
     }
     public List<SizeModel> getAllSizeProduct (){
         List<SizeModel>  sizeModels = new ArrayList<>();
-        String sql = "select * from sizes" ;
+        String sql = """
+    WITH RankedSize AS ( 
+    Select *,
+             ROW_NUMBER() OVER (PARTITION BY size) AS rn
+    FROM sizes
+ )
+    SELECT sizeId,size FROM RankedSize WHERE rn = 1
+""" ;
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
             ResultSet rs = st.executeQuery();
@@ -202,7 +215,14 @@ public class ProductAdminDAO {
 
     public List<ColorModel> getAllColorProduct (){
         List<ColorModel> colorModels = new ArrayList<>();
-        String sql = "select * from colors" ;
+        String sql = """
+        WITH RankedColors AS (
+        SELECT *,
+               ROW_NUMBER() OVER (PARTITION BY name) AS rn
+        FROM colors 
+    )
+    SELECT colorId, name, hexCode FROM RankedColors WHERE rn = 1
+""";
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
             ResultSet rs = st.executeQuery();

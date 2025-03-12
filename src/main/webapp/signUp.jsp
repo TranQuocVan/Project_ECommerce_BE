@@ -59,7 +59,7 @@
                         </div>
 
                         <div style="display: none;" id="inputPass" class="input-container">
-                            <input name="password" type="text" id="password" class="floating-input" placeholder=" " required value=<%=password%>>
+                            <input name="password" type="password" id="password" class="floating-input" placeholder=" " required value=<%=password%>>
                             <label for="password" class="floating-label">Vui lòng điền mật khẩu của bạn</label>
 
                         </div>

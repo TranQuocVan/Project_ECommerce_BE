@@ -71,6 +71,7 @@
                                                         </div>
                                                         <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
                                                             <h6 class="mb-0">${item.formattedPrice}</h6>
+
                                                         </div>
                                                         <div class="col-md-1 col-lg-1 col-xl-1 text-end">
                                                             <form method="POST" action="DeleteCartItemController">

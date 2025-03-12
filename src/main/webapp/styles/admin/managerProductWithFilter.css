@@ -39,10 +39,14 @@
     pointer-events: auto; /* Cho phép sự kiện chuột trên ảnh xem trước */
 }
 
+
+
+
 .edit-list input[type="text"],
 .edit-list input[type="number"] {
     width: 150px; /* Điều chỉnh chiều rộng của input */
     margin-top: 5px; /* Thêm khoảng cách trên input */
+
 }
 
 .file-input {

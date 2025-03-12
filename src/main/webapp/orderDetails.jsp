@@ -30,11 +30,11 @@
                             <h4>Thông tin đơn hàng</h4>
                             <p><strong>Ngày đặt hàng:</strong> ${orderProducts.orderDate}</p>
                             <p><strong>Tổng số tiền:</strong>
-                                <fmt:formatNumber value="${orderProducts.totalPrice}" type="number" maxFractionDigits="0" groupingUsed="true"/>.000₫
+                                <fmt:formatNumber value="${orderProducts.totalPrice}" type="number" maxFractionDigits="0" groupingUsed="true"/>₫
                             </p>
                             <p><strong>Phương thức thanh toán:</strong> ${orderProducts.paymentName}</p>
                             <p><strong>Phương thức giao hàng:</strong> ${orderProducts.deliveryName}</p>
-                            <p><strong>Phí Giao hàng:</strong> ${orderProducts.deliveryPrice}00đ</p>
+                            <p><strong>Phí Giao hàng:</strong> ${orderProducts.deliveryPrice}đ</p>
 
                             <p><strong>Địa chỉ nhận hàng:</strong> ${orderProducts.deliveryAddress}</p>
                         </div>
@@ -76,7 +76,7 @@
                                 <tr class="product-table-row">
                                     <td class="product-table-cell">${product.name}</td>
                                     <td class="product-table-cell">
-                                        <fmt:formatNumber value="${product.price}" type="currency" currencySymbol=".000₫" groupingUsed="true"/>
+                                        <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="₫" groupingUsed="true"/>
                                     </td>
                                     <td class="product-table-cell">${product.discount}%</td>
 
