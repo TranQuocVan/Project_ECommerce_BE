@@ -51,7 +51,7 @@
                             <i id="icon" class="fa-solid fa-circle-right"></i>
                         </div>
                         <div style="display: none;" id="inputPass" class="input-container">
-                            <input name="password" type="text" id="password" class="floating-input" placeholder=" " required>
+                            <input name="password" type="password" id="password" class="floating-input" placeholder=" " required>
                             <label for="password" class="floating-label">Vui lòng điền mật khẩu của bạn</label>
 
                         </div>

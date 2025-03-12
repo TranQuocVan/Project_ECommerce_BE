@@ -245,15 +245,15 @@
                                 </div>
                             </div>
 
-<%--                            <div class="col-md-2">--%>
-<%--                                <form class="edit-status-form" method="POST" action="${pageContext.request.contextPath}/AdminDeleteProductController">--%>
-<%--                                    <input type="hidden" name="productId" value="${pm.id}">--%>
-<%--                                    <c:forEach var="color" items="${pm.colorModels}">--%>
-<%--                                        <input type="hidden" name="colorId" value="${color.id}">--%>
-<%--                                    </c:forEach>--%>
-<%--                                    <button type="submit" class="btn btn-danger mt-2" >Xóa</button>--%>
-<%--                                </form>--%>
-<%--                            </div>--%>
+                            <div class="col-md-2">
+                                <form class="edit-status-form" method="POST" action="${pageContext.request.contextPath}/AdminDeleteProductController">
+                                    <input type="hidden" name="productId" value="${pm.id}">
+                                    <c:forEach var="color" items="${pm.colorModels}">
+                                        <input type="hidden" name="colorId" value="${color.id}">
+                                    </c:forEach>
+                                    <button type="submit" class="btn btn-danger mt-2" >Xóa</button>
+                                </form>
+                            </div>
 
 
                         </c:forEach>

@@ -6,15 +6,18 @@
       <option name="ignoredModules">
         <list>
           <option value="Shoe" />
+          <option value="Shoe" />
         </list>
       </option>
       <option name="ignoredPackages">
         <list>
           <option value="com.google.protobuf:protobuf-java:3.19.4" />
+          <option value="mysql:mysql-connector-java:8.0.30" />
         </list>
       </option>
       <option name="ignoredReasons">
         <list>
+          <option value="Not exploitable" />
           <option value="Not exploitable" />
         </list>
       </option>

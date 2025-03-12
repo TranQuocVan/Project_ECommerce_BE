@@ -86,8 +86,8 @@ public class OrderAdminDAO {
         }
         return statusAdminModels;
     }
-    public boolean updateStatus(int status, int orderId) throws SQLException {
-        String sql = "UPDATE Statuses set statusTypeId = ? where orderId = ?";
+    public boolean insertStatus(int status, int orderId) throws SQLException {
+        String sql = "INSERT INTO Statuses (statusTypeId, orderId) VALUES (?, ?)";
 
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
