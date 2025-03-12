@@ -22,7 +22,7 @@ public class AdminUpdateStatusController extends HttpServlet {
 
         OrderAdminService orderAdminService = new OrderAdminService();
         try {
-            if (orderAdminService.updateStatus(status,orderId)){
+            if (orderAdminService.insertStatus(status,orderId)){
                 response.sendRedirect("OrderAdminController");
             }
             else {

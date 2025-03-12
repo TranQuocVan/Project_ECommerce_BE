@@ -201,26 +201,23 @@ let totalPrice = 0;  // Khởi tạo tổng tiền
 function updateTotalPrice() {
     let total = 0;
 
-    // Duyệt qua tất cả các item đã chọn
+    // Tính tổng từ các sản phẩm đã chọn
     selectedItems.forEach(sizeId => {
         const item = document.querySelector(`.items input[type="hidden"][value="${sizeId}"]`).closest('.items');
         const price = parseFloat(item.querySelector('.select-item').getAttribute('data-price').replace(/[^0-9.-]+/g, ""));
-        const quantity = parseInt(item.querySelector('input[name="quantity"]').value, 10); // Lấy số lượng từ input
-        total += price * quantity; // Cập nhật tổng tiền
+        const quantity = parseInt(item.querySelector('input[name="quantity"]').value, 10);
+        total += price * quantity;
     });
 
     // Lấy phí vận chuyển
     const feeDisplayText = document.querySelector("#feeDisplay").textContent;
-    const deliveryFee = parseFloat(feeDisplayText.replace(/[^\d.-]+/g, "")); // Chuyển phí vận chuyển sang số
+    const deliveryFee = parseFloat(feeDisplayText.replace(/[.,đ\s]+/g, ""));
+    total += deliveryFee;
 
-    console.log(deliveryFee)
-    // Cộng phí vận chuyển vào tổng tiền
-    total += deliveryFee/1000;
 
-    // Cập nhật tổng tiền vào phần hiển thị
+    // Cập nhật hiển thị tổng tiền
     document.getElementById('totalAmount').textContent = formatPrice(total);
 }
-
 // Hàm xử lý thay đổi số lượng
 function handleQuantityChange(input) {
     const item = input.closest('.items');
@@ -263,9 +260,9 @@ itemShoppingCart.forEach(item => {
 
 // Theo dõi sự thay đổi của select phương thức giao hàng
 
-document.getElementById('deliverySelect').addEventListener('change', function() {
+document.getElementById('deliverySelect').addEventListener('change', function () {
     const selectedOption = this.options[this.selectedIndex];  // Lấy option đã chọn
-    const deliveryFee = parseFloat(selectedOption.getAttribute('data-fee')) || 0;  // Lấy phí giao hàng từ thuộc tính data-fee
+    const deliveryFee = parseFloat(selectedOption.getAttribute('data-fee')) || 0;  // Lấy phí giao hàng
 
     // Cập nhật phí giao hàng lên màn hình
     document.getElementById('feeDisplay').textContent = formatPrice(deliveryFee);
@@ -278,18 +275,18 @@ document.getElementById('deliverySelect').addEventListener('change', function() 
 window.addEventListener('load', function () {
     // Lấy phương thức giao hàng mặc định
     const defaultOption = document.querySelector('#deliverySelect option:first-child');
+    const deliveryFee = parseFloat(selectedOption.getAttribute('data-fee')) || 0;
 
-    // Lấy phí giao hàng mặc định từ thuộc tính data-fee
-    const deliveryFee = parseFloat(defaultOption?.getAttribute('data-fee')) || 0;
+    // Định dạng và hiển thị phí giao hàng mặc định
+    document.getElementById('feeDisplay').textContent = formatPrice(deliveryFee);
 
-    // Định dạng và hiển thị phí giao hàng mặc định kèm ".000đ"
-    document.getElementById('feeDisplay').textContent = formatPrice(deliveryFee)
+    // Cập nhật tổng tiền
+    updateTotalPrice();
 });
 
-const formatPrice = (price) => {
-    return `${new Intl.NumberFormat('vi-VN', { minimumFractionDigits: 3, maximumFractionDigits: 3 }).format(price)}đ`;
-};
-
+function formatPrice(price) {
+    return `${new Intl.NumberFormat('vi-VN', { style: 'decimal', minimumFractionDigits: 0 }).format(price)}đ`;
+}
 
 
 
@@ -308,12 +305,11 @@ document.addEventListener('DOMContentLoaded', function () {
         var fee = selectedOption.getAttribute('data-fee');
 
         // Định dạng số với dấu phân cách hàng nghìn
-        var formattedFee = new Intl.NumberFormat('vi-VN').format(fee);
+        var formattedFee = formatPrice(parseFloat(fee));
 
         // Hiển thị giá với dấu phân cách và "đ" ở cuối
-        document.getElementById('feeDisplay').innerText =  formatPrice(formattedFee);
+        document.getElementById('feeDisplay').innerText = formattedFee;
     }
-
     // Gọi hàm để cập nhật giá ngay khi trang tải xong
     updateFeeDisplay();
 

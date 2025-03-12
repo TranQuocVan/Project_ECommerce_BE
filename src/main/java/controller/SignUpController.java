@@ -4,9 +4,11 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import service.UserService;
+import util.Email;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Random;
 
 @WebServlet(name = "SignUpController", value = "/SignUpController")
 public class SignUpController extends HttpServlet {
@@ -47,10 +49,12 @@ public class SignUpController extends HttpServlet {
 
             if (res.equals("Success")) {
                 // Tạo mã xác thực (ở đây đặt tạm là 1)
-                int authCode = 1;
+                Random rd = new Random();
 
-                // Gửi mã xác thực qua email (bỏ qua phần gửi thực tế để test)
-                // Email.sendEmail(gmail, "Auth code", authCode + "");
+                int authCode = Math.abs(rd.nextInt(900000) + 100000);
+
+//                 Gửi mã xác thực qua email (bỏ qua phần gửi thực tế để test)
+                 Email.sendEmail(gmail, "Auth code", authCode + "");
 
                 // Lưu mã xác thực vào session
                 session.setAttribute("authCode", String.valueOf(authCode));

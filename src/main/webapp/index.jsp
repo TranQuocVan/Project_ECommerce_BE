@@ -256,6 +256,7 @@
     </div>
 </header>
 
+
 <div class="modal fade" id="lightboxModal" tabindex="0" aria-labelledby="lightboxModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div style="width: max-content" class="modal-content">
@@ -264,6 +265,7 @@
                     <!-- Nút Mua ngay -->
                     <div class="buy-button-container">
                         <div class="listProduct">
+
                             <button class="mx-auto d-flex justify-content-center align-items-center rounded-pill order-button cart-box" style="width: 250px;">
                                 <i class="fa-solid fa-eye mx-2"></i>
                                 <span class="fw-bold">Xem ngay</span>
@@ -280,6 +282,7 @@
         </div>
     </div>
 </div>
+
 
 
 <!--Light box2 -->

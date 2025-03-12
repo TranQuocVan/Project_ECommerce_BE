@@ -18,9 +18,9 @@ public class OrderAdminService {
         OrderAdminDAO dao = new OrderAdminDAO();
         return dao.getAllStatus();
     }
-    public boolean updateStatus(int status, int orderId) throws SQLException {
+    public boolean insertStatus(int status, int orderId) throws SQLException {
         OrderAdminDAO dao = new OrderAdminDAO();
-        return dao.updateStatus(status,orderId);
+        return dao.insertStatus(status,orderId);
     }
 
 

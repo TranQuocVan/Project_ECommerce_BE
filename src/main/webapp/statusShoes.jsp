@@ -32,7 +32,7 @@
                         <a href="#" class="status-tab" onclick="changeStatus(this)">Chờ thanh toán</a>
                         <a href="#" class="status-tab" onclick="changeStatus(this)">Chờ giao hàng</a>
                         <a href="#" class="status-tab" onclick="changeStatus(this)">
-                            Vận chuyển <span class="badge bg-danger">1</span>
+<%--                            Vận chuyển <span class="badge bg-danger">1</span>--%>
                         </a>
                         <a href="#" class="status-tab" onclick="changeStatus(this)">Hoàn thành</a>
                         <a href="#" class="status-tab" onclick="changeStatus(this)">Đã hủy</a>
@@ -85,7 +85,7 @@
                                                     <div>
                                                         <div class="text-muted">Tổng tiền</div>
                                                         <div class="fw-normal mb-0">
-                                                            <fmt:formatNumber value="${item.totalPrice * 1000}" type="number" groupingUsed="true" minFractionDigits="0" />₫
+                                                            <fmt:formatNumber value="${item.totalPrice}" type="number" groupingUsed="true" minFractionDigits="0" />₫
                                                         </div>
                                                     </div>
                                                 </div>
