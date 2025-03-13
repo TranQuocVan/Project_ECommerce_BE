@@ -206,15 +206,19 @@
                                             <p class="small text-muted mb-1">Màu sắc</p>
                                             <p class="lead fw-normal mb-0">${pm.colorName}</p>
 
-                                            <div class="edit-list" style="display: none;">
-                                                <input class="lead fw-normal mb-0" type="text" name="colorName" id="colorName" placeholder="Size" required style="width: 90px;">
-                                            </div>
+<%--                                            <div class="edit-list" style="display: none;">--%>
+<%--                                                <input class="lead fw-normal mb-0" type="text" name="colorName" id="colorName" placeholder="Size" required style="width: 90px;">--%>
+<%--                                            </div>--%>
 
                                         </div>
 
                                         <div class="col-md-2">
-                                        <label for="hexCode0">Hex Code:</label>
-                                        <input type="color" id="hexCode0"  value="${pm.hexCode}" name="hexCode" required><br>
+<%--                                        <label for="hexCode0">Hex Code:</label>--%>
+                                            <p class="small text-muted mb-1">Hex Code:</p>
+                                            <div class="edit-list" style="display: none;">
+                                                <input type="color" id="hexCode0"  value="${pm.hexCode}" name="hexCode" required><br>
+                                            </div>
+
                                         </div>
 
 
@@ -229,12 +233,17 @@
                                         </div>
 
                                         <!-- Đặt input file và preview container dưới các hình ảnh -->
+                                        <div class="col-md-2">
+                                            <p class="small text-muted mb-1">Hình ảnh</p>
+
                                             <div class="edit-list" style="display: none; position: relative; text-align: center;">
-                                                <input type="file" id="file-input-0" name="image0[]" accept="image/*" onchange="previewImage(event, 0)"><br>
-                                                <div id="imagePreview0" class="image-preview-container">
+                                                <input type="file" id="file-input-0" name="image0[]" accept="image/*" onchange="previewImage(event, 0)" style="width: 105px; overflow: hidden;"><br>
+                                                <div id="imagePreview0" class="image-preview-container" style="margin-top: 10%;">
                                                     <!-- Preview Container -->
                                                 </div>
                                             </div>
+                                        </div>
+
 
                                         <div class="col-md-2">
                                             <button type="button" class="btn btn-warning mt-2 " onclick="editStatus(this)" >Chỉnh sửa</button>
