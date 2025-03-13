@@ -129,7 +129,7 @@
                             <div class="card">
                                 <div class="card-body">
                                     <form class="edit-status-form" method="POST" action="${pageContext.request.contextPath}/AdminUpdateProductController" enctype="multipart/form-data">
-                                    <div class="row align-items-center text-center">
+                                    <div class="row text-center">
 
                                         <div class="col-md-2 product-table-cell">
                                             <c:forEach var="color" items="${pm.colorModels}">
@@ -238,7 +238,7 @@
 
                                             <div class="edit-list" style="display: none; position: relative; text-align: center;">
                                                 <input type="file" id="file-input-0" name="image0[]" accept="image/*" onchange="previewImage(event, 0)" style="width: 105px; overflow: hidden;"><br>
-                                                <div id="imagePreview0" class="image-preview-container" style="margin-top: 10%;">
+                                                <div id="imagePreview0" style="margin-top: 5%">
                                                     <!-- Preview Container -->
                                                 </div>
                                             </div>
