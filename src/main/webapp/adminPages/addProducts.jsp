@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/admin/navigationAdmin.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/global.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/admin/globaladmin.css">
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/buylater.css">
+<%--  <link rel="stylesheet" href="${pageContext.request.contextPath}/styles/buylater.css">--%>
 </head>
 
 <body>

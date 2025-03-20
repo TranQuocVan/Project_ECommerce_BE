@@ -41,7 +41,7 @@
 
     <servlet>
         <servlet-name>AddToCartController</servlet-name>
-        <servlet-class>controller.AddToCartController</servlet-class>
+        <servlet-class>controller.user.cart.AddToCartController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>AddToCartController</servlet-name>
