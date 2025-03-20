@@ -140,8 +140,8 @@ const renderNavigation = () => {
                 <div style="font-size: 20px;" class="row">
                     <div class="col-md-9 flex-align-items-center dropdown">
                         <span class="navigation"><a href="IndexController"><img style="width: 20px;" src="${urlLogo}" alt="logo"></a></span>
-                        <span class="navigation" id="shop"><a href="IndexController">Cửa hàng</a></span>
-                        <span class="navigation" id="shoe"><a href="productDetails.jsp">Giày</a></span>
+                        <span class="navigation" id="shop"><a href="/Shoe_war_exploded/IndexController">Cửa hàng</a></span> 
+                        <span class="navigation" id="shoe"><a href="productDetails.jsp">Giày</a></span> 
                         <span class="navigation" id="sandal"><a href="#">Dép</a></span> 
                         <span class="navigation"><a href="GetProductByCategoryNameController">Sản phẩm theo loại hàng</a></span>
                         <span class="navigation"> ${isAdmin  ? `<a href='AdminController'>Admin</a>` : ``}</span>

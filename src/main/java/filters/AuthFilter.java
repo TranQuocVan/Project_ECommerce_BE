@@ -4,7 +4,8 @@ import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.*;
 import model.UserModel;
-import service.UserService;
+import service.user.account.UserService;
+import service.user.account.TokenService;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -43,7 +44,7 @@ public class AuthFilter implements Filter {
 
 
                                 // Tùy chọn: Cập nhật token mới để tăng cường bảo mật
-                                String newToken = service.TokenService.generateToken();
+                                String newToken = TokenService.generateToken();
                                 user.setRememberMeToken(newToken);
                                 UserService.updateRememberMeToken(user);
 
