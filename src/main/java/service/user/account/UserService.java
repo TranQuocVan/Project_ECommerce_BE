@@ -12,6 +12,10 @@ import java.sql.SQLException;
 
 public class UserService {
 
+    public boolean checkUserModelExistence(UserModel userModel){
+        return userModel != null;
+    }
+
     /**
      * Kiểm tra thông tin đăng nhập (Gmail và mật khẩu).
      * @param userModel - Đối tượng UserModel chứa Gmail và mật khẩu.
@@ -29,7 +33,7 @@ public class UserService {
      * @return "Success" nếu Gmail hợp lệ và chưa tồn tại, ngược lại trả về thông báo lỗi.
      * @throws SQLException nếu xảy ra lỗi trong truy vấn cơ sở dữ liệu.
      */
-    public static String checkValidGmailAndExists(String gmail) throws SQLException {
+    public String checkValidGmailAndExists(String gmail) throws SQLException {
         if (!EmailValidator.isValidEmail(gmail)) {
             return "Invalid Gmail";
         }
@@ -41,6 +45,8 @@ public class UserService {
 
         return "Gmail already exists";
     }
+
+
 
     /**
      * Cập nhật token "Remember Me" cho người dùng.
@@ -64,12 +70,12 @@ public class UserService {
     }
 
 
-    public static void invalidateToken(String token) throws SQLException {
+    public  void invalidateToken(String token) throws SQLException {
         UserDao.invalidateToken(token);
     }
 
     // Xác thực thông tin người dùng
-    public static UserModel authenticateUser(String gmail, String password) throws SQLException {
+    public  UserModel authenticateUser(String gmail, String password) throws SQLException {
         UserModel userModel = new UserModel(gmail, hashPassword(password));
 
         // Kiểm tra tài khoản hợp lệ qua DAO (hoặc thêm các bước xử lý khác)
