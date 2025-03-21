@@ -58,11 +58,11 @@
                                     <div class="card mb-4">
                                         <div class="card-body p-4">
                                             <div class="row align-items-center">
-                                                <div class="col-md-2">
+                                                <div class="col-md-1">
                                                     <div class="text-center">ID: ${item.id}</div>
                                                     <i class="fa-brands fa-shopify shopify-icon" onclick="openLightbox()"></i>
                                                 </div>
-                                                <div class="col-md-2 d-flex justify-content-center">
+                                                <div class="col-md-1 d-flex justify-content-center">
                                                     <div>
                                                         <div class="text-muted">Ngày mua</div>
                                                         <div class="fw-normal mb-0">${item.orderDate}</div>
@@ -81,12 +81,12 @@
                                                         <div class="fw-normal mb-0 text-success">${item.paymentName}</div>
                                                     </div>
                                                 </div>
-<%--                                                <div class="col-md-2 d-flex justify-content-center">--%>
-<%--                                                    <div>--%>
-<%--                                                        <div class="text-muted">Trạng thái thanh toán</div>--%>
-<%--                                                        <div class="fw-normal mb-0 text-success">${item.statusPayment == 0 ? 'Chưa thanh toán' : 'Đã thanh toán'}</div>--%>
-<%--                                                    </div>--%>
-<%--                                                </div>--%>
+                                                <div class="col-md-2 d-flex justify-content-center">
+                                                    <div>
+                                                        <div class="text-muted">Trạng thái thanh toán</div>
+                                                        <div class="fw-normal mb-0 text-success">${item.statusPayment}</div>
+                                                    </div>
+                                                </div>
                                                 <div class="col-md-2 d-flex justify-content-center">
                                                     <div>
                                                         <div class="text-muted">Tổng tiền</div>
