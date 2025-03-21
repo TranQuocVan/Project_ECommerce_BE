@@ -4,6 +4,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import service.user.account.UserService;
+import service.util.GmailServices;
 import util.Email;
 
 import java.io.IOException;
@@ -13,6 +14,8 @@ import java.util.Random;
 @WebServlet(name = "SignUpController", value = "/SignUpController")
 public class SignUpController extends HttpServlet {
 
+    public final GmailServices gmailServices = new GmailServices();
+    public final UserService userService = new UserService();
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("doGet");
@@ -23,13 +26,12 @@ public class SignUpController extends HttpServlet {
         // Lấy thông tin từ request
         String gmail = request.getParameter("gmail");
         String password = request.getParameter("password");
-        String res = "";
 
         // Tạo session
         HttpSession session = request.getSession();
 
         // Kiểm tra nếu không nhập Gmail
-        if (gmail.isEmpty()) {
+        if (gmailServices.checkGmailExistence(gmail)) {
             request.setAttribute("res", "Must enter gmail");
             session.setAttribute("password", password); // Lưu mật khẩu vào session (nếu cần)
 
@@ -42,19 +44,20 @@ public class SignUpController extends HttpServlet {
         // Nếu Gmail không rỗng, xử lý tiếp
         try {
             // Kiểm tra Gmail hợp lệ và tồn tại
-            res = UserService.checkValidGmailAndExists(gmail);
 
             // Lưu Gmail vào session
             session.setAttribute("gmail", gmail);
 
-            if (res.equals("Success")) {
+            if (userService.checkValidGmailAndExists(gmail).equals("Success")) {
                 // Tạo mã xác thực (ở đây đặt tạm là 1)
-                Random rd = new Random();
+//                Random rd = new Random();
+//
+//                int authCode = Math.abs(rd.nextInt(900000) + 100000);
+//
+////                 Gửi mã xác thực qua email (bỏ qua phần gửi thực tế để test)
+//                 Email.sendEmail(gmail, "Auth code", authCode + "");
 
-                int authCode = Math.abs(rd.nextInt(900000) + 100000);
-
-//                 Gửi mã xác thực qua email (bỏ qua phần gửi thực tế để test)
-                 Email.sendEmail(gmail, "Auth code", authCode + "");
+                int authCode = gmailServices.sendGmail(gmail);
 
                 // Lưu mã xác thực vào session
                 session.setAttribute("authCode", String.valueOf(authCode));
@@ -65,7 +68,7 @@ public class SignUpController extends HttpServlet {
                 dispatcher.forward(request, response);
             } else {
                 // Nếu Gmail không hợp lệ hoặc không tồn tại
-                request.setAttribute("res", res);
+                request.setAttribute("res", userService.checkValidGmailAndExists(gmail));
 
                 // Quay lại trang đăng nhập với thông báo lỗi
                 RequestDispatcher login = getServletContext().getRequestDispatcher("/signUp.jsp");
