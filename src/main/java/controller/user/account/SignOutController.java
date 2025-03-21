@@ -21,7 +21,7 @@ public class SignOutController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Xóa session
         HttpSession session = request.getSession(false);
-        if (sessionServices.checkSessionExistence(session)) {
+        if (sessionServices.isSessionExistence(session)) {
             sessionServices.invalidateSession(session);
         }
 

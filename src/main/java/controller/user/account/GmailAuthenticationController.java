@@ -26,14 +26,14 @@ public class GmailAuthenticationController extends HttpServlet {
 
         // Lấy session hiện tại, không tạo mới
         HttpSession session = request.getSession(false);
-        if (sessionServices.checkSessionExistence(session)) {
-            response.sendRedirect("login.jsp"); // Nếu không có session, chuyển về trang login
+        if (!sessionServices.isSessionExistence(session)) {
+            response.sendRedirect("../login.jsp"); // Nếu không có session, chuyển về trang login
             return;
         }
 
 
-        if (sessionServices.checkSessionInformation(session)) {
-            response.sendRedirect("login.jsp"); // Nếu thông tin không đầy đủ, chuyển về trang login
+        if (!sessionServices.isSessionInformation(session)) {
+            response.sendRedirect("../login.jsp"); // Nếu thông tin không đầy đủ, chuyển về trang login
             return;
         }
 

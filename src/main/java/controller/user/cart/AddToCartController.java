@@ -33,7 +33,7 @@ public class AddToCartController extends HttpServlet {
         HttpSession session = request.getSession();
         UserModel user = (UserModel) session.getAttribute("user");
 
-        if (!userService.checkUserModelExistence(user)) {
+        if (!userService.isUserModelExistence(user)) {
             response.getWriter().write("{\"status\":\"error\",\"message\":\"User not logged in\"}");
             return;
         }
