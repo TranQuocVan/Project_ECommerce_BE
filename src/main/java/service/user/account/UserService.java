@@ -12,7 +12,7 @@ import java.sql.SQLException;
 
 public class UserService {
 
-    public boolean checkUserModelExistence(UserModel userModel){
+    public boolean isUserModelExistence(UserModel userModel){
         return userModel != null;
     }
 

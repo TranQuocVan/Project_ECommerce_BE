@@ -49,13 +49,6 @@ public class SignUpController extends HttpServlet {
             session.setAttribute("gmail", gmail);
 
             if (userService.checkValidGmailAndExists(gmail).equals("Success")) {
-                // Tạo mã xác thực (ở đây đặt tạm là 1)
-//                Random rd = new Random();
-//
-//                int authCode = Math.abs(rd.nextInt(900000) + 100000);
-//
-////                 Gửi mã xác thực qua email (bỏ qua phần gửi thực tế để test)
-//                 Email.sendEmail(gmail, "Auth code", authCode + "");
 
                 int authCode = gmailServices.sendGmail(gmail);
 

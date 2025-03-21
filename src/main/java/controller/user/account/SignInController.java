@@ -31,7 +31,7 @@ public class SignInController extends HttpServlet {
             // Kiểm tra thông tin tài khoản qua service
             UserModel userModel = userService.authenticateUser(gmail, password);
 
-            if (userService.checkUserModelExistence(userModel)) {
+            if (!userService.isUserModelExistence(userModel)) {
                 // Trường hợp thông tin không hợp lệ
                 request.setAttribute("res", "This gmail or password is incorrect");
                 request.getRequestDispatcher("signIn.jsp").forward(request, response);

@@ -30,7 +30,7 @@ public class CheckStockController extends HttpServlet {
         UserModel user = (UserModel) session.getAttribute("user");
 
         // Check if user is logged in
-        if (!userService.checkUserModelExistence(user)) {
+        if (!userService.isUserModelExistence(user)) {
             response.getWriter().write("{\"status\":\"error\",\"message\":\"User is not logged in\"}");
             return;
         }

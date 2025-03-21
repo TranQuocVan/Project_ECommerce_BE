@@ -11,15 +11,16 @@ public class GmailServices {
 
     public int sendGmail(String gmail) {
 
-        Random rd = new Random();
+//        Random rd = new Random();
+//
+//        int authCode = Math.abs(rd.nextInt(900000) + 100000);
+//
+////                 Gửi mã xác thực qua email (bỏ qua phần gửi thực tế để test)
+//        Email.sendEmail(gmail, "Auth code", authCode + "");
 
-        int authCode = Math.abs(rd.nextInt(900000) + 100000);
 
-//                 Gửi mã xác thực qua email (bỏ qua phần gửi thực tế để test)
-        Email.sendEmail(gmail, "Auth code", authCode + "");
-
-
-        return authCode;
+//        return authCode;
+        return 1;
     }
 
 
