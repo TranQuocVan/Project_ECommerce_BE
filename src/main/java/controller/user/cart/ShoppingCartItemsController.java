@@ -5,6 +5,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import model.*;
 import service.user.cart.ShoppingCartService;
+import service.util.FormatPriceServices;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -14,23 +15,25 @@ import java.util.List;
 @WebServlet(name = "ShoppingCartItemsController", value = "/ShoppingCartItemsController")
 public class ShoppingCartItemsController extends HttpServlet {
 
+    private final ShoppingCartService shoppingCartService = new ShoppingCartService();
+    private final FormatPriceServices formatPriceServices = new FormatPriceServices();
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         UserModel user = (UserModel) session.getAttribute("user");
 
 
-        ShoppingCartService shoppingCartService = new ShoppingCartService();
         List<ShoppingCartItemsModel> lists = shoppingCartService.getAllShoppingCartItems(user.getId());
         List<PaymentModel> listPaymentModels = shoppingCartService.getAllPayments();
         List<DeliveriesModel> listDeliveriesModels = shoppingCartService.getAllDeliveries();
 
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-        symbols.setGroupingSeparator('.');
+//        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+//        symbols.setGroupingSeparator('.');
+//
+//        DecimalFormat df = new DecimalFormat("#,###", symbols);
+//        String formattedPrice = df.format(0) + "đ";
 
-        DecimalFormat df = new DecimalFormat("#,###", symbols);
-        String formattedPrice = df.format(0) + "đ";
-
+        String formattedPrice = formatPriceServices.formatPrice();
         request.setAttribute("totalPriceFormat", formattedPrice);
         request.setAttribute("totalPrice", formattedPrice);
         request.setAttribute("shoppingCartItemsList", lists);
@@ -45,15 +48,9 @@ public class ShoppingCartItemsController extends HttpServlet {
         UserModel user = (UserModel) session.getAttribute("user");
         int sizeId =Integer.parseInt(request.getParameter("sizeId")) ;
 
-
-        ShoppingCartService shoppingCartService = new ShoppingCartService();
         List<ShoppingCartItemsModel> lists = shoppingCartService.getAllShoppingCartItems(user.getId());
         List<PaymentModel> listPaymentModels = shoppingCartService.getAllPayments();
         List<DeliveriesModel> listDeliveriesModels = shoppingCartService.getAllDeliveries();
-
-
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-        symbols.setGroupingSeparator('.');
 
 
         request.setAttribute("shoppingCartItemsList", lists);

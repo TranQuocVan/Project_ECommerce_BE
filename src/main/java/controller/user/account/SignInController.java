@@ -12,6 +12,7 @@ import java.sql.SQLException;
 
 @WebServlet(name = "SignInController", value = "/SignInController")
 public class SignInController extends HttpServlet {
+    private final UserService userService = new UserService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -28,9 +29,9 @@ public class SignInController extends HttpServlet {
         // Gọi UserService để xử lý
         try {
             // Kiểm tra thông tin tài khoản qua service
-            UserModel userModel = UserService.authenticateUser(gmail, password);
+            UserModel userModel = userService.authenticateUser(gmail, password);
 
-            if (userModel == null) {
+            if (userService.checkUserModelExistence(userModel)) {
                 // Trường hợp thông tin không hợp lệ
                 request.setAttribute("res", "This gmail or password is incorrect");
                 request.getRequestDispatcher("signIn.jsp").forward(request, response);

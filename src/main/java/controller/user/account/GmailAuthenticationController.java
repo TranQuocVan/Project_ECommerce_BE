@@ -6,14 +6,15 @@ import jakarta.servlet.annotation.*;
 import model.UserModel;
 import service.user.account.AuthenticationService;
 import service.user.account.UserService;
+import service.util.SessionServices;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
 @WebServlet(name = "GmailAuthenticationController", value = "/GmailAuthenticationController")
 public class GmailAuthenticationController extends HttpServlet {
-
     private final AuthenticationService authenticationService = new AuthenticationService();
+    private final SessionServices sessionServices = new SessionServices();
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     }
@@ -25,31 +26,26 @@ public class GmailAuthenticationController extends HttpServlet {
 
         // Lấy session hiện tại, không tạo mới
         HttpSession session = request.getSession(false);
-        if (session == null) {
+        if (sessionServices.checkSessionExistence(session)) {
             response.sendRedirect("login.jsp"); // Nếu không có session, chuyển về trang login
             return;
         }
 
-        // Lấy các thông tin cần thiết từ session
-        String authCodeOfSession = (String) session.getAttribute("authCode");
-        String gmail = (String) session.getAttribute("gmail");
-        String password = (String) session.getAttribute("password");
 
-        if (authCodeOfSession == null || gmail == null || password == null) {
+        if (sessionServices.checkSessionInformation(session)) {
             response.sendRedirect("login.jsp"); // Nếu thông tin không đầy đủ, chuyển về trang login
             return;
         }
 
         // Gọi service để kiểm tra mã xác thực
-        boolean isValid = authenticationService.validateAuthCode(authCode, authCodeOfSession);
+        boolean isValid = authenticationService.validateAuthCode(authCode, (String) session.getAttribute("authCode"));
 
         if (isValid) {
             try {
-                // Kiểm tra Gmail đã tồn tại
-
 
                 // Đăng ký người dùng nếu Gmail chưa tồn tại
-                UserModel userModel = authenticationService.registerUser(gmail, password);
+                UserModel userModel = authenticationService.registerUser
+                        ((String) session.getAttribute("gmail"), (String) session.getAttribute("password"));
 
                 // Xử lý "Remember Me" và cập nhật thông tin session
                 UserService.handleRememberMe(userModel, session, response);
@@ -66,7 +62,7 @@ public class GmailAuthenticationController extends HttpServlet {
         } else {
             // Trường hợp mã xác thực không đúng
             request.setAttribute("res", "Mã xác thực bạn nhập chưa đúng");
-            request.setAttribute("password", password); // Giữ lại mật khẩu để người dùng không phải nhập lại
+            request.setAttribute("password", session.getAttribute("password")); // Giữ lại mật khẩu để người dùng không phải nhập lại
             RequestDispatcher dispatcher = request.getRequestDispatcher("gmailAuthentication.jsp");
             dispatcher.forward(request, response);
         }
