@@ -12,7 +12,7 @@ import java.util.List;
 
 public class OrderDao {
     public int addOrder(Order order) {
-        String orderSql = "INSERT INTO orders (paymentId, orderDate, deliveryAddress, totalPrice, userId, deliveryId) VALUES (?, ?, ?, ?, ?, ?)";
+        String orderSql = "INSERT INTO orders (paymentId, orderDate, deliveryAddress, totalPrice, userId, deliveryId, statusPayment) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection con = JDBCUtil.getConnection()) {
             try (PreparedStatement orderSt = con.prepareStatement(orderSql, PreparedStatement.RETURN_GENERATED_KEYS)) {
@@ -23,6 +23,7 @@ public class OrderDao {
                 orderSt.setFloat(4, order.getTotalPrice());
                 orderSt.setInt(5, order.getUserId());
                 orderSt.setInt(6, order.getDeliveryId());
+                orderSt.setInt(7, 0);
 
                 // Execute the order insertion
                 int affectedRows = orderSt.executeUpdate();
@@ -105,7 +106,8 @@ public class OrderDao {
                         rs.getString("deliveryAddress"),
                         rs.getFloat("totalPrice"),
                         deliveryName(rs.getInt("deliveryId")),
-                        deliveryFee(rs.getInt("deliveryId"))
+                        deliveryFee(rs.getInt("deliveryId")),
+                        nameStatusPayment(rs.getInt("statusPayment"))
                 );
 
                 orders.add(orderModel);
@@ -146,6 +148,27 @@ public class OrderDao {
             e.printStackTrace();
         }
         return "Trống";
+    }
+
+    public String nameStatusPayment(int statusPaymentId){
+        switch (statusPaymentId) {
+            case 0: return "Chưa thanh toán";
+            case 1: return "Đã thanh toán";
+            default: return "Trạng thái không hợp lệ";
+        }
+    }
+
+    public boolean updateStatusPayment(int orderId, int status) {
+        String sql = "UPDATE orders SET statusPayment = ? WHERE orderId = ?";
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, status);
+            st.setInt(2, orderId);
+            return st.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public float deliveryFee(int deliveryId) {
@@ -218,7 +241,8 @@ public class OrderDao {
                         rs.getString("deliveryAddress"),
                         rs.getFloat("totalPrice"),
                         deliveryName(rs.getInt("deliveryId")),
-                        deliveryFee(rs.getInt("deliveryId"))
+                        deliveryFee(rs.getInt("deliveryId")),
+                        nameStatusPayment(rs.getInt("statusPayment"))
                 );
             }
 

@@ -12,14 +12,14 @@ public class OrderModel {
     String deliveryName ;
     float deliveryPrice ;
     String nameStatus ;
-
+    String statusPayment;
 
     private List<ProductModel> productModels ;
 
     private List<StatusModel> statusModels ;
 
 
-    public OrderModel(int id, String paymentName, String orderDate, String deliveryAddress, float totalPrice, String deliveryName,float deliveryPrice) {
+    public OrderModel(int id, String paymentName, String orderDate, String deliveryAddress, float totalPrice, String deliveryName,float deliveryPrice, String statusPayment) {
         this.id = id;
         this.paymentName = paymentName;
         this.orderDate = orderDate;
@@ -27,7 +27,7 @@ public class OrderModel {
         this.totalPrice = totalPrice;
         this.deliveryName = deliveryName;
         this.deliveryPrice = deliveryPrice;
-
+        this.statusPayment = statusPayment;
     }
     public OrderModel(int id, String paymentName, String orderDate, String deliveryAddress, float totalPrice, String deliveryName, String nameStatus) {
         this.id = id;
@@ -59,6 +59,10 @@ public class OrderModel {
         return totalPrice;
     }
 
+    public String getStatusPayment() {
+        return statusPayment;
+    }
+
     public String getDeliveryName() {
         return deliveryName;
     }
@@ -85,6 +89,11 @@ public class OrderModel {
     public void setDeliveryName(String deliveryName) {
         this.deliveryName = deliveryName;
     }
+
+    public void setStatusPayment(String statusPayment) {
+        this.statusPayment = statusPayment;
+    }
+
     public void setProductModels(List<ProductModel> productModels) {
         this.productModels = productModels;
     }
