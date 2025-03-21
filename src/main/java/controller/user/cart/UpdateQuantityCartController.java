@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.*;
 import model.UserModel;
 import org.json.JSONObject;
 import service.user.cart.ShoppingCartService;
+import service.util.ReaderRequest;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.io.IOException;
 @WebServlet(name = "UpdateQuantityCartController", value = "/UpdateQuantityCartController")
 public class UpdateQuantityCartController extends HttpServlet {
 
+    private final ReaderRequest readerRequest = new ReaderRequest();
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     }
@@ -24,35 +26,38 @@ public class UpdateQuantityCartController extends HttpServlet {
         HttpSession session = request.getSession();
         UserModel user = (UserModel) session.getAttribute("user");
 
-        StringBuilder sb = new StringBuilder();
-        try (BufferedReader reader = request.getReader()) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
-        }
+//        StringBuilder sb = new StringBuilder();
+//        try (BufferedReader reader = request.getReader()) {
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//                sb.append(line);
+//            }
+//        }
+
+        String requestBody = readerRequest.readRequestBody(request,response);
 
         try {
-            // Parse JSON từ request
-            String jsonData = sb.toString();
-            JSONObject productJson = new JSONObject(jsonData);
+            if (readerRequest.checkRequestBodyExistence(requestBody)) {
+                // Parse JSON từ request
+                JSONObject productJson = new JSONObject(requestBody);
 
-            int sizeId = productJson.getInt("idSize"); // Nhận giá trị sizeId
-            int quantity = productJson.getInt("quantity"); // Nhận giá trị quantity
+                int sizeId = productJson.getInt("idSize"); // Nhận giá trị sizeId
+                int quantity = productJson.getInt("quantity"); // Nhận giá trị quantity
 
-            boolean isDecreaseQuantity = productJson.optBoolean("isDecreaseQuantity", false);
+                boolean isDecreaseQuantity = productJson.optBoolean("isDecreaseQuantity", false);
 
-            // Gọi Service để lưu sản phẩm
-            ShoppingCartService shoppingCartService = new ShoppingCartService();
+                // Gọi Service để lưu sản phẩm
+                ShoppingCartService shoppingCartService = new ShoppingCartService();
 
-            // Thêm sản phẩm vào giỏ hàng
-            boolean isUpdated = shoppingCartService.updateProductToShoppingCart(quantity, sizeId, user.getId(),isDecreaseQuantity);
-            if (isUpdated) {
-                response.getWriter().write("{\"status\":\"ok\",\"message\":\"Quantity updated successfully\"}");
-            } else {
-                response.getWriter().write("{\"status\":\"error\",\"message\":\"Failed to update quantity\"}");
+                // Thêm sản phẩm vào giỏ hàng
+                boolean isUpdated = shoppingCartService.updateProductToShoppingCart(quantity, sizeId, user.getId(), isDecreaseQuantity);
+                if (isUpdated) {
+                    response.getWriter().write("{\"status\":\"ok\",\"message\":\"Quantity updated successfully\"}");
+                } else {
+                    response.getWriter().write("{\"status\":\"error\",\"message\":\"Failed to update quantity\"}");
+                }
             }
-        } catch (Exception e) {
+        }catch (Exception e) {
             e.printStackTrace();
             response.getWriter().write("{\"status\":\"error\",\"message\":\"" + e.getMessage() + "\"}");
         }
