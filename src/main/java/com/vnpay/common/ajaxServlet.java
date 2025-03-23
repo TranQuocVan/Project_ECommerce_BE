@@ -7,6 +7,8 @@ package com.vnpay.common;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import jakarta.servlet.annotation.WebServlet;
+
 import java.io.IOException;import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -27,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author CTT VNPAY
  */
+@WebServlet(name = "VnpayPaymentController", value = "/VnpayPaymentController")
 public class ajaxServlet extends HttpServlet {
 
     @Override

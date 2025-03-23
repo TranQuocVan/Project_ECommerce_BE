@@ -98,7 +98,7 @@
                                                 <h5 class="">Tổng số sản phẩm</h5>
                                                 <div id="totalSelectedItems">0 món</div>
                                             </div>
-                                            <form id="orderForm" action="OrderController" method="post">
+                                            <form id="orderForm" method="post">
                                                 <input type="hidden" id="selectedItems" name="selectedItems" />
                                                 <h5 class=" mb-3">Phương thức giao hàng</h5>
                                                 <div class="d-flex justify-content-between mb-4">

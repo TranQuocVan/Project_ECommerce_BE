@@ -78,18 +78,7 @@ public class OrderController extends HttpServlet {
             cartItemOrderService.addShoppingCartItemOrders(selectedItems, user.getId(),orderId);
             shoppingCartService.cleanShoppingCartItems(selectedItems);
 
-//            switch (paymentId) {
-//                case 1:
-//                    response.sendRedirect(request.getContextPath() + "/OrderController");
-//                    break;
-//                case 2:
-//                    response.sendRedirect("https://sandbox.vnpayment.vn/apis/");
-//                    break;
-//                default:
-//                    response.getWriter().write("{\"status\":\"false\",\"message\":\"Invalid payment method.\"}");
-//                    break;
-//            }
-
+            response.sendRedirect("OrderController");
 
         } catch (Exception e) {
             e.printStackTrace();
