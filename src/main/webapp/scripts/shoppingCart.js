@@ -183,8 +183,13 @@ function orderButton(button, event) {
             // Cập nhật giá trị `selectedItems` vào form trước khi submit
             updateSelectedItemsInForm();
 
-            // Submit form
-            form.submit();
+            if (paymentId === 2) {
+                // Nếu chọn VNPAY, chuyển hướng đến trang thanh toán VNPAY
+                window.location.href = '/Shoe_war_exploded/VnpayPaymentController';
+            } else {
+                // Nếu chọn phương thức khác, submit form
+                form.submit();
+            }
         } else {
             console.log('Hủy thanh toán');
         }
