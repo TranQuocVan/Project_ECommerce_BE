@@ -163,10 +163,14 @@ function orderButton(button, event) {
     }
     updateQuantityInForm();
 
-    const form = document.getElementById('orderForm');
+    let paymentId = parseInt(document.getElementById("paymentId").value, 10);
+    let form = document.getElementById("orderForm");
 
-
-
+    if (paymentId === 1) {
+        form.action = "OrderController";
+    } else if (paymentId === 2) {
+        form.action = "VnpayPaymentController";
+    }
 
     // Hiển thị hộp thoại SweetAlert để xác nhận
     Swal.fire({
@@ -183,13 +187,7 @@ function orderButton(button, event) {
             // Cập nhật giá trị `selectedItems` vào form trước khi submit
             updateSelectedItemsInForm();
 
-            if (paymentId === 2) {
-                // Nếu chọn VNPAY, chuyển hướng đến trang thanh toán VNPAY
-                window.location.href = '/Shoe_war_exploded/VnpayPaymentController';
-            } else {
-                // Nếu chọn phương thức khác, submit form
-                form.submit();
-            }
+            form.submit();
         } else {
             console.log('Hủy thanh toán');
         }
@@ -324,13 +322,4 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-
-
-
-
-
-
-
-
-
-
+// Xử lý action của form thanh toán dựa vào paymentId

@@ -84,7 +84,15 @@
                                                 <div class="col-md-2 d-flex justify-content-center">
                                                     <div>
                                                         <div class="text-muted">Trạng thái thanh toán</div>
-                                                        <div class="fw-normal mb-0 text-success">${item.statusPayment}</div>
+                                                        <c:choose>
+                                                            <c:when test="${item.statusPayment eq 'Đã thanh toán'}">
+                                                                <div class="fw-normal mb-0 text-success">${item.statusPayment}</div>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <div class="fw-normal mb-0 text-danger">${item.statusPayment}</div>
+                                                            </c:otherwise>
+                                                        </c:choose>
+
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2 d-flex justify-content-center">
