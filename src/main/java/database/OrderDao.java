@@ -171,6 +171,45 @@ public class OrderDao {
         }
     }
 
+    public int convertStatusPaymentToInt(String statusPayment) {
+        if ("Chưa thanh toán".equals(statusPayment)) {
+            return 0;
+        } else if ("Đã thanh toán".equals(statusPayment)) {
+            return 1;
+        } else {
+            return -1; // Giá trị không hợp lệ
+        }
+    }
+
+    public void updateStatusPayment(OrderModel order) {
+        String sql = "UPDATE orders SET statusPayment = ? WHERE orderId = ?";
+
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            // Chuyển đổi từ String -> int trước khi lưu vào CSDL
+            int statusPaymentInt = convertStatusPaymentToInt(order.getStatusPayment());
+
+            if (statusPaymentInt == -1) {
+                System.out.println("Lỗi: Trạng thái thanh toán không hợp lệ!");
+                return; // Dừng nếu trạng thái không hợp lệ
+            }
+
+            ps.setInt(1, statusPaymentInt); // Cập nhật với kiểu int
+            ps.setInt(2, order.getId()); // Điều kiện WHERE để cập nhật đúng đơn hàng
+
+            int rowsUpdated = ps.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Cập nhật trạng thái thanh toán thành công cho đơn hàng ID: " + order.getId());
+            } else {
+                System.out.println("Không tìm thấy đơn hàng để cập nhật.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public float deliveryFee(int deliveryId) {
         String sql = "select fee from deliveries where deliveryId = ?";
         try (Connection con = JDBCUtil.getConnection();
