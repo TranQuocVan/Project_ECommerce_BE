@@ -42,12 +42,12 @@
                             </div>
 
 
-                            <button id="btnAccept" type="submit" class="btn btn-primary">
-                                Xác nhận
-                            </button>
                             <div class="error">
                                 <span id="errorLogin"> <%=res%></span>
                             </div>
+                            <button id="btnAccept" type="submit" class="btn btn-primary">
+                                Xác nhận
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -58,7 +58,6 @@
 <footer></footer>
 
 <script src="components/navigation.js?v=${System.currentTimeMillis()}"></script>
-<script src="scripts/authScript/signInScript.js?v=${System.currentTimeMillis()}"></script>
 <script src="components/footer.js?v=${System.currentTimeMillis()}"></script>
 
 </body>

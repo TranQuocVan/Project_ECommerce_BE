@@ -21,7 +21,7 @@ public class Email {
     static final String from = "huyvu10012003@gmail.com";
     static final String password = "edls sbiq gnup wzrl";
 
-    public static boolean sendEmail(String to, String tieuDe, String noiDung) {
+    public static boolean sendEmail(String to, String title, String content) {
         // Properties : khai báo các thuộc tính
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com"); // SMTP HOST
@@ -55,7 +55,7 @@ public class Email {
             msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
 
             // Tiêu đề email
-            msg.setSubject(tieuDe);
+            msg.setSubject(title);
 
             // Quy đinh ngày gửi
             msg.setSentDate(new Date());
@@ -64,7 +64,7 @@ public class Email {
             // msg.setReplyTo(InternetAddress.parse(from, false))
 
             // Nội dung
-            msg.setContent(noiDung, "text/HTML; charset=UTF-8");
+            msg.setContent(content, "text/HTML; charset=UTF-8");
 
             // Gửi email
             Transport.send(msg);

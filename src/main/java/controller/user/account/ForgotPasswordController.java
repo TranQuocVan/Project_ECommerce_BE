@@ -7,15 +7,14 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import model.UserModel;
 import service.util.GmailServices;
-import util.Email;
 
 @WebServlet(name = "ForgotPasswordController", value = "/ForgotPasswordController")
-public class ForgotPasswordCController extends HttpServlet {
+public class ForgotPasswordController extends HttpServlet {
 
     private static class EmailRequest {
         String email;

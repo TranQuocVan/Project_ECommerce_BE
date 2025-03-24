@@ -1,11 +1,14 @@
 package service.user.account;
 
+import com.google.gson.JsonObject;
+import database.PasswordResetTokensDao;
 import database.UserDao;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.UserModel;
 
+import java.io.PrintWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
@@ -126,6 +129,46 @@ public class UserService {
         response.addCookie(tokenCookie);
 
     }
+
+
+    public JsonObject ResetPasswordForgot(String token, String newPassword){
+        JsonObject jsonResponse = new JsonObject();
+        PasswordResetTokensDao tokenDao = new PasswordResetTokensDao();
+        UserDao userDao = new UserDao();
+
+        // Kiểm tra token hợp lệ và lấy email
+        int userId = tokenDao.getUserIdByToken(token);
+        if (userId == -1) {
+            jsonResponse.addProperty("success", false);
+            jsonResponse.addProperty("message", "Token không hợp lệ hoặc đã hết hạn.");
+        } else {
+
+            newPassword = hashPassword(newPassword);
+            boolean updateSuccess = userDao.updateUserPasswordById(userId, newPassword);
+
+            if (updateSuccess) {
+                // Xóa token khỏi database sau khi đổi mật khẩu thành công
+                tokenDao.deleteToken(token);
+
+                jsonResponse.addProperty("success", true);
+                jsonResponse.addProperty("message", "Mật khẩu đã được cập nhật thành công.");
+            } else {
+                jsonResponse.addProperty("success", false);
+                jsonResponse.addProperty("message", "Lỗi khi cập nhật mật khẩu.");
+            }
+        }
+
+        return jsonResponse;
+
+
+    }
+
+
+
+
+
+
+
 
 
 

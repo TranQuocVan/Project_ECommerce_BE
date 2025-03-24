@@ -23,6 +23,13 @@ CREATE TABLE IF NOT EXISTS `Users` (
     FOREIGN KEY (`membershipId`) REFERENCES `Membership`(`membershipId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS `password_reset_tokens` (
+    `userId` INT NOT NULL,
+    `token` VARCHAR(255) NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`userId`),
+    FOREIGN KEY (`userId`) REFERENCES `Users`(`userId`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 -- Product Categories Table
 CREATE TABLE IF NOT EXISTS `ProductCategory` (
     `productCategoryId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -142,6 +149,17 @@ CREATE TABLE IF NOT EXISTS `ShoppingCartItemsOrder` (
     FOREIGN KEY (`orderId`) REFERENCES `Orders`(`orderId`),
     FOREIGN KEY (`sizeId`) REFERENCES `Sizes`(`sizeId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT, -- ID của user thực hiện
+    action VARCHAR(255), -- Hành động: 'UPDATE', 'DELETE', 'INSERT'
+    table_name VARCHAR(255), -- Bảng bị tác động
+    data_before TEXT, -- Dữ liệu trước khi thay đổi
+    data_after TEXT, -- Dữ liệu sau khi thay đổi
+    ip_address VARCHAR(50), -- Địa chỉ IP của user
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 -- Sample Data for Product Categories
 INSERT INTO `ProductCategory` (`name`, `description`) 

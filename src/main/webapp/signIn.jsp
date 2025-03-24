@@ -73,7 +73,7 @@
                             </div>
 
                             <div class="links">
-                                <a style="color: #06c;" href="#">Bạn đã quên mật khẩu ?</a>
+                                <a href="${pageContext.request.contextPath}/forgotPassword.jsp" style="color: #06c;" >Bạn đã quên mật khẩu ?</a>
                                 <a href="${pageContext.request.contextPath}/signUp.jsp">Bạn không có Tài khoản?
                                     <span style="color: #06c;">Tạo tài khoản của bạn ngay
                                             bây giờ.

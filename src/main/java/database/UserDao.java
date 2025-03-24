@@ -203,4 +203,26 @@ public class UserDao {
             stmt.executeUpdate();
         }
     }
+
+    public boolean updateUserPasswordById(int userId, String newPassword) {
+        String sql = "UPDATE users SET password = ? WHERE userId = ?";
+
+        // Kiểm tra đầu vào
+        if (userId <= 0 || newPassword == null || newPassword.isEmpty()) {
+            throw new IllegalArgumentException("ID không hợp lệ hoặc mật khẩu mới bị trống");
+        }
+
+
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+
+            st.setString(1, newPassword);
+            st.setInt(2, userId);
+
+            return st.executeUpdate() > 0; // Trả về true nếu cập nhật thành công
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; // Trả về false nếu có lỗi
+    }
 }
