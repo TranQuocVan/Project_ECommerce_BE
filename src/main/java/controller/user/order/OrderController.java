@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @WebServlet(name = "OrderController", value = "/OrderController")
@@ -33,7 +34,12 @@ public class OrderController extends HttpServlet {
         OrderService orderService = new OrderService();
         try {
             // Lấy danh sách đơn hàng của user
-            request.setAttribute("listOrder", orderService.getAllOrders(user.getId()));
+            List<OrderModel> orders = orderService.getAllOrders(user.getId());
+
+            // Sắp xếp theo ID giảm dần
+            orders.sort(Comparator.comparingInt(OrderModel::getId).reversed());
+
+            request.setAttribute("listOrder", orders);
             request.getRequestDispatcher("statusShoes.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();

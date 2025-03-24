@@ -12,8 +12,7 @@ public class Order
     float totalPrice ;
     int userId ;
     int deliveryId ;
-
-
+    int statusPayment;
 
     public Order(int paymentId, Timestamp orderDate, String deliveryAddress, float totalPrice, int userId, int deliveryId) {
 
@@ -34,6 +33,8 @@ public class Order
         this.orderDate = orderDate;
         this.userId = userId;
     }
+
+    public Order(){}
 
     public int getId() {
         return id;
@@ -63,7 +64,19 @@ public class Order
         return deliveryId;
     }
 
-//    public List<ShoppingCartItemOrders> getShoppingCartItemOrders() {
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getStatusPayment() {
+        return statusPayment;
+    }
+
+    public void setStatusPayment(int statusPayment) {
+        this.statusPayment = statusPayment;
+    }
+
+    //    public List<ShoppingCartItemOrders> getShoppingCartItemOrders() {
 //        return shoppingCartItemOrders;
 //    }
 //    public void setShoppingCartItemOrders(List<ShoppingCartItemOrders> shoppingCartItemOrders) {

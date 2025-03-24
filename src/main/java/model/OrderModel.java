@@ -39,6 +39,8 @@ public class OrderModel {
         this.nameStatus = nameStatus;
     }
 
+    public OrderModel() {}
+
     public int getId() {
         return id;
     }
