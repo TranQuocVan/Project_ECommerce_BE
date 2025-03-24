@@ -68,9 +68,21 @@
                             <div id="alterClick">
                                 <div style="padding: 0;" class="form-check my-3">
                                     <input type="checkbox" class="checkbox">
-                                    <label class="form-check-label" >Lưu tôi</label>
+                                    <label class="form-check-label" >Lưu tôi</label></br>
+                                    <label>Hoặc</label></br>
+
+                                    <div class="social-login">
+                                        <button id="loginFacebook" class="btn btn-primary my-2" style="width: 100%;" onclick="checkLoginState()">
+                                            <i class="fab fa-facebook-f"></i> Đăng nhập với Facebook
+                                        </button>
+
+                                        <button id="loginGoogle" class="btn btn-danger my-2" style="width: 100%;">
+                                            <i class="fab fa-google"></i> Đăng nhập với Google
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
+
 
                             <div class="links">
                                 <a href="${pageContext.request.contextPath}/forgotPassword.jsp" style="color: #06c;" >Bạn đã quên mật khẩu ?</a>
@@ -81,6 +93,9 @@
                                 </a>
                             </div>
                         </form>
+
+
+
                     </div>
                 </div>
             </div>
