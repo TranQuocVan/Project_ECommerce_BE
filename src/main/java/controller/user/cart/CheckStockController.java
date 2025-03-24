@@ -1,17 +1,18 @@
 package controller.user.cart;
 
-import database.UserDao;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import model.UserModel;
-import org.json.JSONObject;
 import database.ShoppingCartItemsDao;
 import service.user.account.UserService;
 import service.util.ReaderRequest;
 
-import java.io.BufferedReader;
 import java.io.IOException;
+
+import model.request.StockRequest;
 
 @WebServlet(name = "CheckStockController", value = "/CheckStockController")
 public class CheckStockController extends HttpServlet {
@@ -19,6 +20,8 @@ public class CheckStockController extends HttpServlet {
     private final UserService userService = new UserService();
     private final ReaderRequest readerRequest = new ReaderRequest();
     private final ShoppingCartItemsDao shoppingCartItemsDao = new ShoppingCartItemsDao();
+    private final Gson gson = new Gson();
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Set response type
@@ -31,42 +34,43 @@ public class CheckStockController extends HttpServlet {
 
         // Check if user is logged in
         if (!userService.isUserModelExistence(user)) {
-            response.getWriter().write("{\"status\":\"error\",\"message\":\"User is not logged in\"}");
+            JsonObject errorResponse = new JsonObject();
+            errorResponse.addProperty("status", "error");
+            errorResponse.addProperty("message", "User is not logged in");
+            response.getWriter().write(gson.toJson(errorResponse));
             return;
         }
 
-//        // Read JSON data from the request
-//        StringBuilder requestBody = new StringBuilder();
-//        try (BufferedReader reader = request.getReader()) {
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//                requestBody.append(line);
-//            }
-//        } catch (IOException e) {
-//            response.getWriter().write("{\"status\":\"error\",\"message\":\"Failed to read request body\"}");
-//            return;
-//        }
-        String requestBody = readerRequest.readRequestBody(request,response);
+        String requestBody = readerRequest.readRequestBody(request, response);
 
         try {
             if (readerRequest.checkRequestBodyExistence(requestBody)) {
-                // Parse JSON input
-                JSONObject productJson = new JSONObject(requestBody.toString());
-                int sizeId = productJson.getInt("idSize");
-                int quantity = productJson.optInt("quantity", 1); // Default to 1 if not provided
+                // Parse JSON input using Gson
+                StockRequest stockRequest = gson.fromJson(requestBody, StockRequest.class);
 
-                boolean isStockAvailable = shoppingCartItemsDao.checkStockProduct(sizeId, user.getId(), quantity);
+                boolean isStockAvailable = shoppingCartItemsDao.checkStockProduct(
+                        stockRequest.getIdSize(), user.getId(), stockRequest.getQuantity());
 
-                // Respond based on stock availability
+                // Create response JSON
+                JsonObject jsonResponse = new JsonObject();
                 if (isStockAvailable) {
-                    response.getWriter().write("{\"status\":\"ok\",\"message\":\"Stock is available\"}");
+                    jsonResponse.addProperty("status", "ok");
+                    jsonResponse.addProperty("message", "Stock is available");
                 } else {
-                    response.getWriter().write("{\"status\":\"error\",\"message\":\"Insufficient stock\"}");
+                    jsonResponse.addProperty("status", "error");
+                    jsonResponse.addProperty("message", "Insufficient stock");
                 }
+
+                response.getWriter().write(gson.toJson(jsonResponse));
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            response.getWriter().write("{\"status\":\"error\",\"message\":\"" + e.getMessage() + "\"}");
+            JsonObject errorResponse = new JsonObject();
+            errorResponse.addProperty("status", "error");
+            errorResponse.addProperty("message", e.getMessage());
+            response.getWriter().write(gson.toJson(errorResponse));
         }
     }
+
+
 }

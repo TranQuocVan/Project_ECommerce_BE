@@ -59,7 +59,7 @@
 <footer></footer>
 
 <script src="components/navigation.js?v=${System.currentTimeMillis()}"></script>
-<script src="scripts/login.js?v=${System.currentTimeMillis()}"></script>
+<script src="scripts/authScript/signInScript.js?v=${System.currentTimeMillis()}"></script>
 <script src="components/footer.js?v=${System.currentTimeMillis()}"></script>
 
 </body>

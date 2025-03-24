@@ -5,7 +5,7 @@
     margin-bottom: 20px;
 }
 
-#loginForm {
+#signInForm, #signUpForm {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -20,7 +20,7 @@
     padding: 10px 20px 0px 20px;
     border: 1px solid #e0e0e0;
     border-radius: 10px;
-    width: 70%;
+    width:500px;
 }
 
 #inputName i {

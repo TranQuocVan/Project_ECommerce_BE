@@ -1,29 +1,25 @@
 package controller.user.cart;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
-
 import model.UserModel;
-import org.json.JSONObject;
 import service.user.account.UserService;
-import service.user.order.OrderService;
 import service.user.cart.ShoppingCartService;
-import service.user.product.ProductService;
 import service.util.ReaderRequest;
+import model.request.ProductRequest;
 
-import java.io.BufferedReader;
 import java.io.IOException;
+
 @WebServlet(name = "AddToCartController", value = "/AddToCartController")
 public class AddToCartController extends HttpServlet {
 
     private final ShoppingCartService shoppingCartService = new ShoppingCartService();
-    private final OrderService orderService = new OrderService();
     private final UserService userService = new UserService();
     private final ReaderRequest readerRequest = new ReaderRequest();
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    }
+    private final Gson gson = new Gson();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -34,39 +30,44 @@ public class AddToCartController extends HttpServlet {
         UserModel user = (UserModel) session.getAttribute("user");
 
         if (!userService.isUserModelExistence(user)) {
-            response.getWriter().write("{\"status\":\"error\",\"message\":\"User not logged in\"}");
+            JsonObject errorResponse = new JsonObject();
+            errorResponse.addProperty("status", "error");
+            errorResponse.addProperty("message", "User not logged in");
+            response.getWriter().write(gson.toJson(errorResponse));
             return;
         }
 
-//        StringBuilder sb = new StringBuilder();
-//        try (BufferedReader reader = request.getReader()) {
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//                sb.append(line);
-//            }
-//        }
-
-        String requestBody = readerRequest.readRequestBody(request,response);
+        String requestBody = readerRequest.readRequestBody(request, response);
 
         try {
             if (readerRequest.checkRequestBodyExistence(requestBody)) {
-                // Parse JSON from the request
-                JSONObject productJson = new JSONObject(requestBody);
-                int sizeId = productJson.getInt("idSize");
-                int quantity = productJson.getInt("quantity"); // Extract quantity from the JSON
+                // Chuyển JSON thành Java Object
+                ProductRequest productRequest = gson.fromJson(requestBody, ProductRequest.class);
 
-                // Add product to shopping cart with the provided quantity
-                boolean isAdded = shoppingCartService.addProductToShoppingCart(quantity, sizeId, user.getId());
+                // Gọi service để thêm sản phẩm vào giỏ hàng
+                boolean isAdded = shoppingCartService.addProductToShoppingCart(
+                        productRequest.getQuantity(), productRequest.getIdSize(), user.getId());
 
+                // Chuẩn bị phản hồi JSON
+                JsonObject jsonResponse = new JsonObject();
                 if (isAdded) {
-                    response.getWriter().write("{\"status\":\"ok\",\"message\":\"Product added successfully\"}");
+                    jsonResponse.addProperty("status", "ok");
+                    jsonResponse.addProperty("message", "Product added successfully");
                 } else {
-                    response.getWriter().write("{\"status\":\"error\",\"message\":\"Failed to add product to cart\"}");
+                    jsonResponse.addProperty("status", "error");
+                    jsonResponse.addProperty("message", "Failed to add product to cart");
                 }
+
+                response.getWriter().write(gson.toJson(jsonResponse));
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            response.getWriter().write("{\"status\":\"error\",\"message\":\"" + e.getMessage() + "\"}");
+            JsonObject errorResponse = new JsonObject();
+            errorResponse.addProperty("status", "error");
+            errorResponse.addProperty("message", e.getMessage());
+            response.getWriter().write(gson.toJson(errorResponse));
         }
     }
+
+
 }

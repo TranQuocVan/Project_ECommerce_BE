@@ -38,49 +38,49 @@
                     <span class="titleHeader">Đăng nhập để thanh toán nhanh hơn.</span>
                 </div>
             </div>
-        </div>
-        <div class="row justify-content-center" style="padding-top: 70px;">
-            <div class="col-md-6">
-                <div class="login-container text-center p-4 ">
-                    <h1 id="titleLogin">Đăng nhập vào Silk Road</h1>
-                    <form id="loginForm"  action="SignInController" method="post">
 
-                        <div id="inputName" class="input-container">
-                            <input name="gmail" type="text" id="nameLogin" class="floating-input" placeholder=" " required>
-                            <label  class="floating-label">Vui lòng điền tài khoản của bạn</label>
-                            <i id="icon" class="fa-solid fa-circle-right"></i>
-                        </div>
-                        <div style="display: none;" id="inputPass" class="input-container">
-                            <input name="password" type="password" id="password" class="floating-input" placeholder=" " required>
-                            <label for="password" class="floating-label">Vui lòng điền mật khẩu của bạn</label>
-
-                        </div>
-
-                        <button id="btnLogin" type="submit" class="btn btn-primary">
-                            Đăng nhập
-                        </button>
-
-                        <div class="error">
-                            <span id="errorLogin"> <%=res%></span>
-                        </div>
-
-
-                        <div id="alterClick">
-                            <div style="padding: 0;" class="form-check my-3">
-                                <input type="checkbox" class="checkbox">
-                                <label class="form-check-label" >Lưu tôi</label>
+            <div class="row justify-content-center" style="padding-top: 70px;">
+                <div class="col-md-6">
+                    <div class="login-container text-center p-4 ">
+                        <h1 id="titleLogin">Đăng nhập vào Silk Road</h1>
+                        <form id="signInForm"  action="SignInController" method="post">
+                            <div id="inputName" class="input-container">
+                                <label for="nameLogin"></label><input name="gmail" type="text" id="nameLogin" class="floating-input" placeholder=" " required>
+                                <label  class="floating-label">Vui lòng điền tài khoản của bạn</label>
+                                <i id="icon" class="fa-solid fa-circle-right"></i>
                             </div>
-                        </div>
+                            <div style="display: none;" id="inputPass" class="input-container">
+                                <input name="password" type="password" id="password" class="floating-input" placeholder=" " required>
+                                <label for="password" class="floating-label">Vui lòng điền mật khẩu của bạn</label>
 
-                        <div class="links">
-                            <a style="color: #06c;" href="#">Bạn đã quên mật khẩu ?</a>
-                            <a href="signUp.jsp">Bạn không có Tài khoản?
-                                <span style="color: #06c;">Tạo tài khoản của bạn ngay
-                                        bây giờ.
-                                </span>
-                            </a>
-                        </div>
-                    </form>
+                            </div>
+
+                            <button id="btnLogin" type="submit" class="btn btn-primary">
+                                Đăng nhập
+                            </button>
+
+                            <div class="error">
+                                <span id="errorLogin"> <%=res%></span>
+                            </div>
+
+
+                            <div id="alterClick">
+                                <div style="padding: 0;" class="form-check my-3">
+                                    <input type="checkbox" class="checkbox">
+                                    <label class="form-check-label" >Lưu tôi</label>
+                                </div>
+                            </div>
+
+                            <div class="links">
+                                <a style="color: #06c;" href="#">Bạn đã quên mật khẩu ?</a>
+                                <a href="signUp.jsp">Bạn không có Tài khoản?
+                                    <span style="color: #06c;">Tạo tài khoản của bạn ngay
+                                            bây giờ.
+                                    </span>
+                                </a>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -90,7 +90,8 @@
 
 <script src="components/footer.js?v=${System.currentTimeMillis()}"></script>
 <script src="components/navigation.js?v=${System.currentTimeMillis()}"></script>
-<script src="scripts/login.js?v=${System.currentTimeMillis()}"></script>
+<script src="scripts/authScript/signInScript.js?v=${System.currentTimeMillis()}"></script>
+<script src="scripts/authScript/uiAuth.js?v=${System.currentTimeMillis()}"></script>
 
 </body>
 

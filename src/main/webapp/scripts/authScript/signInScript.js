@@ -1,4 +1,4 @@
-document.getElementById("loginForm").addEventListener("submit", function(event) {
+document.getElementById("signInForm").addEventListener("submit", function(event) {
     event.preventDefault(); // Ngăn chặn form gửi mặc định
 
     let gmail = document.getElementById("nameLogin").value;

@@ -305,7 +305,7 @@
 </body>
 <script src="components/footer.js?v=${System.currentTimeMillis()}"></script>
 <script src="scripts/listProduct.js?v=${System.currentTimeMillis()}"></script>
-<script src="scripts/login.js?v=${System.currentTimeMillis()}"></script>
+<script src="scripts/authScript/signInScript.js?v=${System.currentTimeMillis()}"></script>
 <script src="components/navigation.js?v=${System.currentTimeMillis()}"></script>
 <script src="components/popup.js?v=${System.currentTimeMillis()}"></script>
 </html>

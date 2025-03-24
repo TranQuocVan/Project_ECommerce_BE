@@ -1,67 +1,65 @@
 package controller.user.cart;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import model.UserModel;
-import org.json.JSONObject;
 import service.user.cart.ShoppingCartService;
 import service.util.ReaderRequest;
 
-import java.io.BufferedReader;
 import java.io.IOException;
+
+import model.request.UpdateQuantityRequest;
 
 @WebServlet(name = "UpdateQuantityCartController", value = "/UpdateQuantityCartController")
 public class UpdateQuantityCartController extends HttpServlet {
 
     private final ReaderRequest readerRequest = new ReaderRequest();
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    }
+    private final Gson gson = new Gson();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+
         HttpSession session = request.getSession();
         UserModel user = (UserModel) session.getAttribute("user");
 
-//        StringBuilder sb = new StringBuilder();
-//        try (BufferedReader reader = request.getReader()) {
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//                sb.append(line);
-//            }
-//        }
-
-        String requestBody = readerRequest.readRequestBody(request,response);
+        String requestBody = readerRequest.readRequestBody(request, response);
 
         try {
             if (readerRequest.checkRequestBodyExistence(requestBody)) {
                 // Parse JSON từ request
-                JSONObject productJson = new JSONObject(requestBody);
+                UpdateQuantityRequest updateRequest = gson.fromJson(requestBody, UpdateQuantityRequest.class);
 
-                int sizeId = productJson.getInt("idSize"); // Nhận giá trị sizeId
-                int quantity = productJson.getInt("quantity"); // Nhận giá trị quantity
-
-                boolean isDecreaseQuantity = productJson.optBoolean("isDecreaseQuantity", false);
-
-                // Gọi Service để lưu sản phẩm
+                // Gọi Service để cập nhật số lượng sản phẩm trong giỏ hàng
                 ShoppingCartService shoppingCartService = new ShoppingCartService();
+                boolean isUpdated = shoppingCartService.updateProductToShoppingCart(
+                        updateRequest.getQuantity(), updateRequest.getIdSize(),
+                        user.getId(), updateRequest.isDecreaseQuantity());
 
-                // Thêm sản phẩm vào giỏ hàng
-                boolean isUpdated = shoppingCartService.updateProductToShoppingCart(quantity, sizeId, user.getId(), isDecreaseQuantity);
+                // Tạo JSON response
+                JsonObject jsonResponse = new JsonObject();
                 if (isUpdated) {
-                    response.getWriter().write("{\"status\":\"ok\",\"message\":\"Quantity updated successfully\"}");
+                    jsonResponse.addProperty("status", "ok");
+                    jsonResponse.addProperty("message", "Quantity updated successfully");
                 } else {
-                    response.getWriter().write("{\"status\":\"error\",\"message\":\"Failed to update quantity\"}");
+                    jsonResponse.addProperty("status", "error");
+                    jsonResponse.addProperty("message", "Failed to update quantity");
                 }
+
+                response.getWriter().write(gson.toJson(jsonResponse));
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            response.getWriter().write("{\"status\":\"error\",\"message\":\"" + e.getMessage() + "\"}");
+            JsonObject errorResponse = new JsonObject();
+            errorResponse.addProperty("status", "error");
+            errorResponse.addProperty("message", e.getMessage());
+            response.getWriter().write(gson.toJson(errorResponse));
         }
-
-
     }
+
+
 }

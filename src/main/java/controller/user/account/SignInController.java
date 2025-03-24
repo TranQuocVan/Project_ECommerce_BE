@@ -1,5 +1,7 @@
 package controller.user.account;
 
+import database.LogDAO;
+import database.UserDao;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -8,6 +10,8 @@ import service.user.account.UserService;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.*;
+import com.google.gson.Gson;
 
 
 @WebServlet(name = "SignInController", value = "/SignInController")
@@ -22,32 +26,40 @@ public class SignInController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Lấy thông tin từ request
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
         String gmail = request.getParameter("gmail");
         String password = request.getParameter("password");
+        String ipAddress = request.getRemoteAddr();
 
-        // Gọi UserService để xử lý
+        Map<String, String> result = new HashMap<>();
+
         try {
-            // Kiểm tra thông tin tài khoản qua service
             UserModel userModel = userService.authenticateUser(gmail, password);
 
             if (!userService.isUserModelExistence(userModel)) {
-                // Trường hợp thông tin không hợp lệ
-                request.setAttribute("res", "This gmail or password is incorrect");
-                request.getRequestDispatcher("signIn.jsp").forward(request, response);
-                return;
+                LogDAO.insertLog(0, "LOGIN_FAILED", "users", gmail, "INVALID_PASSWORD", ipAddress);
+                result.put("status", "error");
+                result.put("message", "This gmail or password is incorrect");
+            } else {
+                HttpSession session = request.getSession(true);
+                UserService.handleRememberMe(userModel, session, response);
+
+                UserDao userDao = new UserDao();
+                UserModel userModelCheck = userDao.selectByGmail(gmail);
+
+                LogDAO.insertLog(userModelCheck.getId(), "LOGIN_SUCCESS", "users", gmail, "SUCCESS", ipAddress);
+
+                result.put("status", "success");
+                result.put("redirect", request.getContextPath() + "/IndexController");
             }
-
-            // Tạo session và xử lý "Remember Me"
-            HttpSession session = request.getSession(true);
-            UserService.handleRememberMe(userModel, session, response);
-
-            // Chuyển hướng về trang index
-            response.sendRedirect(request.getContextPath() + "/IndexController");
         } catch (SQLException e) {
-            // Xử lý ngoại lệ từ cơ sở dữ liệu
-            throw new RuntimeException("Database error occurred: " + e.getMessage(), e);
+            result.put("status", "error");
+            result.put("message", "Database error occurred");
         }
+
+        response.getWriter().write(new Gson().toJson(result));
     }
 
 }

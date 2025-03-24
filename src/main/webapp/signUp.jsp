@@ -40,33 +40,31 @@
                 <div class="col-md-12">
                     <span class="titleHeader">Đăng nhập để thanh toán nhanh hơn.</span>
                 </div>
-            </div>
-        </div>
-        <div class="row justify-content-center" style="padding-top: 70px;">
-            <div class="col-md-6">
-                <div class="login-container text-center p-4 ">
-                    <h1 id="titleLogin">Đăng ký vào Silk Road</h1>
 
-                    <form id="loginForm" action="SignUpController" method="post">
-                        <div id="inputName" class="input-container">
-                            <input name="gmail" type="text" id="nameLogin" class="floating-input" placeholder=" " required value=<%=gmail%>>
-                            <label for="nameLogin"  class="floating-label">Vui lòng điền gmail của bạn</label>
-                            <i id="icon" class="fa-solid fa-circle-right"></i>
+                <div class="row justify-content-center" style="padding-top: 70px;">
+                    <div class="col-md-6">
+                        <div class="login-container text-center p-4 ">
+                            <h1 id="titleLogin">Đăng ký vào Silk Road</h1>
+
+                            <form id="signUpForm">
+                                <div id="inputName" class="input-container">
+                                    <input name="gmail" type="text" id="nameLogin" class="floating-input" placeholder=" " required>
+                                    <label class="floating-label">Vui lòng điền tài khoản của bạn</label>
+                                    <i id="icon" class="fa-solid fa-circle-right"></i>
+                                </div>
+                                <div style="display: none;" id="inputPass" class="input-container">
+                                    <input name="password" type="password" id="password" class="floating-input" placeholder=" " required>
+                                    <label for="password" class="floating-label">Vui lòng điền mật khẩu của bạn</label>
+                                </div>
+
+                                <button id="btnLogin" type="submit" class="btn btn-primary">Đăng nhập</button>
+
+                                <div class="error">
+                                    <span id="errorLogin"></span>
+                                </div>
+                            </form>
                         </div>
-
-                        <div class="error ">
-                            <span id="errorLogin"> <%=res%></span>
-                        </div>
-
-                        <div style="display: none;" id="inputPass" class="input-container">
-                            <input name="password" type="password" id="password" class="floating-input" placeholder=" " required value=<%=password%>>
-                            <label for="password" class="floating-label">Vui lòng điền mật khẩu của bạn</label>
-
-                        </div>
-                        <button id="btnLogin" type="submit" class="btn btn-primary">
-                           Lấy mã xác từ gmail
-                        </button>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -76,8 +74,8 @@
 
 <script src="components/footer.js?v=${System.currentTimeMillis()}"></script>
 <script src="components/navigation.js?v=${System.currentTimeMillis()}"></script>
-<script src="scripts/login.js?v=${System.currentTimeMillis()}"></script>
-
+<script src="scripts/authScript/signUpScript.js?v=${System.currentTimeMillis()}"></script>
+<script src="scripts/authScript/uiAuth.js?v=${System.currentTimeMillis()}"></script>
 </body>
 
 </html>
