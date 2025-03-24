@@ -8,7 +8,7 @@ nameLogin.addEventListener('focus', () => {
     inputName.style.border = '1px solid #007bff';
     if(icon){
 
-    icon.style.top = '50%';
+        icon.style.top = '50%';
     }
 });
 
@@ -16,7 +16,7 @@ nameLogin.addEventListener('blur', () => {
     inputName.style.border = '1px solid #ced4da';
     if (icon){
 
-    icon.style.top = 'calc(50% - 10px)';
+        icon.style.top = 'calc(50% - 10px)';
     }
 });
 
@@ -29,5 +29,3 @@ icon?.addEventListener('click', () => {
 
     }
 });
-
-
