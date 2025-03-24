@@ -78,6 +78,7 @@ public class OrderController extends HttpServlet {
             cartItemOrderService.addShoppingCartItemOrders(selectedItems, user.getId(),orderId);
             shoppingCartService.cleanShoppingCartItems(selectedItems);
 
+<<<<<<< HEAD
             switch (paymentId) {
                 case 1:
                     response.sendRedirect(request.getContextPath() + "/OrderController");
@@ -90,6 +91,9 @@ public class OrderController extends HttpServlet {
                     break;
             }
 
+=======
+            response.sendRedirect("OrderController");
+>>>>>>> 34d11e43d3629fd26334a49acd771d54aa2c3dcb
 
         } catch (Exception e) {
             e.printStackTrace();
