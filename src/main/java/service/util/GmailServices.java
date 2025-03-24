@@ -5,7 +5,7 @@ import util.Email;
 import java.util.Random;
 
 public class GmailServices {
-    public boolean checkGmailExistence(String gmail) {
+    public boolean isGmailEmpty(String gmail) {
         return gmail.isEmpty();
     }
 

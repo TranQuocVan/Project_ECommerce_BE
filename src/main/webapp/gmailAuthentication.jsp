@@ -31,26 +31,25 @@
                     <span class="titleHeader">Đăng nhập để thanh toán nhanh hơn.</span>
                 </div>
             </div>
-        </div>
-        <div class="row justify-content-center" style="padding-top: 70px;">
-            <div class="col-md-6">
-                <div class="login-container text-center p-4 ">
-                    <h1 id="titleLogin">Vui lòng nhập mã gửi qua gmail</h1>
-                    <form id="loginForm" action="GmailAuthenticationController" method="post">
+            <div class="row justify-content-center" style="padding-top: 70px;">
+                <div class="col-md-6">
+                    <div class="login-container text-center p-4 ">
+                        <h1 id="titleLogin">Vui lòng nhập mã gửi qua gmail</h1>
+                        <form id="loginForm" action="GmailAuthenticationController" method="post">
+                            <div id="inputName" class="input-container">
+                                <input name="authCode" type="text" id="nameLogin" class="floating-input" placeholder=" " required>
+                                <label  class="floating-label">Nhập mã xác thực từ gmail</label>
+                            </div>
 
-                        <div id="inputName" class="input-container">
-                            <input name="authCode" type="text" id="nameLogin" class="floating-input" placeholder=" " required>
-                            <label  class="floating-label">Nhập mã xác thực từ gmail</label>
-                        </div>
 
-                        <div class="error">
-                            <span id="errorLogin"> <%=res%></span>
-                        </div>
-
-                        <button id="btnAccept" type="submit" class="btn btn-primary">
-                            Xác nhận
-                        </button>
-                    </form>
+                            <button id="btnAccept" type="submit" class="btn btn-primary">
+                                Xác nhận
+                            </button>
+                            <div class="error">
+                                <span id="errorLogin"> <%=res%></span>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

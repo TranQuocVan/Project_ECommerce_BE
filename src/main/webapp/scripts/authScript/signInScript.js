@@ -1,7 +1,7 @@
 document.getElementById("signInForm").addEventListener("submit", function(event) {
     event.preventDefault(); // Ngăn chặn form gửi mặc định
 
-    let gmail = document.getElementById("nameLogin").value;
+    let gmail = document.getElementById("gmail").value;
     let password = document.getElementById("password").value;
 
     fetch("SignInController", {
@@ -19,7 +19,7 @@ document.getElementById("signInForm").addEventListener("submit", function(event)
             if (data.status === "success") {
                 window.location.href = data.redirect; // Chuyển hướng nếu thành công
             } else {
-                document.getElementById("errorLogin").innerText = data.message; // Hiển thị lỗi
+                document.getElementById("errorSignIn").innerText = data.message; // Hiển thị lỗi
             }
         })
         .catch(error => console.error("Error:", error));

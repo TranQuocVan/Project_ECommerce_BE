@@ -48,7 +48,7 @@
 
                             <form id="signUpForm">
                                 <div id="inputName" class="input-container">
-                                    <input name="gmail" type="text" id="nameLogin" class="floating-input" placeholder=" " required>
+                                    <input name="gmail" type="text" id="gmail" class="floating-input" placeholder=" " required>
                                     <label class="floating-label">Vui lòng điền tài khoản của bạn</label>
                                     <i id="icon" class="fa-solid fa-circle-right"></i>
                                 </div>
@@ -57,11 +57,11 @@
                                     <label for="password" class="floating-label">Vui lòng điền mật khẩu của bạn</label>
                                 </div>
 
-                                <button id="btnLogin" type="submit" class="btn btn-primary">Đăng nhập</button>
-
                                 <div class="error">
-                                    <span id="errorLogin"></span>
+                                    <span id="errorSignUp"></span>
                                 </div>
+                                <button id="btnLogin" type="submit" class="btn btn-primary">Đăng ký </button>
+
                             </form>
                         </div>
                     </div>

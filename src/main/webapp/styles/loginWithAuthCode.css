@@ -1,5 +1,9 @@
 #btnAccept {
-    width: 70%;
+    width: 500px;
     padding: 10px 10px 10px 5px;
-
+}
+.login-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

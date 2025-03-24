@@ -18,8 +18,8 @@
 
 
     <link rel="stylesheet" href="styles/login.css?v=${System.currentTimeMillis()}">
-    <link rel="stylesheet" href="styles/navigation.css">
-    <link rel="stylesheet" href="styles/global.css">
+    <link rel="stylesheet" href="styles/navigation.css?v=${System.currentTimeMillis()}">
+    <link rel="stylesheet" href="styles/global.css?v=${System.currentTimeMillis()}">
 
 </head>
 
@@ -45,7 +45,7 @@
                         <h1 id="titleLogin">Đăng nhập vào Silk Road</h1>
                         <form id="signInForm"  action="SignInController" method="post">
                             <div id="inputName" class="input-container">
-                                <label for="nameLogin"></label><input name="gmail" type="text" id="nameLogin" class="floating-input" placeholder=" " required>
+                                <input name="gmail" type="text" id="gmail" class="floating-input" placeholder=" " required>
                                 <label  class="floating-label">Vui lòng điền tài khoản của bạn</label>
                                 <i id="icon" class="fa-solid fa-circle-right"></i>
                             </div>
@@ -55,13 +55,14 @@
 
                             </div>
 
+                            <div class="error">
+                                <span id="errorSignIn"> <%=res%></span>
+                            </div>
+
                             <button id="btnLogin" type="submit" class="btn btn-primary">
                                 Đăng nhập
                             </button>
 
-                            <div class="error">
-                                <span id="errorLogin"> <%=res%></span>
-                            </div>
 
 
                             <div id="alterClick">
@@ -73,7 +74,7 @@
 
                             <div class="links">
                                 <a style="color: #06c;" href="#">Bạn đã quên mật khẩu ?</a>
-                                <a href="signUp.jsp">Bạn không có Tài khoản?
+                                <a href="${pageContext.request.contextPath}/signUp.jsp">Bạn không có Tài khoản?
                                     <span style="color: #06c;">Tạo tài khoản của bạn ngay
                                             bây giờ.
                                     </span>

@@ -1,76 +1,69 @@
 package controller.user.account;
 
+import database.UserDao;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import service.user.account.UserService;
 import service.util.GmailServices;
-import util.Email;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Random;
+import java.util.HashMap;
+import java.util.Map;
 
 @WebServlet(name = "SignUpController", value = "/SignUpController")
 public class SignUpController extends HttpServlet {
-
-    public final GmailServices gmailServices = new GmailServices();
-    public final UserService userService = new UserService();
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("doGet");
-    }
+    private final GmailServices gmailServices = new GmailServices();
+    private final UserService userService = new UserService();
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Lấy thông tin từ request
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
         String gmail = request.getParameter("gmail");
         String password = request.getParameter("password");
 
-        // Tạo session
-        HttpSession session = request.getSession();
+        Map<String, String> result = new HashMap<>();
 
-        // Kiểm tra nếu không nhập Gmail
-        if (gmailServices.checkGmailExistence(gmail)) {
-            request.setAttribute("res", "Must enter gmail");
-            session.setAttribute("password", password); // Lưu mật khẩu vào session (nếu cần)
-
-            // Chuyển hướng về trang đăng nhập
-            RequestDispatcher login = getServletContext().getRequestDispatcher("/signUp.jsp");
-            login.forward(request, response);
-            return; // Kết thúc xử lý tại đây
-        }
-
-        // Nếu Gmail không rỗng, xử lý tiếp
         try {
-            // Kiểm tra Gmail hợp lệ và tồn tại
-
-            // Lưu Gmail vào session
-            session.setAttribute("gmail", gmail);
-
-            if (userService.checkValidGmailAndExists(gmail).equals("Success")) {
-
-                int authCode = gmailServices.sendGmail(gmail);
-
-                // Lưu mã xác thực vào session
-                session.setAttribute("authCode", String.valueOf(authCode));
-                session.setAttribute("password", password);
-
-                // Chuyển hướng sang trang xác thực Gmail
-                RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/gmailAuthentication.jsp");
-                dispatcher.forward(request, response);
-            } else {
-                // Nếu Gmail không hợp lệ hoặc không tồn tại
-                request.setAttribute("res", userService.checkValidGmailAndExists(gmail));
-
-                // Quay lại trang đăng nhập với thông báo lỗi
-                RequestDispatcher login = getServletContext().getRequestDispatcher("/signUp.jsp");
-                login.forward(request, response);
+            // Kiểm tra nếu Gmail đã tồn tại
+            if (gmailServices.isGmailEmpty(gmail)) {
+                result.put("status", "error");
+                result.put("message", "Gmail is empty");
+                response.getWriter().write(new Gson().toJson(result));
+                return;
             }
-        } catch (SQLException e) {
-            // Xử lý ngoại lệ SQL
-            throw new RuntimeException("Database error occurred: " + e.getMessage(), e);
-        }
-    }
 
+            // Kiểm tra Gmail hợp lệ
+            String isValidGmailAndExists = userService.checkValidGmailAndExists(gmail);
+            if (!isValidGmailAndExists.equals("Success")) {
+                result.put("status", "error");
+                result.put("message", isValidGmailAndExists);
+                response.getWriter().write(new Gson().toJson(result));
+                return;
+            }
+
+            // Gửi mã xác thực qua Gmail
+            int authCode = gmailServices.sendGmail(gmail);
+
+            // Lưu mã xác thực vào session
+            HttpSession session = request.getSession(true);
+            session.setAttribute("authCode", String.valueOf(authCode));
+            session.setAttribute("gmail", gmail); // Lưu Gmail vào session
+            session.setAttribute("password", password);
+
+            result.put("status", "success");
+            result.put("redirect", request.getContextPath() + "/gmailAuthentication.jsp");
+
+        } catch (SQLException e) {
+            result.put("status", "error");
+            result.put("message", "Database error occurred");
+        }
+
+        response.getWriter().write(new Gson().toJson(result));
+    }
 }

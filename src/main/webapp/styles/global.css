@@ -37,7 +37,7 @@ footer {
 }
 
 .error {
-    width: 70%;
+    width: 500px;
     display: flex;
     align-items: start;
     margin-bottom: 20px;

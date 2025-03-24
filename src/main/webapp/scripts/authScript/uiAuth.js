@@ -1,18 +1,17 @@
-const nameLogin = document.getElementById('nameLogin');
+const gmail = document.getElementById('gmail');
 const inputName = document.getElementById('inputName');
 const icon = document.querySelector('#icon');
 const inputPass = document.getElementById('inputPass');
 const btnLogin = document.getElementById('btnLogin');
 
-nameLogin.addEventListener('focus', () => {
+gmail?.addEventListener('focus', () => {
     inputName.style.border = '1px solid #007bff';
     if(icon){
-
         icon.style.top = '50%';
     }
 });
 
-nameLogin.addEventListener('blur', () => {
+gmail?.addEventListener('blur', () => {
     inputName.style.border = '1px solid #ced4da';
     if (icon){
 
@@ -22,10 +21,10 @@ nameLogin.addEventListener('blur', () => {
 
 // Xử lý sự kiện login
 icon?.addEventListener('click', () => {
-    if (nameLogin.value !== '') {
+    if (gmail.value !== '') {
         inputPass.style.display = 'block';
         btnLogin.style.display = 'block';
-        document.querySelector("#alterClick").style.display = 'block';
+
 
     }
 });

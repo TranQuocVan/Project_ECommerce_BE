@@ -15,55 +15,39 @@ import java.sql.SQLException;
 public class GmailAuthenticationController extends HttpServlet {
     private final AuthenticationService authenticationService = new AuthenticationService();
     private final SessionServices sessionServices = new SessionServices();
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    }
-
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String authCode = request.getParameter("authCode");
 
-        // Lấy session hiện tại, không tạo mới
+        // Lấy session hiện tại (không tạo mới nếu chưa có)
         HttpSession session = request.getSession(false);
-        if (!sessionServices.isSessionExistence(session)) {
-            response.sendRedirect("../login.jsp"); // Nếu không có session, chuyển về trang login
+
+        // Lấy mã xác thực từ session
+        String sessionAuthCode = (String) session.getAttribute("authCode");
+
+        if (sessionAuthCode == null || !authenticationService.validateAuthCode(authCode, sessionAuthCode)) {
+            request.setAttribute("res", "Mã xác thực không đúng. Vui lòng thử lại.");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/gmailAuthentication.jsp");
+            dispatcher.forward(request, response);
             return;
         }
 
+        try {
+            // Đăng ký người dùng nếu Gmail chưa tồn tại
+            String gmail = (String) session.getAttribute("gmail");
+            String password = (String) session.getAttribute("password");
+            UserModel userModel = authenticationService.registerUser(gmail, password);
 
-        if (!sessionServices.isSessionInformation(session)) {
-            response.sendRedirect("../login.jsp"); // Nếu thông tin không đầy đủ, chuyển về trang login
-            return;
-        }
+            // Xử lý "Remember Me" và cập nhật session
+            UserService.handleRememberMe(userModel, session, response);
 
-        // Gọi service để kiểm tra mã xác thực
-        boolean isValid = authenticationService.validateAuthCode(authCode, (String) session.getAttribute("authCode"));
-
-        if (isValid) {
-            try {
-
-                // Đăng ký người dùng nếu Gmail chưa tồn tại
-                UserModel userModel = authenticationService.registerUser
-                        ((String) session.getAttribute("gmail"), (String) session.getAttribute("password"));
-
-                // Xử lý "Remember Me" và cập nhật thông tin session
-                UserService.handleRememberMe(userModel, session, response);
-
-                // Chuyển tiếp về trang index
-                response.sendRedirect(request.getContextPath() + "/IndexController");
-            } catch (SQLException e) {
-                // Xử lý lỗi liên quan đến cơ sở dữ liệu
-                e.printStackTrace();
-                request.setAttribute("res", "Có lỗi xảy ra khi xử lý yêu cầu. Vui lòng thử lại sau.");
-                RequestDispatcher dispatcher = request.getRequestDispatcher("gmailAuthentication.jsp");
-                dispatcher.forward(request, response);
-            }
-        } else {
-            // Trường hợp mã xác thực không đúng
-            request.setAttribute("res", "Mã xác thực bạn nhập chưa đúng");
-            request.setAttribute("password", session.getAttribute("password")); // Giữ lại mật khẩu để người dùng không phải nhập lại
-            RequestDispatcher dispatcher = request.getRequestDispatcher("gmailAuthentication.jsp");
+            // Chuyển tiếp về trang chính sau khi đăng nhập thành công
+            response.sendRedirect(request.getContextPath() + "/IndexController");
+        } catch (SQLException e) {
+            e.printStackTrace(); // Có thể thay bằng logging
+            request.setAttribute("res", "Có lỗi xảy ra khi xử lý yêu cầu. Vui lòng thử lại sau.");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/gmailAuthentication.jsp");
             dispatcher.forward(request, response);
         }
     }

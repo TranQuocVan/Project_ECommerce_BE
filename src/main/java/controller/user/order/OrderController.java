@@ -18,7 +18,8 @@ import java.util.List;
 public class OrderController extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
@@ -42,7 +43,8 @@ public class OrderController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
@@ -65,7 +67,8 @@ public class OrderController extends HttpServlet {
             // Tạo đối tượng Order
             OrderService orderService = new OrderService();
             float totalPrice = orderService.calculateTotalPrice(selectedItems, user.getId(), deliveryId);
-            Order order = new Order(paymentId, sqlTimestamp, request.getParameter("address"), totalPrice, user.getId(), deliveryId);
+            Order order = new Order(paymentId, sqlTimestamp, request.getParameter("address"), totalPrice, user.getId(),
+                    deliveryId);
 
             // Xử lý đặt hàng
             ShoppingCartService shoppingCartService = new ShoppingCartService();
@@ -75,10 +78,9 @@ public class OrderController extends HttpServlet {
 
             int orderId = orderService.addOrder(order);
 
-            cartItemOrderService.addShoppingCartItemOrders(selectedItems, user.getId(),orderId);
+            cartItemOrderService.addShoppingCartItemOrders(selectedItems, user.getId(), orderId);
             shoppingCartService.cleanShoppingCartItems(selectedItems);
 
-<<<<<<< HEAD
             switch (paymentId) {
                 case 1:
                     response.sendRedirect(request.getContextPath() + "/OrderController");
@@ -90,10 +92,6 @@ public class OrderController extends HttpServlet {
                     response.getWriter().write("{\"status\":\"false\",\"message\":\"Invalid payment method.\"}");
                     break;
             }
-
-=======
-            response.sendRedirect("OrderController");
->>>>>>> 34d11e43d3629fd26334a49acd771d54aa2c3dcb
 
         } catch (Exception e) {
             e.printStackTrace();
