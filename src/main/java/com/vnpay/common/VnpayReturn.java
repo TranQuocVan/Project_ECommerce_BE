@@ -53,20 +53,21 @@ public class VnpayReturn extends HttpServlet {
 
                 String orderId = request.getParameter("vnp_TxnRef");
 
-                OrderModel order = new OrderModel();
-                order.setId(Integer.parseInt(orderId));
-
+                int orderIdInt = Integer.parseInt(orderId);
                 boolean transSuccess = false;
+
+                int statusPayment = 0;
                 if ("00".equals(request.getParameter("vnp_TransactionStatus"))) {
                     //update banking system
-                    order.setStatusPayment("Đã thanh toán");
+                    statusPayment = 1;
 //                    order.setStatus("Completed");
                     transSuccess = true;
-                } else {
-                    order.setStatusPayment("Chưa thanh toán");
-//                    order.setStatus("Failed");
                 }
-                orderDao.updateStatusPayment(order);
+
+                boolean updateStatusPayment = orderDao.updateStatusPayment(orderIdInt, statusPayment);
+                if (!updateStatusPayment) {
+                    System.out.println("Cập nhật trạng thái thanh toán thất bại!");
+                }
                 request.setAttribute("transResult", transSuccess);
                 request.getRequestDispatcher("paymentResult.jsp").forward(request, response);
             } else {

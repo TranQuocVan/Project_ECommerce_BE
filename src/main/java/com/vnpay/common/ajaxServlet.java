@@ -26,6 +26,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.logging.Logger;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -73,6 +75,7 @@ public class ajaxServlet extends HttpServlet {
             shoppingCartService.updateStockProduct(user.getId());
 
             orderId = orderService.addOrder(order);
+            System.out.println("OrderId: " + orderId);
 
             cartItemOrderService.addShoppingCartItemOrders(selectedItems, user.getId(), orderId);
             shoppingCartService.cleanShoppingCartItems(selectedItems);
@@ -91,7 +94,9 @@ public class ajaxServlet extends HttpServlet {
         String bankCode = req.getParameter("bankCode");
 
 //        String vnp_TxnRef = Config.getRandomNumber(8);
-        String vnp_TxnRef = orderId + "_" + System.currentTimeMillis(); //dky mã riêng
+        String vnp_TxnRef = String.valueOf(orderId);
+//        orderService.updateTransactionRef(orderId, vnp_TxnRef);
+
         String vnp_IpAddr = Config.getIpAddress(req);
 
         String vnp_TmnCode = Config.vnp_TmnCode;
