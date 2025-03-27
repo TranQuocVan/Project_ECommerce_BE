@@ -3,22 +3,36 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Objects;
 
 import model.UserModel;
 
 public class UserDao {
 
-    /**
-     * Thêm người dùng mới vào CSDL.
-     * @param userModel - Đối tượng UserModel chứa thông tin người dùng.
-     * @return Số dòng bị ảnh hưởng (1 nếu thành công, 0 nếu thất bại).
-     */
+
+    public void updateUserPasswordByGmail(String gmail, String password) throws SQLException {
+        String sql = "UPDATE users SET password = ? where gmail = ?";
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+            st.setString(1, password);
+            st.setString(2, gmail);
+            st.executeUpdate();
+        }
+    }
+    public boolean updateTokenFb(long token, String email) throws SQLException {
+        String sql = "UPDATE  users SET facebook_id = ? where gmail = ?";
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+            st.setLong(1, token);
+            st.setString(2, email);
+            return st.executeUpdate() > 0;
+        }
+    }
+
+
     public int insert(UserModel userModel) {
         // Ensure userModel is not null
         if (userModel == null || userModel.getGmail() == null || userModel.getPassword() == null || userModel.getRole() == null) {
@@ -83,6 +97,34 @@ public class UserDao {
 
             try (ResultSet rs = st.executeQuery()) {
                 if (rs.next()) {
+                    if(!Objects.equals(rs.getString("password"), "")) {
+                        return new UserModel(
+                                rs.getInt("userId"), // Lấy ID từ cơ sở dữ liệu
+                                rs.getString("gmail"), // Lấy Gmail từ cơ sở dữ liệu
+                                rs.getString("role") // Lấy vai trò người dùng
+                        );
+
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            // Log lỗi chi tiết và không che giấu thông tin hữu ích
+            System.err.println("Error while selecting user by Gmail: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null; // Trả về null nếu không tìm thấy người dùng
+    }
+
+    public UserModel selectByFacebookId(long facebookId) {
+
+        String sql = "SELECT * FROM users WHERE facebook_id = ?";
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+
+            st.setLong(1, facebookId);
+
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
                     return new UserModel(
                             rs.getInt("userId"), // Lấy ID từ cơ sở dữ liệu
                             rs.getString("gmail"), // Lấy Gmail từ cơ sở dữ liệu
@@ -92,7 +134,7 @@ public class UserDao {
             }
         } catch (SQLException e) {
             // Log lỗi chi tiết và không che giấu thông tin hữu ích
-            System.err.println("Error while selecting user by Gmail: " + e.getMessage());
+            System.err.println("Error while selecting user by facebookId: " + e.getMessage());
             e.printStackTrace();
         }
         return null; // Trả về null nếu không tìm thấy người dùng
