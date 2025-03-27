@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 window.fbAsyncInit = function() {
+
     FB.init({
         appId: '1143031257503719',
         cookie: true,

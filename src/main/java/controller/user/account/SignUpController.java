@@ -47,6 +47,7 @@ public class SignUpController extends HttpServlet {
                 return;
             }
 
+
             // Gửi mã xác thực qua Gmail
             int authCode = gmailServices.sendGmail(gmail);
 

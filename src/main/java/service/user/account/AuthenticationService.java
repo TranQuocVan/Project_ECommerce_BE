@@ -5,6 +5,7 @@ import model.UserModel;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 
 public class AuthenticationService {
     // Kiểm tra mã xác thực
@@ -13,11 +14,15 @@ public class AuthenticationService {
     }
 
     // Xử lý đăng ký người dùng
-    public UserModel registerUser(String gmail, String password) {
+    public UserModel registerUser(String gmail, String password) throws SQLException {
         UserDao userDao = new UserDao();
         String hashedPassword = hashPassword(password); // Mã hóa mật khẩu
         UserModel userModel = new UserModel(gmail, hashedPassword, "user");
 
+        if(userDao.isGmailExists(gmail)) {
+            userDao.updateUserPasswordByGmail(gmail,hashedPassword);
+            return userModel;
+        }
         // Lưu người dùng vào cơ sở dữ liệu
         userDao.insert(userModel);
 

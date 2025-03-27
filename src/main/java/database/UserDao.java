@@ -3,18 +3,25 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Objects;
 
 import model.UserModel;
 
 public class UserDao {
 
 
+    public void updateUserPasswordByGmail(String gmail, String password) throws SQLException {
+        String sql = "UPDATE users SET password = ? where gmail = ?";
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+            st.setString(1, password);
+            st.setString(2, gmail);
+            st.executeUpdate();
+        }
+    }
     public boolean updateTokenFb(long token, String email) throws SQLException {
         String sql = "UPDATE  users SET facebook_id = ? where gmail = ?";
         try (Connection con = JDBCUtil.getConnection();
@@ -90,11 +97,14 @@ public class UserDao {
 
             try (ResultSet rs = st.executeQuery()) {
                 if (rs.next()) {
-                    return new UserModel(
-                            rs.getInt("userId"), // Lấy ID từ cơ sở dữ liệu
-                            rs.getString("gmail"), // Lấy Gmail từ cơ sở dữ liệu
-                            rs.getString("role") // Lấy vai trò người dùng
-                    );
+                    if(!Objects.equals(rs.getString("password"), "")) {
+                        return new UserModel(
+                                rs.getInt("userId"), // Lấy ID từ cơ sở dữ liệu
+                                rs.getString("gmail"), // Lấy Gmail từ cơ sở dữ liệu
+                                rs.getString("role") // Lấy vai trò người dùng
+                        );
+
+                    }
                 }
             }
         } catch (SQLException e) {
