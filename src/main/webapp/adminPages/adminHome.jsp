@@ -9,6 +9,7 @@
 <html>
 <head>
     <title>Hello Admin</title>
+    <link rel="icon" type="image/svg" href="assets/logo2.svg">
 </head>
 <body>
     <h1>Hello văn trần tui biết ông sẽ đọc cái này</h1>

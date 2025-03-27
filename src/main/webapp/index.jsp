@@ -6,7 +6,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Shoe Store</title>
+    <link rel="icon" type="image/svg" href="assets/logo2.svg">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -227,26 +228,28 @@
 
                             <div style="padding-top: 10px;" class="slider">
 
-                                <div class="form">
-                                    <div class="item support">
-                                        <div class="content ">
-                                            <div style="position: absolute; top: 5%; font-size: 28px;font-weight: 700; left: 50%; transform: translateX(-50%); width: 90%;" class="header">
+                                <div class="form d-flex flex-wrap justify-content-center text-center">
+                                    <div class="item support col-12 col-md-6 d-flex justify-content-center">
+                                        <div class="content position-relative">
+                                            <div class="header" style="position: absolute; top: 5%; font-size: 28px; font-weight: 700; left: 50%; transform: translateX(-50%); width: 90%;">
                                                 <p>Dịch vụ và hỗ trợ. Chúng tôi luôn sẵn sàng hỗ trợ.</p>
                                             </div>
                                             <a href="support.html">
-                                                <img src="assets/supporImgs/store-card-50-genius-202108.jpg" alt="">
+                                                <img src="assets/supporImgs/store-card-50-genius-202108.jpg" alt="" class="img-fluid">
                                             </a>
                                         </div>
                                     </div>
-                                    <div class="item support">
-                                        <div class="content ">
-                                            <div style="position: absolute; top: 10%; font-size: 28px;font-weight: 700; left: 50%; transform: translateX(-50%); width: 90%;" class="header">
-                                                <p>Mua hàng với tư vấn trực tiếp từ Chuyên Gia trực tuyến. </p>
+
+                                    <div class="item support col-12 col-md-6 d-flex justify-content-center">
+                                        <div class="content position-relative">
+                                            <div class="header" style="position: absolute; top: 10%; font-size: 28px; font-weight: 700; left: 50%; transform: translateX(-50%); width: 90%;">
+                                                <p>Mua hàng với tư vấn trực tiếp từ Chuyên Gia trực tuyến.</p>
                                             </div>
-                                            <img src="assets/supporImgs/store-card-50-specialist-help-202309.jpg" alt="">
+                                            <img src="assets/supporImgs/store-card-50-specialist-help-202309.jpg" alt="" class="img-fluid">
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -261,7 +264,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div style="width: max-content" class="modal-content">
             <div class="modal-body">
-                <div class="lightbox-content mt-3">
+                <div class="lightbox-content">
                     <!-- Nút Mua ngay -->
                     <div class="buy-button-container">
                         <div class="listProduct">
