@@ -23,13 +23,14 @@ CREATE TABLE IF NOT EXISTS `Users` (
     FOREIGN KEY (`membershipId`) REFERENCES `Membership`(`membershipId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `password_reset_tokens` (
+CREATE TABLE IF NOT EXISTS `PasswordResetTokens` (
     `userId` INT NOT NULL,
     `token` VARCHAR(255) NOT NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`userId`),
     FOREIGN KEY (`userId`) REFERENCES `Users`(`userId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Product Categories Table
 CREATE TABLE IF NOT EXISTS `ProductCategory` (
     `productCategoryId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -41,7 +42,8 @@ CREATE TABLE IF NOT EXISTS `ProductCategory` (
 CREATE TABLE IF NOT EXISTS `GroupProducts` (
     `groupProductId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `name` VARCHAR(255) NOT NULL COLLATE utf8mb4_unicode_ci,
-    `image` LONGBLOB
+    `image` LONGBLOB,
+    `description` VARCHAR(255)  COLLATE utf8mb4_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Products Table
@@ -139,7 +141,7 @@ CREATE TABLE IF NOT EXISTS `Statuses` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Shopping Cart Items Order Table
-CREATE TABLE IF NOT EXISTS `ShoppingCartItemsOrder` (
+CREATE TABLE IF NOT EXISTS `password_reset_tokensShoppingCartItemsOrder` (
     `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `paymentId` INT,
     `quantity` INT,

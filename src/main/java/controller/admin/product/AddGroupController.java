@@ -46,7 +46,7 @@ public class AddGroupController extends HttpServlet {
             }
         }
 
-
+//  fix sau
         RequestDispatcher dispatcher = request.getRequestDispatcher("/adminPages/admin.jsp");
         dispatcher.forward(request, response);
     }
