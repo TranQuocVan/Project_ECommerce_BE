@@ -75,11 +75,9 @@
                                         <button id="loginFacebook" class="btn btn-primary my-2" style="width: 100%;" onclick="checkLoginState()">
                                             <i class="fab fa-facebook-f"></i> Đăng nhập với Facebook
                                         </button>
-
-
-                                        <div id="google-login-container"></div>
-
                                     </div>
+                                    <div id="google-login-container"></div>
+
 
 
                                 </div>

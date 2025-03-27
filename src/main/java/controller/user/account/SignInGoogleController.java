@@ -70,16 +70,6 @@ public class SignInGoogleController extends HttpServlet {
                 }
 
 
-//                // Kiểm tra email có tồn tại trong DB không
-//                boolean isUserExist = Database.checkUserExists(email);
-//                if (!isUserExist) {
-//                    Database.createUser(email, name);
-//                }
-//
-//                // Đăng nhập thành công -> Lưu session
-//                HttpSession session = request.getSession();
-//                session.setAttribute("user", email);
-
                 response.setContentType("application/json");
                 response.getWriter().write("{\"success\": true, \"redirect\": \"IndexController\"}");
             } else {
