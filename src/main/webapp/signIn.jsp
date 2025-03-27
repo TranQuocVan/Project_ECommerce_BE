@@ -76,10 +76,12 @@
                                             <i class="fab fa-facebook-f"></i> Đăng nhập với Facebook
                                         </button>
 
-                                        <button id="loginGoogle" class="btn btn-danger my-2" style="width: 100%;">
-                                            <i class="fab fa-google"></i> Đăng nhập với Google
-                                        </button>
+
+                                        <div id="google-login-container"></div>
+
                                     </div>
+
+
                                 </div>
                             </div>
 
@@ -104,6 +106,7 @@
 </header>
 <footer></footer>
 
+<script src="https://accounts.google.com/gsi/client?v=${System.currentTimeMillis()}" async defer></script>
 <script src="components/footer.js?v=${System.currentTimeMillis()}"></script>
 <script src="components/navigation.js?v=${System.currentTimeMillis()}"></script>
 <script src="scripts/authScript/signInScript.js?v=${System.currentTimeMillis()}"></script>

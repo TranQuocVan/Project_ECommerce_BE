@@ -6,6 +6,7 @@ public class UserModel {
     private String password;
     private String role;
     String rememberMeToken;
+    long facebook_id;
 
     public UserModel(int id ,String gmail,String role) {
         super();
@@ -32,6 +33,19 @@ public class UserModel {
         this.gmail = gmail;
         this.password = password;
     }
+
+    public UserModel() {
+
+    }
+
+    public long getFacebook_id() {
+        return facebook_id;
+    }
+
+    public void setFacebook_id(long facebook_id) {
+        this.facebook_id = facebook_id;
+    }
+
     public int getId() {
         return id;
     }
