@@ -61,10 +61,14 @@
     position: absolute;
     top: 0;
     width: 300px;
-    height: 400px;
+    height: 350px;
     overflow: hidden;
-    transition: left 0.5s ease;
+    transition: left 0.5s ease, transform 0.3s ease-in-out;
+    cursor: pointer;
+}
 
+#slide .item:hover, #slide2 .item:hover {
+    transform: scale(0.95); /* Thu nhỏ 5% khi hover */
 }
 
 #slide img , #slide2 img {

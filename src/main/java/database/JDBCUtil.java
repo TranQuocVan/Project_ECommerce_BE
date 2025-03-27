@@ -19,9 +19,9 @@ public class JDBCUtil {
             String url = "jdbc:mySQL://localhost:3306/shoesql";
             String username = "root";
 //            String password = "van3";
-//            String password = "";
+            String password = "";
 
-            String password = "123456";
+//            String password = "123456";
 
 
 

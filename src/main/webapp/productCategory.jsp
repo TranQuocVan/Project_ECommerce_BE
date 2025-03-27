@@ -7,8 +7,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-
+    <title>Danh sách sản phẩm</title>
+    <link rel="icon" type="image/svg" href="assets/logo2.svg">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -36,7 +36,7 @@
             <div class="container">
                 <div class="row">
                     <h3 style="text-align: center; font-weight: bold; margin-top: 50px">Danh sách sản phẩm</h3>
-                    <div  class="col-md-2">
+                    <div  class="col-lg-3 col-md-4">
                         <div id="filter">
                             <form action="">
                                 <p class="title-filter">Kích cỡ</p>
@@ -86,7 +86,7 @@
                             </form>
                         </div>
                     </div>
-                    <div  class="col-md-10">
+                    <div  class="col-lg-9 col-md-8">
                         <div class="container">
                             <div class="row">
                                 <div class="col-md-12">
@@ -118,126 +118,129 @@
                                 </div>
 
 
-
                                 <c:if test="${not empty page.items}">
-                                    <c:forEach var="product" items="${page.items}">
+                                    <div class="row g-4">
+                                        <c:forEach var="product" items="${page.items}">
 
-                                        <div class="col-md-3">
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
 
-                                            <div class="product-item">
-                                                <!-- Display Color-Specific Product Images (First and Second Image) -->
-                                                <c:forEach var="color" items="${product.colorModels}" varStatus="status">
-                                                    <div class="product-color-display">
-                                                        <!-- Thêm class 'active' chỉ cho màu đầu tiên -->
-                                                        <div class="imgAndSize color-item ${status.index == 0 ? 'active' : ''}" data-color="${color.name}">
-                                                            <a style="display: block" href="GetProductByIdController?id=${product.id}">
-                                                            <div class="image-container">
-                                                                <!-- Default Image -->
+                                                    <div class="product-item">
+                                                        <!-- Display Color-Specific Product Images (First and Second Image) -->
+                                                        <c:forEach var="color" items="${product.colorModels}" varStatus="status">
+                                                            <div class="product-color-display">
+                                                                <!-- Thêm class 'active' chỉ cho màu đầu tiên -->
+                                                                <div class="imgAndSize color-item ${status.index == 0 ? 'active' : ''}" data-color="${color.name}">
+                                                                    <a style="display: block" href="GetProductByIdController?id=${product.id}">
+                                                                        <div class="image-container">
+                                                                            <!-- Default Image -->
 
-                                                                <c:choose>
-                                                                    <c:when test="${not empty color.imageModels and not empty color.imageModels[0]}">
-                                                                        <img
-                                                                                class="image-item image-default ${status.index == 0 ? 'active' : ''}"
-                                                                                src="data:image/jpeg;base64,${color.imageModels[0].imageBase64}"
-                                                                                alt="Default Image"
-                                                                                onerror="this.onerror=null; this.src='noImageAvailable.jpg';" />
-                                                                    </c:when>
-                                                                    <c:otherwise>
-                                                                        <img
-                                                                                class="image-item image-default ${status.index == 0 ? 'active' : ''}"
-                                                                                src="assets/default/noImageAvailable.jpg"
-                                                                                alt="Default Image" />
-                                                                    </c:otherwise>
-                                                                </c:choose>
+                                                                            <c:choose>
+                                                                                <c:when test="${not empty color.imageModels and not empty color.imageModels[0]}">
+                                                                                    <img
+                                                                                            class="image-item image-default ${status.index == 0 ? 'active' : ''}"
+                                                                                            src="data:image/jpeg;base64,${color.imageModels[0].imageBase64}"
+                                                                                            alt="Default Image"
+                                                                                            onerror="this.onerror=null; this.src='noImageAvailable.jpg';" />
+                                                                                </c:when>
+                                                                                <c:otherwise>
+                                                                                    <img
+                                                                                            class="image-item image-default ${status.index == 0 ? 'active' : ''}"
+                                                                                            src="assets/default/noImageAvailable.jpg"
+                                                                                            alt="Default Image" />
+                                                                                </c:otherwise>
+                                                                            </c:choose>
 
 
-                                                                <!-- Hover Image -->
-                                                                <c:choose>
-                                                                    <c:when test="${not empty color.imageModels and not empty color.imageModels[1]}">
-                                                                        <img
-                                                                                class="image-item image-hover"
-                                                                                src="data:image/jpeg;base64,${color.imageModels[1].imageBase64}"
-                                                                                alt="Hover Image"
-                                                                                onerror="this.onerror=null; this.src='bg6.png';"/>
-                                                                    </c:when>
-                                                                    <c:otherwise>
-                                                                        <img
-                                                                                class="image-item image-hover"
-                                                                                src="assets/default/bg6.png"
-                                                                                alt="Hover Image"/>
-                                                                    </c:otherwise>
-                                                                </c:choose>
+                                                                            <!-- Hover Image -->
+                                                                            <c:choose>
+                                                                                <c:when test="${not empty color.imageModels and not empty color.imageModels[1]}">
+                                                                                    <img
+                                                                                            class="image-item image-hover"
+                                                                                            src="data:image/jpeg;base64,${color.imageModels[1].imageBase64}"
+                                                                                            alt="Hover Image"
+                                                                                            onerror="this.onerror=null; this.src='bg6.png';"/>
+                                                                                </c:when>
+                                                                                <c:otherwise>
+                                                                                    <img
+                                                                                            class="image-item image-hover"
+                                                                                            src="assets/default/bg6.png"
+                                                                                            alt="Hover Image"/>
+                                                                                </c:otherwise>
+                                                                            </c:choose>
+                                                                        </div>
+                                                                    </a>
+                                                                </div>
                                                             </div>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </c:forEach>
+                                                        </c:forEach>
 
-                                                <c:if test="${not empty product.colorModels}">
-                                                    <c:forEach var="color" items="${product.colorModels}" varStatus="status">
-                                                        <div class="size-listProduct">
-                                                            <p class="fw-bold custom-center">Thêm vào giỏ hàng</p>
-                                                            <div class="button-spacing">
-                                                                <!-- Lặp qua các size của mỗi màu -->
-                                                                <c:forEach var="sizes" items="${color.sizeModels}">
-                                                                    <button class="option-size">
-                                                                        <span class="idSize" style="display: none">${sizes.id}</span>
-                                                                        <span class="idProduct" style="display: none">${product.id}</span>
-                                                                        <span class="fw-bold sizeName">${sizes.size}</span>
-                                                                    </button>
-                                                                </c:forEach>
-                                                            </div>
-                                                        </div>
-                                                    </c:forEach>
-                                                </c:if>
-
-
-                                                <div class="underImg">
-                                                    <!-- Loop Through Product Colors -->
-                                                    <c:if test="${not empty product.colorModels}">
-                                                        <div class="color-listProduct color-buttons">
-                                                            <c:forEach var="color" items="${product.colorModels}">
-                                                                <div class="option-collor" data-color-id="${color.id}">
-                                                                    <!-- Lưu trữ thông tin màu sắc -->
-                                                                    <div class="nameColor">${color.name}</div>
-
-                                                                    <button class="color-button"
-                                                                            data-target="${color.name}"
-                                                                            data-color-id="${color.id}" style="background-color:${color.hexCode};"> <!-- Truyền ID vào thuộc tính data -->
-                                                                    </button>
+                                                        <c:if test="${not empty product.colorModels}">
+                                                            <c:forEach var="color" items="${product.colorModels}" varStatus="status">
+                                                                <div class="size-listProduct">
+                                                                    <p class="fw-bold custom-center">Thêm vào giỏ hàng</p>
+                                                                    <div class="button-spacing">
+                                                                        <!-- Lặp qua các size của mỗi màu -->
+                                                                        <c:forEach var="sizes" items="${color.sizeModels}">
+                                                                            <button class="option-size">
+                                                                                <span class="idSize" style="display: none">${sizes.id}</span>
+                                                                                <span class="idProduct" style="display: none">${product.id}</span>
+                                                                                <span class="fw-bold sizeName">${sizes.size}</span>
+                                                                            </button>
+                                                                        </c:forEach>
+                                                                    </div>
                                                                 </div>
                                                             </c:forEach>
-                                                        </div>
-                                                    </c:if>
+                                                        </c:if>
 
 
+                                                        <div class="underImg">
+                                                            <!-- Loop Through Product Colors -->
+                                                            <c:if test="${not empty product.colorModels}">
+                                                                <div class="color-listProduct color-buttons">
+                                                                    <c:forEach var="color" items="${product.colorModels}">
+                                                                        <div class="option-collor" data-color-id="${color.id}">
+                                                                            <!-- Lưu trữ thông tin màu sắc -->
+                                                                            <div class="nameColor">${color.name}</div>
 
-                                                    <!-- Product Name, Price, Discount, and Original Price -->
-                                                    <a style="display: block" href="GetProductByIdController?id=${product.id}">
-                                                        <p class="name-product">${product.name}</p>
-                                                        <div class="priceDiv">
-                                                            <p class="price">
-                                                                <fmt:setLocale value="vi_VN" />
-                                                                <fmt:formatNumber value="${product.price - (product.price * product.discount / 100)}" type="currency"/>
-                                                            </p>
-
-                                                            <p class="discount">${product.discount}%</p>
-
-                                                            <c:if test="${product.discount > 0}">
-                                                                <p class="original-price">
-                                                                    <fmt:setLocale value="vi_VN" />
-                                                                    <fmt:formatNumber value="${product.price}" type="currency"/>
-                                                                </p>
+                                                                            <button class="color-button"
+                                                                                    data-target="${color.name}"
+                                                                                    data-color-id="${color.id}" style="background-color:${color.hexCode};"> <!-- Truyền ID vào thuộc tính data -->
+                                                                            </button>
+                                                                        </div>
+                                                                    </c:forEach>
+                                                                </div>
                                                             </c:if>
+
+
+
+                                                            <!-- Product Name, Price, Discount, and Original Price -->
+                                                            <a style="display: block" href="GetProductByIdController?id=${product.id}">
+                                                                <p class="name-product">${product.name}</p>
+                                                                <div class="priceDiv">
+                                                                    <p class="price">
+                                                                        <fmt:setLocale value="vi_VN" />
+                                                                        <fmt:formatNumber value="${product.price - (product.price * product.discount / 100)}" type="currency"/>
+                                                                    </p>
+
+                                                                    <p class="discount">${product.discount}%</p>
+
+                                                                    <c:if test="${product.discount > 0}">
+                                                                        <p class="original-price">
+                                                                            <fmt:setLocale value="vi_VN" />
+                                                                            <fmt:formatNumber value="${product.price}" type="currency"/>
+                                                                        </p>
+                                                                    </c:if>
+                                                                </div>
+                                                            </a>
+
                                                         </div>
-                                                    </a>
+                                                    </div>
 
                                                 </div>
-                                            </div>
 
-                                        </div>
 
-                                    </c:forEach>
+
+                                        </c:forEach>
+                                    </div>
                                 </c:if>
                             </div>
                         </div>

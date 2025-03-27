@@ -67,7 +67,7 @@
 
 .product-item {
     position: relative;
-    height: 510px;
+    height: 420px;
 }
 
 .product-item img {
@@ -292,7 +292,7 @@
 /* Optional: if you want all images to be visible at once, instead of hiding them behind opacity */
 .image-container {
     position: relative;
-    height: 400px;
+    height: 300px;
     overflow: hidden;
     object-fit: cover;
 }

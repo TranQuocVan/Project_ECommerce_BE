@@ -13,10 +13,12 @@ import java.util.List;
 public class OrderDao {
     public int addOrder(Order order) {
         String orderSql = "INSERT INTO orders (paymentId, orderDate, deliveryAddress, totalPrice, userId, deliveryId, statusPayment) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        int orderId = -1;
 
         try (Connection con = JDBCUtil.getConnection()) {
-            try (PreparedStatement orderSt = con.prepareStatement(orderSql, PreparedStatement.RETURN_GENERATED_KEYS)) {
-                // Set parameters for the orders table
+            con.setAutoCommit(false); // Bắt đầu transaction
+
+            try (PreparedStatement orderSt = con.prepareStatement(orderSql, Statement.RETURN_GENERATED_KEYS)) {
                 orderSt.setInt(1, order.getPaymentId());
                 orderSt.setTimestamp(2, order.getOrderDate());
                 orderSt.setString(3, order.getDeliveryAddress());
@@ -25,45 +27,50 @@ public class OrderDao {
                 orderSt.setInt(6, order.getDeliveryId());
                 orderSt.setInt(7, 0);
 
-                // Execute the order insertion
                 int affectedRows = orderSt.executeUpdate();
                 if (affectedRows == 0) {
-                    throw new SQLException("Creating order failed, no rows affected.");
+                    System.out.println("Creating order failed, no rows affected.");
+                    con.rollback();
+                    return -1;
                 }
 
-                // Retrieve the generated orderId
                 try (ResultSet rs = orderSt.getGeneratedKeys()) {
                     if (rs.next()) {
-                        int orderId = rs.getInt(1);
-
-                        // Add a status for the order
-                        StatusModel status = new StatusModel();
-                        status.setName("Đặt hàng thành công");
-                        status.setOrderId(orderId);
-                        status.setDescription("Chờ người bán xác nhận");
-                        status.setStatusTypeId(1);
-
-                        StatusDao statusDao = new StatusDao();
-                        boolean statusAdded = statusDao.addStatus(status);
-
-                        if (statusAdded) {
-                            return orderId; // Return orderId if status addition succeeds
-                        } else {
-                            throw new SQLException("Adding status failed.");
-                        }
+                        orderId = rs.getInt(1);
+                        System.out.println("Generated Order ID: " + orderId);
                     } else {
-                        throw new SQLException("Creating order failed, no ID obtained.");
+                        System.out.println("Creating order failed, no generated ID.");
+                        con.rollback();
+                        return -1;
                     }
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return -1;
             }
+
+            // Thêm trạng thái đơn hàng nhưng KHÔNG rollback nếu lỗi
+            StatusModel status = new StatusModel();
+            status.setName("Đặt hàng thành công");
+            status.setOrderId(orderId);
+            status.setDescription("Chờ người bán xác nhận");
+            status.setStatusTypeId(1);
+
+            StatusDao statusDao = new StatusDao();
+            boolean statusAdded = statusDao.addStatus(status);
+            if (!statusAdded) {
+                System.out.println("Adding status failed.");
+                // Không rollback để không mất đơn hàng
+            }
+
+            con.commit(); // Chỉ commit khi tất cả thành công
         } catch (SQLException e) {
             e.printStackTrace();
             return -1;
         }
+
+        return orderId; // Luôn trả về orderId mới nhất
     }
+
+
+
 
 
     public boolean checkOrder(int userId) {
@@ -168,6 +175,45 @@ public class OrderDao {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public int convertStatusPaymentToInt(String statusPayment) {
+        if ("Chưa thanh toán".equals(statusPayment)) {
+            return 0;
+        } else if ("Đã thanh toán".equals(statusPayment)) {
+            return 1;
+        } else {
+            return -1; // Giá trị không hợp lệ
+        }
+    }
+
+    public void updateStatusPayment(OrderModel order) {
+        String sql = "UPDATE orders SET statusPayment = ? WHERE orderId = ?";
+
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            // Chuyển đổi từ String -> int trước khi lưu vào CSDL
+            int statusPaymentInt = convertStatusPaymentToInt(order.getStatusPayment());
+
+            if (statusPaymentInt == -1) {
+                System.out.println("Lỗi: Trạng thái thanh toán không hợp lệ!");
+                return; // Dừng nếu trạng thái không hợp lệ
+            }
+
+            ps.setInt(1, statusPaymentInt); // Cập nhật với kiểu int
+            ps.setInt(2, order.getId()); // Điều kiện WHERE để cập nhật đúng đơn hàng
+
+            int rowsUpdated = ps.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Cập nhật trạng thái thanh toán thành công cho đơn hàng ID: " + order.getId());
+            } else {
+                System.out.println("Không tìm thấy đơn hàng để cập nhật.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
