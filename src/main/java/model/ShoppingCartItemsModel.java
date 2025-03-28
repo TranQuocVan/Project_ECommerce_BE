@@ -12,9 +12,12 @@ public class ShoppingCartItemsModel {
     private String nameSize ;
     private int stock;
     private int quantity;
+    private int discount;
+    private float discountPrice;
 
-    public ShoppingCartItemsModel(int sizeId,String nameProduct, float price, String nameColor, String nameSize, int stock, int quantity) {
+    public ShoppingCartItemsModel(int sizeId,int discount, String nameProduct, float price, String nameColor, String nameSize, int stock, int quantity, float discountPrice) {
         this.nameProduct = nameProduct;
+        this.discount = discount;
         this.price = price;
         this.nameColor = nameColor;
 
@@ -22,6 +25,11 @@ public class ShoppingCartItemsModel {
         this.nameSize = nameSize;
         this.stock = stock;
         this.quantity = quantity;
+        this.discountPrice = discountPrice;
+    }
+
+    public float getDiscountPrice() {
+        return discountPrice;
     }
 
     public String getNameProduct() {
@@ -33,6 +41,13 @@ public class ShoppingCartItemsModel {
     }
 
 
+    public int getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(int discount) {
+        this.discount = discount;
+    }
 
     public String getFormattedPrice() {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();

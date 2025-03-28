@@ -51,7 +51,7 @@
                                                     <div class="row mb-4 d-flex justify-content-between align-items-center items">
                                                         <div class="col-md-1 checkbox">
                                                             <input type="hidden" name="sizeId" value="${item.sizeId}">
-                                                            <input type="checkbox" class="select-item" data-item-id="${item.sizeId}" data-price="${item.price}" />
+                                                            <input type="checkbox" class="select-item" data-item-id="${item.sizeId}" data-price="${item.discountPrice}" />
                                                         </div>
                                                         <div class="col-md-2 col-lg-2 col-xl-2">
                                                             <img src="assets/shoeMens/1.png" class="img-fluid rounded-3" alt="Fashion shoes">
@@ -71,8 +71,8 @@
                                                             </button>
                                                         </div>
                                                         <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                                                            <h6 class="mb-0">${item.formattedPrice}</h6>
-
+                                                            <h6 class="mb-0"><fmt:formatNumber value="${item.discountPrice}" type="number" groupingUsed="true"/>
+                                                            </h6>
                                                         </div>
                                                         <div class="col-md-1 col-lg-1 col-xl-1 text-end">
                                                             <form method="POST" action="DeleteCartItemController">

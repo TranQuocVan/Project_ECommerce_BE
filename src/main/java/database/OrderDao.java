@@ -51,7 +51,7 @@ public class OrderDao {
             status.setName("Đặt hàng thành công");
             status.setOrderId(orderId);
             status.setDescription("Chờ người bán xác nhận");
-            status.setStatusTypeId(1);
+//            status.setStatusTypeId(1);
 
             StatusDao statusDao = new StatusDao();
             boolean statusAdded = statusDao.addStatus(status);

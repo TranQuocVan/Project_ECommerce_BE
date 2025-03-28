@@ -6,24 +6,23 @@ import java.sql.*;
 import java.util.*;
 
 public class StatusDao {
-    public boolean addStatus(StatusModel status) {
-        String sql = "INSERT INTO Statuses ( orderId, statusTypeId) VALUES (?, ?)";
+    public boolean  addStatus(StatusModel status) {
+        try (Connection con = JDBCUtil.getConnection()) {
+            con.setAutoCommit(true);  // Tự động commit
 
-        try (Connection con = JDBCUtil.getConnection();
-             PreparedStatement st = con.prepareStatement(sql)) {
+            String sql = "INSERT INTO statuses (name, orderId, description) VALUES (?, ?, ?)";
+            try (PreparedStatement st = con.prepareStatement(sql)) {
+                st.setString(1, status.getName());
+                st.setInt(2, status.getOrderId());
+                st.setString(3, status.getDescription());
 
-            // Thiết lập các tham số cho câu lệnh SQL
-//            st.setString(1, status.getName());
-            st.setInt(1, status.getOrderId());
-//            st.setString(3, status.getDescription());
-            st.setInt(2, status.getStatusTypeId());
-
-            // Thực thi câu lệnh và kiểm tra kết quả
-            int rowsAffected = st.executeUpdate();
-            return rowsAffected > 0; // Trả về true nếu thêm thành công
+                int rowsAffected = st.executeUpdate();
+                return rowsAffected > 0;
+            }
         } catch (SQLException e) {
-            e.printStackTrace(); // In lỗi ra console
+            e.printStackTrace();
         }
+
 
         return false; // Trả về false nếu có lỗi
     }
