@@ -237,20 +237,29 @@ public class OrderDao {
         float totalPrice = 0;
         for (Integer sizeId : listSizeId) {
             String sql = """
-        SELECT p.price, spc.quantity
+        SELECT p.price, p.discount, spc.quantity
         FROM Sizes s 
-        LEFT JOIN  ShoppingCartItems spc ON spc.sizeId = s.sizeId 
-        LEFT JOIN  Colors c ON c.colorId = s.colorId 
-        LEFT JOIN  Products p ON c.productId = p.productId 
-        WHERE  spc.sizeId = ? and spc.userId = ? 
-    """;
+        LEFT JOIN ShoppingCartItems spc ON spc.sizeId = s.sizeId 
+        LEFT JOIN Colors c ON c.colorId = s.colorId 
+        LEFT JOIN Products p ON c.productId = p.productId 
+        WHERE spc.sizeId = ? AND spc.userId = ?
+        """;
+
             try (Connection con = JDBCUtil.getConnection();
                  PreparedStatement st = con.prepareStatement(sql)) {
                 st.setInt(1, sizeId);
                 st.setInt(2, userId);
                 ResultSet rs = st.executeQuery();
                 if (rs.next()) {
-                    totalPrice += rs.getFloat("price") * rs.getInt("quantity");
+                    float price = rs.getFloat("price");
+                    int discount = rs.getInt("discount");
+                    int quantity = rs.getInt("quantity");
+
+                    // Tính giá sau khi giảm
+                    float discountedPrice = price - (price * discount / 100);
+
+                    // Tính tổng tiền
+                    totalPrice += discountedPrice * quantity;
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -259,6 +268,7 @@ public class OrderDao {
         totalPrice += deliveryFee(paymentId);
         return totalPrice;
     }
+
 
 
     public OrderModel getOrderById(int orderId) {

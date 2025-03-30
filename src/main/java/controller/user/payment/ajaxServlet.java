@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.vnpay.common;
+package controller.user.payment;
 
+import controller.user.payment.config.Config;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpSession;
 import model.Order;
@@ -26,7 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.logging.Logger;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -66,6 +66,7 @@ public class ajaxServlet extends HttpServlet {
             // Tạo đối tượng Order
             OrderService orderService = new OrderService();
             totalPrice = orderService.calculateTotalPrice(selectedItems, user.getId(), deliveryId);
+            System.out.println("Tổng giá: " + totalPrice);
             Order order = new Order(paymentId, sqlTimestamp, req.getParameter("address"), totalPrice, user.getId(), deliveryId);
 
             // Xử lý đặt hàng

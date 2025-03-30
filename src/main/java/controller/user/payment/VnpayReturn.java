@@ -1,8 +1,9 @@
-package com.vnpay.common;
+package controller.user.payment;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import controller.user.payment.config.Config;
 import database.OrderDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,8 +15,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import model.Order;
-import model.OrderModel;
 
 @WebServlet(name = "VnpayReturnController", value = "/VnpayReturnController")
 public class VnpayReturn extends HttpServlet {
