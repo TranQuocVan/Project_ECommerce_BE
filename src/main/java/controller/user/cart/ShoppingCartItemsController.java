@@ -5,6 +5,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import model.*;
 import service.user.cart.ShoppingCartService;
+import service.user.voucher.VoucherService;
 import service.util.FormatPriceServices;
 
 import java.io.IOException;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @WebServlet(name = "ShoppingCartItemsController", value = "/ShoppingCartItemsController")
 public class ShoppingCartItemsController extends HttpServlet {
-
+    private final VoucherService voucherService = new VoucherService();
     private final ShoppingCartService shoppingCartService = new ShoppingCartService();
     private final FormatPriceServices formatPriceServices = new FormatPriceServices();
     @Override
@@ -26,6 +27,16 @@ public class ShoppingCartItemsController extends HttpServlet {
         List<ShoppingCartItemsModel> lists = shoppingCartService.getAllShoppingCartItems(user.getId());
         List<PaymentModel> listPaymentModels = shoppingCartService.getAllPayments();
         List<DeliveriesModel> listDeliveriesModels = shoppingCartService.getAllDeliveries();
+
+
+        List<VoucherModel> listVoucherShipping = voucherService.getAllVoucherShipping();
+        List<VoucherModel> listVoucherItems = voucherService.getAllVoucherItems();
+
+        System.out.println("List Voucher Shipping: " + listVoucherShipping);
+        System.out.println("List Voucher Items: " + listVoucherItems);
+
+        request.setAttribute("listVoucherShipping", listVoucherShipping);
+        request.setAttribute("listVoucherItems", listVoucherItems);
 
 //        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
 //        symbols.setGroupingSeparator('.');

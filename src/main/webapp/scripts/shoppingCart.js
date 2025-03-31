@@ -322,4 +322,50 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// Xử lý action của form thanh toán dựa vào paymentId
+// Lựa chọn voucher
+function selectVoucher(row) {
+    // Xóa màu nền của các hàng trong cùng danh sách
+    let table = row.closest("table");
+    table.querySelectorAll("tr").forEach(tr => tr.style.backgroundColor = "");
+
+    // Chọn radio trong hàng được nhấn
+    let radio = row.querySelector('input[type="radio"]');
+    if (radio) {
+        radio.checked = true;
+        row.style.backgroundColor = "#90EE90"; // Màu xanh lá nhạt
+    }
+}
+
+function highlightRow(radio) {
+    // Xóa màu nền của các hàng trong cùng danh sách
+    let table = radio.closest("table");
+    table.querySelectorAll("tr").forEach(tr => tr.style.backgroundColor = "");
+
+    // Lấy hàng chứa radio và đặt màu nền
+    let row = radio.closest("tr");
+    if (row) {
+        row.style.backgroundColor = "#90EE90";
+    }
+}
+
+// Kiểm tra có lựa chọn sản phẩm chưa
+function handleChooseVoucher() {
+    const totalCount = selectedItems.size; // Lấy số lượng sản phẩm đã chọn
+
+    if (totalCount === 0) {
+        Swal.fire({
+            title: 'Vui lòng chọn sản phẩm cần mua trước khi chọn Voucher!',
+            text: 'Hãy kiểm tra kỹ thông tin trước khi xác nhận!',
+            icon: 'warning',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK'
+        });
+    } else {
+        // Nếu tổng tiền > 0 thì mở modal
+        let myModal = new bootstrap.Modal(document.getElementById('myModal'));
+        myModal.show();
+    }
+}
+
+
+

@@ -148,14 +148,14 @@
 }
 
 .images {
-    max-height: 430px; /* Giới hạn chiều cao tối đa */
-    overflow-y: auto; /* Thanh cuộn dọc mặc định */
-    overflow-x: hidden; /* Ẩn thanh cuộn ngang trên màn hình lớn */
-    scrollbar-width: thin; /* Firefox */
-    scrollbar-color: #888 #f1f1f1;
-    display: flex;
-    flex-direction: column; /* Xếp theo chiều dọc */
-    align-items: center; /* Căn giữa */
+    max-height: 430px;
+    overflow-y: scroll; /* Giữ cuộn */
+    scrollbar-width: none; /* Ẩn scrollbar trên Firefox */
+    -ms-overflow-style: none; /* Ẩn scrollbar trên IE/Edge */
+}
+
+.images::-webkit-scrollbar {
+    display: none; /* Ẩn scrollbar trên Chrome, Safari */
 }
 
 .color-item-img {
@@ -168,24 +168,23 @@
         max-height: none;
         max-width: 100%;
         overflow-y: hidden; /* Ẩn cuộn dọc */
-        overflow-x: auto; /* Bật thanh cuộn ngang */
-        white-space: nowrap; /* Ảnh nằm trên một hàng */
+        overflow-x: auto; /* Hiển thị thanh cuộn ngang */
+        white-space: nowrap;
         display: flex;
-        flex-direction: row; /* Xếp ảnh theo hàng ngang */
+        flex-direction: row !important; /* Chuyển sang trục ngang */
         align-items: center;
-        justify-content: flex-start; /* Căn trái */
-        padding-bottom: 10px; /* Chừa khoảng trống cho thanh cuộn ngang */
+        justify-content: flex-start;
+        padding-bottom: 10px;
     }
 
     .color-item-img {
-        display: inline-block; /* Hiển thị theo hàng ngang */
-        margin-right: 10px; /* Khoảng cách giữa các ảnh */
+        display: inline-block;
+        margin-right: 10px;
     }
 
     /* Tùy chỉnh thanh cuộn ngang cho Mobile */
     .images::-webkit-scrollbar {
-        width: 6px;
-        height: 6px; /* Hiển thị thanh cuộn ngang */
+        height: 6px;
     }
 }
 
