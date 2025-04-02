@@ -27,16 +27,8 @@ public class ShoppingCartItemsController extends HttpServlet {
         List<ShoppingCartItemsModel> lists = shoppingCartService.getAllShoppingCartItems(user.getId());
         List<PaymentModel> listPaymentModels = shoppingCartService.getAllPayments();
         List<DeliveriesModel> listDeliveriesModels = shoppingCartService.getAllDeliveries();
-
-
         List<VoucherModel> listVoucherShipping = voucherService.getAllVoucherShipping();
         List<VoucherModel> listVoucherItems = voucherService.getAllVoucherItems();
-
-        System.out.println("List Voucher Shipping: " + listVoucherShipping);
-        System.out.println("List Voucher Items: " + listVoucherItems);
-
-        request.setAttribute("listVoucherShipping", listVoucherShipping);
-        request.setAttribute("listVoucherItems", listVoucherItems);
 
 //        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
 //        symbols.setGroupingSeparator('.');
@@ -50,6 +42,8 @@ public class ShoppingCartItemsController extends HttpServlet {
         request.setAttribute("shoppingCartItemsList", lists);
         request.setAttribute("listPaymentModels", listPaymentModels);
         request.setAttribute("listDeliveriesModels", listDeliveriesModels);
+        request.setAttribute("listVoucherShipping", listVoucherShipping);
+        request.setAttribute("listVoucherItems", listVoucherItems);
         request.getRequestDispatcher("shoppingCart.jsp").forward(request, response);
     }
 

@@ -50,7 +50,7 @@
                                             <c:if test="${not empty shoppingCartItemsList}">
                                                 <c:forEach var="item" items="${shoppingCartItemsList}">
                                                     <hr class="my-4">
-                                                    <div class="row mb-4 d-flex justify-content-between align-items-center items">
+                                                    <div class="row mb-4 d-flex justify-content-between align-items-center items" style="cursor: pointer">
                                                         <div class="col-md-1 checkbox">
                                                             <input type="hidden" name="sizeId" value="${item.sizeId}">
                                                             <input type="checkbox" class="select-item" data-item-id="${item.sizeId}" data-price="${item.discountPrice}" />
@@ -126,7 +126,7 @@
                                                     <div id="convenient">Tiện lợi</div>
                                                 </div>
                                                 <h5 class=" mb-3">Địa chỉ nhận hàng</h5>
-                                                <div class="mb-5">
+                                                <div class="mb-3">
                                                     <input type="text" class="form-control form-control-lg" name="address" placeholder="Nhập địa chỉ của bạn" />
                                                 </div>
 
@@ -155,11 +155,13 @@
                                                                         <table class="table table-hover">
                                                                             <tbody>
                                                                             <c:forEach var="voucher" items="${listVoucherShipping}">
-                                                                                <tr style="cursor: pointer;" onclick="selectVoucher(this)">
+                                                                                <tr style="cursor: pointer;" onclick="selectVoucherShipping(this)">
                                                                                     <td><i class="fa-solid fa-truck-fast" style="font-size: 40px"></i></td>
                                                                                     <td>
                                                                                         <div style="font-weight: 600">Voucher giảm giá: ${voucher.discountPercent.intValue()}%</div>
-                                                                                        <div>Giảm tối đa: <fmt:formatNumber value="${voucher.discountMaxValue}" type="number" groupingUsed="true" />đ</div>
+                                                                                        <div>Giảm tối đa:
+                                                                                            <fmt:setLocale value="vi_VN" />
+                                                                                            <fmt:formatNumber value="${voucher.discountMaxValue}" type="number" groupingUsed="true" />đ</div>
                                                                                         <div>Số lượng: x${voucher.quantity}</div>
                                                                                     </td>
                                                                                     <td>
@@ -184,11 +186,13 @@
                                                                         <table class="table table-hover">
                                                                             <tbody>
                                                                             <c:forEach var="voucher" items="${listVoucherItems}">
-                                                                                <tr style="cursor: pointer;" onclick="selectVoucher(this)">
+                                                                                <tr style="cursor: pointer;" onclick="selectVoucherItems(this)">
                                                                                     <td><i class="fa-solid fa-bag-shopping" style="font-size: 40px"></i></td>
                                                                                     <td>
                                                                                         <div style="font-weight: 600">Voucher giảm giá: ${voucher.discountPercent.intValue()}%</div>
-                                                                                        <div>Giảm tối đa: <fmt:formatNumber value="${voucher.discountMaxValue}" type="number" groupingUsed="true" />đ</div>
+                                                                                        <div>Giảm tối đa:
+                                                                                            <fmt:setLocale value="vi_VN" />
+                                                                                            <fmt:formatNumber value="${voucher.discountMaxValue}" type="number" groupingUsed="true" />đ</div>
                                                                                         <div>Số lượng: x${voucher.quantity}</div>
                                                                                     </td>
                                                                                     <td>
@@ -210,19 +214,19 @@
                                                                 <div class="me-auto">
                                                                     <div>
                                                                         <span>Giảm giá vận chuyển: </span>
-                                                                        <span>0 vnd</span>
+                                                                        <span id="disscountFee">0đ</span>
                                                                     </div>
                                                                     <div>
                                                                         <span>Giảm giá sản phẩm: </span>
-                                                                        <span>0 vnd</span>
+                                                                        <span id="disscountItems">0đ</span>
                                                                     </div>
                                                                     <div>
                                                                         <span>Tổng thanh toán: </span>
-                                                                        <span>0 vnd</span>
+                                                                        <span class="text-success" id="totalAmountModalVoucher">0</span>
                                                                     </div>
                                                                 </div>
                                                                 <div>
-                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Xác nhận</button>
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="confirmVoucher()">Xác nhận</button>
                                                                 </div>
                                                             </div>
 
