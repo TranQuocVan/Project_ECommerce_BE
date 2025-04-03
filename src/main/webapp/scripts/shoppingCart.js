@@ -354,8 +354,8 @@ function selectVoucherShipping(row) {
         }
 
         discountShipping = 0;
-        document.querySelector("#disscountFee").textContent = "0đ";
-        document.querySelector("#disscountFee").classList.remove("text-danger");
+        document.querySelector("#discountFee").textContent = "0đ";
+        document.querySelector("#discountFee").classList.remove("text-danger");
 
     } else {
         let table = row.closest("table");
@@ -372,8 +372,8 @@ function selectVoucherShipping(row) {
         const deliveryFee = parseFloat(document.querySelector("#feeDisplay").textContent.replace(/[.,đ\s]+/g, ""));
 
         discountShipping = Math.min((deliveryFee * discountPercent) / 100, discountMaxValue);
-        document.querySelector("#disscountFee").textContent = `-${discountShipping.toLocaleString("vi-VN")}đ`;
-        document.querySelector("#disscountFee").classList.add("text-danger");
+        document.querySelector("#discountFee").textContent = `-${discountShipping.toLocaleString("vi-VN")}đ`;
+        document.querySelector("#discountFee").classList.add("text-danger");
     }
 
     updateFinalTotal();
@@ -390,8 +390,8 @@ function selectVoucherItems(row) {
         }
 
         discountItems = 0;
-        document.querySelector("#disscountItems").textContent = "0đ";
-        document.querySelector("#disscountItems").classList.remove("text-danger");
+        document.querySelector("#discountItems").textContent = "0đ";
+        document.querySelector("#discountItems").classList.remove("text-danger");
 
     } else {
         let table = row.closest("table");
@@ -415,8 +415,8 @@ function selectVoucherItems(row) {
         });
 
         discountItems = Math.min((total * discountPercent) / 100, discountMaxValue);
-        document.querySelector("#disscountItems").textContent = `-${discountItems.toLocaleString("vi-VN")}đ`;
-        document.querySelector("#disscountItems").classList.add("text-danger");
+        document.querySelector("#discountItems").textContent = `-${discountItems.toLocaleString("vi-VN")}đ`;
+        document.querySelector("#discountItems").classList.add("text-danger");
     }
 
     updateFinalTotal();
@@ -447,8 +447,8 @@ function confirmVoucher() {
             document.getElementById('totalAmount').textContent = formatPrice(finalTotal);
 
             // **Lưu lại giảm giá để trừ khi thay đổi số lượng sản phẩm**
-            discountShipping = parseFloat(document.querySelector("#disscountFee").textContent.replace(/[^\d]/g, "")) || 0;
-            discountItems = parseFloat(document.querySelector("#disscountItems").textContent.replace(/[^\d]/g, "")) || 0;
+            discountShipping = parseFloat(document.querySelector("#discountFee").textContent.replace(/[^\d]/g, "")) || 0;
+            discountItems = parseFloat(document.querySelector("#discountItems").textContent.replace(/[^\d]/g, "")) || 0;
 
             // Hiển thị thông báo thành công
             Swal.fire({
@@ -498,6 +498,41 @@ function handleChooseVoucher() {
         myModal.show();
     }
 }
+
+function submitVoucher() {
+    // Lấy phương thức thanh toán
+    let paymentId = parseInt(document.getElementById("paymentId").value, 10);
+
+    // Lấy voucher đã chọn
+    let selectedShipping = document.querySelector('input[name="selectedVoucherShipping"]:checked');
+    let selectedItems = document.querySelector('input[name="selectedVoucherItems"]:checked');
+
+    // Gán giá trị vào input ẩn để gửi đi
+    document.getElementById('selectedVoucherShippingHidden').value = selectedShipping ? selectedShipping.value : "";
+    document.getElementById('selectedVoucherItemsHidden').value = selectedItems ? selectedItems.value : "";
+
+    // Tạo đối tượng FormData
+    let formData = new FormData(document.getElementById('voucherForm'));
+
+    // Xác định URL dựa vào paymentId
+    let url = (paymentId === 1) ? '/OrderController' : '/VnpayPaymentController';
+
+    // Gửi yêu cầu AJAX (POST)
+    fetch(url, {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.json()) // Giả sử bạn muốn trả về JSON
+        .then(data => {
+            console.log("Dữ liệu gửi đi thành công:", data);
+            // Xử lý kết quả từ server (ví dụ: cập nhật giỏ hàng)
+        })
+        .catch(error => {
+            console.error("Có lỗi xảy ra:", error);
+        });
+}
+
+
 
 
 

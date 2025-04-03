@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @WebServlet(name = "VnpayReturnController", value = "/VnpayReturnController")
-public class VnpayReturn extends HttpServlet {
+public class VnpayReturnController extends HttpServlet {
     OrderDao orderDao = new OrderDao();
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

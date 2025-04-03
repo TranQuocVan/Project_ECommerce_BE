@@ -16,7 +16,11 @@ public class VoucherService {
         return voucherDAO.getAllVoucherItems();
     }
 
-    public int getDiscountShippingFee(int voucherId, int fee) {
-        return voucherDAO.getDiscountShippingFee(voucherId, fee);
+    public float calculateDiscountShippingFee(int voucherId, int deliveryId) {
+        return voucherDAO.calculateDiscountShippingFee(voucherId, deliveryId);
+    }
+
+    public float calculateDiscountItemsFee(int voucherId, List<Integer> listSizeId){
+        return voucherDAO.calculateDiscountItemsFee(voucherId, listSizeId);
     }
 }
