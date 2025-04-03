@@ -89,6 +89,8 @@ public class OrderController extends HttpServlet {
             cartItemOrderService.addShoppingCartItemOrders(selectedItems, user.getId(), orderId);
             shoppingCartService.cleanShoppingCartItems(selectedItems);
 
+            // add status
+
             switch (paymentId) {
                 case 1:
                     response.sendRedirect(request.getContextPath() + "/OrderController");
