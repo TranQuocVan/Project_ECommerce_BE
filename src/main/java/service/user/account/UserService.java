@@ -1,12 +1,14 @@
 package service.user.account;
 
 import com.google.gson.JsonObject;
+import database.OrderDao;
 import database.PasswordResetTokensDao;
 import database.UserDao;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.UserModel;
+import service.log.LogService;
 
 import java.io.PrintWriter;
 import java.security.MessageDigest;
@@ -161,6 +163,16 @@ public class UserService {
         return jsonResponse;
 
 
+    }
+
+    public int getUserIdByPasswordResetToken(String token){
+        PasswordResetTokensDao tokenDao = new PasswordResetTokensDao();
+        return tokenDao.getUserIdByToken(token);
+    }
+
+    public int getUserIdByOrderId(int id){
+        OrderDao orderDao = new OrderDao();
+        return orderDao.getUserIdByOrderId(id);
     }
 
 

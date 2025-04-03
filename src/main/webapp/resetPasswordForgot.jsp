@@ -27,34 +27,34 @@
     <link rel="stylesheet" href="styles/orderDetails.css?v=${System.currentTimeMillis()}">
 </head>
 <body>
+<header>
     <nav></nav>
     <div class="under-navigation">
-        <div style="padding-top: 70px;" class="container">
-            <h2 class="text-center">Đặt lại mật khẩu</h2>
-            <form id="resetPasswordForm">
-                <input type="hidden" id="token" value="<%= token %>">
-                <div class="mb-3">
-                    <label for="password" class="form-label">Mật khẩu mới:</label>
-                    <input type="password" id="password" class="form-control" required>
-                    <small class="text-muted">Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số.</small>
-                </div>
-                <div class="mb-3">
-                    <label for="confirmPassword" class="form-label">Xác nhận mật khẩu:</label>
-                    <input type="password" id="confirmPassword" class="form-control" required>
-                </div>
-                <button type="submit" class="btn btn-primary w-100">Xác nhận</button>
-            </form>
+        <div style="padding-top: 170px;" class="container">
+            <div class="row">
+                <h2 class="text-center fw-bold mb-0">Đặt lại mật khẩu</h2>
+                <div class="col-3"></div>
+                <form class="col-6" id="resetPasswordForm">
+                    <input type="hidden" id="token" value="<%= token %>">
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mật khẩu mới:</label>
+                        <input type="password" id="password" class="form-control" required>
+                        <small class="text-muted">Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số.</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Xác nhận mật khẩu:</label>
+                        <input type="password" id="confirmPassword" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Xác nhận</button>
+                </form>
+            </div>
         </div>
-
     </div>
-
-
-
+</header>
     <footer></footer>
-
-    <!-- Các script cần thiết -->
-    <script src="components/footer.js?v=${System.currentTimeMillis()}"></script>
-    <script src="components/navigation.js?v=${System.currentTimeMillis()}"></script>
-    <script src="scripts/authScript/resetPassword.js?v=${System.currentTimeMillis()}"></script>
 </body>
+
+<script src="components/footer.js?v=${System.currentTimeMillis()}"></script>
+<script src="components/navigation.js?v=${System.currentTimeMillis()}"></script>
+<script src="scripts/authScript/resetPassword.js?v=${System.currentTimeMillis()}"></script>
 </html>

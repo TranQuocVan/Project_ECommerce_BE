@@ -99,7 +99,13 @@
     }
 }
 
-/* Ẩn input file gốc */
-.custom-file-input {
+
+
+.custom-file-upload input[type="file"] {
     display: none;
+}
+
+#name,#description{
+    border-radius: 10px;
+    margin-bottom: 20px;
 }

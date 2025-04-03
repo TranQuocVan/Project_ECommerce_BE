@@ -6,6 +6,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import model.UserModel;
+import service.log.LogService;
 import service.user.account.UserService;
 
 import java.io.IOException;
@@ -40,7 +41,7 @@ public class SignInController extends HttpServlet {
             UserModel userModel = userService.authenticateUser(gmail, password);
 
             if (!userService.isUserModelExistence(userModel)) {
-                LogDAO.insertLog(0, "LOGIN_FAILED", "users", gmail, "INVALID_PASSWORD", ipAddress);
+                LogService.logLogin(0,gmail,false,ipAddress);
                 result.put("status", "error");
                 result.put("message", "This gmail or password is incorrect");
             } else {
@@ -50,8 +51,7 @@ public class SignInController extends HttpServlet {
                 UserDao userDao = new UserDao();
                 UserModel userModelCheck = userDao.selectByGmail(gmail);
 
-                LogDAO.insertLog(userModelCheck.getId(), "LOGIN_SUCCESS", "users", gmail, "SUCCESS", ipAddress);
-
+                LogService.logLogin(userModelCheck.getId(),gmail,true,ipAddress);
                 result.put("status", "success");
                 result.put("redirect", request.getContextPath() + "/IndexController");
             }

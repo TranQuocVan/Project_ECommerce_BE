@@ -10,6 +10,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import model.UserModel;
+import service.log.LogService;
 import service.user.account.UserService;
 
 import java.io.IOException;
@@ -27,6 +28,7 @@ public class SignInGoogleController extends HttpServlet {
     }
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String credential = request.getParameter("credential");
+        String ipAddress = request.getRemoteAddr();
 
         if (credential == null || credential.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -70,9 +72,13 @@ public class SignInGoogleController extends HttpServlet {
                 }
 
 
+                LogService.logLoginWithGG(userModel.getId(), credential,true,ipAddress);
+
                 response.setContentType("application/json");
                 response.getWriter().write("{\"success\": true, \"redirect\": \"IndexController\"}");
+
             } else {
+                LogService.logLoginWithGG(0,credential,true,ipAddress);
                 response.getWriter().write("{\"success\": false, \"message\": \"Token không hợp lệ!\"}");
             }
         } catch (GeneralSecurityException | IOException e) {

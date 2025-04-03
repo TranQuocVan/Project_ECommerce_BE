@@ -4,6 +4,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import model.*;
+import service.log.LogService;
 import service.user.order.OrderService;
 import service.user.cart.ShoppingCartItemOrderService;
 import service.user.cart.ShoppingCartService;
@@ -53,6 +54,7 @@ public class OrderController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        String ipAddress = request.getRemoteAddr();
 
         HttpSession session = request.getSession();
         UserModel user = (UserModel) session.getAttribute("user");
@@ -90,6 +92,7 @@ public class OrderController extends HttpServlet {
             switch (paymentId) {
                 case 1:
                     response.sendRedirect(request.getContextPath() + "/OrderController");
+                    LogService.paymentCod(user.getId(), String.valueOf(orderId),ipAddress);
                     break;
                 case 2:
                     response.sendRedirect("https://sandbox.vnpayment.vn/apis/");

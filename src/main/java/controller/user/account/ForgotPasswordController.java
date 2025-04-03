@@ -11,6 +11,7 @@ import java.io.IOException;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import model.UserModel;
+import service.log.LogService;
 import service.util.GmailServices;
 
 @WebServlet(name = "ForgotPasswordController", value = "/ForgotPasswordController")
@@ -24,6 +25,7 @@ public class ForgotPasswordController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        String ipAddress = request.getRemoteAddr();
 
         BufferedReader reader = request.getReader();
         Gson gson = new Gson();
@@ -47,8 +49,10 @@ public class ForgotPasswordController extends HttpServlet {
 
         if (tokenDao.saveResetToken(userModel.getId(), token)) {
             boolean isSuccess = new GmailServices().sendGmailForForgotPass(emailRequest.email, token);
+            LogService.forgotPassword(userModel.getId(),emailRequest.email,true,ipAddress);
             sendJsonResponse(response, isSuccess, isSuccess ? "Email đã được gửi." : "Gửi email thất bại!");
         } else {
+            LogService.forgotPassword(0,emailRequest.email,false,ipAddress);
             sendJsonResponse(response, false, "Không thể tạo token đặt lại mật khẩu!");
         }
     }

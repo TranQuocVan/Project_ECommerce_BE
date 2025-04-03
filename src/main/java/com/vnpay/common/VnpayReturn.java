@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 import model.Order;
 import model.OrderModel;
+import service.log.LogService;
+import service.user.account.UserService;
 
 @WebServlet(name = "VnpayReturnController", value = "/VnpayReturnController")
 public class VnpayReturn extends HttpServlet {
@@ -30,6 +32,7 @@ public class VnpayReturn extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        String ipAddress = request.getRemoteAddr();
         try ( PrintWriter out = response.getWriter()) {
             Map fields = new HashMap();
             for (Enumeration params = request.getParameterNames(); params.hasMoreElements();) {
@@ -69,6 +72,8 @@ public class VnpayReturn extends HttpServlet {
                     System.out.println("Cập nhật trạng thái thanh toán thất bại!");
                 }
                 request.setAttribute("transResult", transSuccess);
+                UserService userService = new UserService();
+                LogService.paymentVNPay(userService.getUserIdByOrderId(orderIdInt), String.valueOf(orderId),ipAddress);
                 request.getRequestDispatcher("paymentResult.jsp").forward(request, response);
             } else {
                 //RETURN PAGE ERROR
