@@ -1,29 +1,27 @@
 package model;
 
+import java.sql.Date;
 import java.sql.Timestamp; // Đảm bảo import đúng java.sql.Timestamp
+import java.time.LocalDate;
 
 public class StatusModel {
     private int id;              // ID của trạng thái (khóa chính)
     private String name;         // Tên của trạng thái
     private int orderId;         // ID của đơn hàng liên quan
     private String description;  // Mô tả trạng thái
-    private Timestamp startDate; // Ngày bắt đầu
-    private Timestamp endDate;   // Ngày kết thúc
-    private int statusTypeId ;
+    private Timestamp timeline;
 
     // Constructor không tham số
     public StatusModel() {
     }
 
     // Constructor có tham số
-    public StatusModel(int id, String name, int orderId, String description, Timestamp startDate, Timestamp endDate,int statusTypeId) {
+    public StatusModel(int id, String name, int orderId, String description, Timestamp timeline) {
         this.id = id;
         this.name = name;
         this.orderId = orderId;
         this.description = description;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.statusTypeId = statusTypeId;
+        this.timeline = timeline;
     }
 
     // Getter và Setter cho id
@@ -62,29 +60,10 @@ public class StatusModel {
         this.description = description;
     }
 
-    // Getter và Setter cho startDate
-    public Timestamp getStartDate() {
-        return startDate;
+    public Timestamp getTimeline() {
+        return timeline;
     }
-
-    public void setStartDate(Timestamp startDate) {
-        this.startDate = startDate;
-    }
-
-    // Getter và Setter cho endDate
-    public Timestamp getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Timestamp endDate) {
-        this.endDate = endDate;
-    }
-
-    public void setStatusTypeId(int statusTypeId) {
-        this.statusTypeId = statusTypeId;
-    }
-
-    public int getStatusTypeId() {
-        return statusTypeId;
+    public void setTimeline(Timestamp timeline) {
+        this.timeline = timeline;
     }
 }

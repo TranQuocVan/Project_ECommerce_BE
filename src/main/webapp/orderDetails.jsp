@@ -47,7 +47,7 @@
 
                                 <div class="timeLine">
                                     <div>
-                                        <fmt:formatDate value="${status.startDate}" pattern="dd/MM/yyyy HH:mm:ss" />
+                                        <fmt:formatDate value="${status.timeline}" pattern="dd/MM/yyyy HH:mm:ss" />
                                     </div>
                                 </div>
                                 <div class="info">
