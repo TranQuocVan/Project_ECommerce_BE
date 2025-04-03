@@ -3,6 +3,8 @@ package database;
 import model.StatusModel;
 
 import java.sql.*;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.*;
 
 public class StatusDao {
@@ -10,11 +12,12 @@ public class StatusDao {
         try (Connection con = JDBCUtil.getConnection()) {
             con.setAutoCommit(true);  // Tự động commit
 
-            String sql = "INSERT INTO statuses (name, orderId, description) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO statuses (name, orderId, description, timeline) VALUES (?, ?, ?, ?)";
             try (PreparedStatement st = con.prepareStatement(sql)) {
                 st.setString(1, status.getName());
                 st.setInt(2, status.getOrderId());
                 st.setString(3, status.getDescription());
+                st.setTimestamp(4, status.getTimeline());
 
                 int rowsAffected = st.executeUpdate();
                 return rowsAffected > 0;
@@ -30,7 +33,7 @@ public class StatusDao {
 
     //check
     public List<StatusModel> getStatusesByOrderId(int orderId) {
-        String sql = "SELECT * FROM Statuses s LEFT JOIN statusestype st on s.statusTypeId = st.id WHERE orderId = ?";
+        String sql = "SELECT * FROM Statuses  WHERE orderId = ?";
         List<StatusModel> statuses = new ArrayList<>();
 
         try (Connection con = JDBCUtil.getConnection();
@@ -44,16 +47,18 @@ public class StatusDao {
                 while (rs.next()) {
                     StatusModel status = new StatusModel();
                     status.setId(rs.getInt("statusId"));
-                    status.setName(rs.getString("nameType"));
+                    status.setName(rs.getString("name"));
                     status.setOrderId(rs.getInt("orderId"));
                     status.setDescription(rs.getString("description"));
+                    status.setTimeline(rs.getTimestamp("timeline")); // Gán giá trị vào status
 
-                    // Lấy `startDate` và `endDate`
-                    status.setStartDate(rs.getTimestamp("startDate")); // Sử dụng Timestamp
-                    Timestamp endDate = rs.getTimestamp("endDate");
-                    if (endDate != null) {
-                        status.setEndDate(endDate);
-                    }
+
+//                    // Lấy `startDate` và `endDate`
+//                    status.setStartDate(rs.getTimestamp("startDate")); // Sử dụng Timestamp
+//                    Timestamp endDate = rs.getTimestamp("endDate");
+//                    if (endDate != null) {
+//                        status.setEndDate(endDate);
+//                    }
 
                     statuses.add(status); // Thêm đối tượng StatusModel vào danh sách
                 }

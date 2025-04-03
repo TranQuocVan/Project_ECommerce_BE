@@ -141,6 +141,7 @@ CREATE TABLE IF NOT EXISTS `Statuses` (
     `name` VARCHAR(255) NOT NULL COLLATE utf8mb4_unicode_ci,
     `orderId` INT NOT NULL,
     `description` VARCHAR(255) NOT NULL COLLATE utf8mb4_unicode_ci,
+    `timeline` DATE NOT NULL,
     FOREIGN KEY (`orderId`) REFERENCES `Orders`(`orderId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -180,3 +181,7 @@ INSERT INTO `deliveries` (`fee`,`name`)
 VALUES 
     (10,"Hoả Tốc" );
 
+
+-- Thêm vô table statuses nha ae
+ALTER TABLE statuses
+    ADD COLUMN timeline TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;

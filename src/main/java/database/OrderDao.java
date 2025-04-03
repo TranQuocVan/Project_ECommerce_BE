@@ -6,6 +6,7 @@ import model.StatusModel;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,10 @@ public class OrderDao {
                 status.setName("Đặt hàng thành công");
                 status.setOrderId(finalOrderId);
                 status.setDescription("Chờ người bán xác nhận");
+
+                LocalDateTime localDateTime = LocalDateTime.now(); // Lấy ngày và giờ hiện tại
+                Timestamp sqlTimestamp = Timestamp.valueOf(localDateTime); // Chuyển đổi thành Timestamp (cả ngày và giờ)
+                status.setTimeline(sqlTimestamp); // Lưu vào status
 
                 StatusDao statusDao = new StatusDao();
                 statusDao.addStatus(status);

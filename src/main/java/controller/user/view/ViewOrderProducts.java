@@ -37,7 +37,6 @@ public class ViewOrderProducts extends HttpServlet {
             // Fetch the order model using the service
             OrderModel orderModel = viewOrderProductsService.getOrder(id);
 
-
             // Set the products as a request attribute
             request.setAttribute("orderProducts", orderModel);
 
