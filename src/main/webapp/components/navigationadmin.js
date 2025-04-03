@@ -13,6 +13,8 @@ const addNavigationAdmin = () => {
                         </div>
                     </div>
                 </a>
+                
+                
 
                 <div class="navAdmin-item" id="addCategoryToggle">
                     <div class="navAdmin-text">
@@ -69,6 +71,27 @@ const addNavigationAdmin = () => {
                     
                          
                 </div>
+                
+                
+                 <div class="navAdmin-item" id="userToggle">
+                    <div class="navAdmin-text">
+                       <a>Người dùng</a> 
+                    </div>
+                    <div class="navAdmin-icon">
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                </div>
+                <div class="subMenu" id="userOptions">
+                <a href="http://localhost:8080/Shoe_war_exploded/adminPages/addProductGroup.jsp">
+                    <div class="navAdmin-subItem">
+                        Quản lí user
+                    </div>
+                    </a>
+                    
+
+                </div>
+                
+                
 
 
 <!--                <a href="./delivery.jsp">-->
@@ -111,6 +134,13 @@ const addNavigationAdmin = () => {
     const orderOptions = document.getElementById("orderOptions");
     orderToggle.addEventListener("click", () => {
         orderOptions.classList.toggle("show");
+    });
+
+    const userToggle = document.getElementById("userToggle")
+    const userOptions = document.getElementById("userOptions")
+    userToggle.addEventListener("click", ()=>{
+
+        userOptions.classList.toggle("show");
     });
 };
 

@@ -25,11 +25,11 @@ public class OrderAdminController extends HttpServlet {
 
         List<PaymentModel> listPaymentModels = shoppingCartService.getAllPayments();
         List<DeliveriesModel> listDeliveriesModels = shoppingCartService.getAllDeliveries();
-        List<StatusAdminModel> statusAdminModels = orderAdminService.getAllStatus();
+//        List<StatusAdminModel> statusAdminModels = orderAdminService.getAllStatus();
 
         request.setAttribute("listPaymentModels", listPaymentModels);
         request.setAttribute("listDeliveriesModels", listDeliveriesModels);
-        request.setAttribute("statusAdminModels", statusAdminModels);
+//        request.setAttribute("statusAdminModels", statusAdminModels);
 
         request.getRequestDispatcher("adminPages/managerOrderWithFilter.jsp").forward(request, response);
 
@@ -62,13 +62,13 @@ public class OrderAdminController extends HttpServlet {
                 ShoppingCartService shoppingCartService = new ShoppingCartService();
                 List<PaymentModel> listPaymentModels = shoppingCartService.getAllPayments();
                 List<DeliveriesModel> listDeliveriesModels = shoppingCartService.getAllDeliveries();
-                List<StatusAdminModel> statusAdminModels = orderAdminService.getAllStatus();
+//                List<StatusAdminModel> statusAdminModels = orderAdminService.getAllStatus();
 
 
                 request.setAttribute("listOrderAdminModel", od);
                 request.setAttribute("listPaymentModels", listPaymentModels);
                 request.setAttribute("listDeliveriesModels", listDeliveriesModels);
-                request.setAttribute("statusAdminModels", statusAdminModels);
+//                request.setAttribute("statusAdminModels", statusAdminModels);
 
 
                 request.getRequestDispatcher("adminPages/managerOrderWithFilter.jsp").forward(request, response);

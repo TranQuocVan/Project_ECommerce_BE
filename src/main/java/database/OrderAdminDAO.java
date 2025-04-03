@@ -71,40 +71,40 @@ public class OrderAdminDAO {
         }
 
     }
-    public List<StatusAdminModel> getAllStatus () {
-        List<StatusAdminModel> statusAdminModels = new ArrayList<>();
-        String sql = "select * from statusestype" ;
-        try (Connection con = JDBCUtil.getConnection();
-             PreparedStatement st = con.prepareStatement(sql)) {
-            ResultSet rs = st.executeQuery();
-            while (rs.next()) {
-                StatusAdminModel statusAdminModel = new StatusAdminModel(rs.getInt(1), rs.getString(2),rs.getString(3));
-                statusAdminModels.add(statusAdminModel);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return statusAdminModels;
-    }
-    public boolean insertStatus(int status, int orderId) throws SQLException {
-        String sql = "INSERT INTO Statuses (statusTypeId, orderId) VALUES (?, ?)";
-
-        try (Connection con = JDBCUtil.getConnection();
-             PreparedStatement st = con.prepareStatement(sql)) {
-
-            // Thiết lập các tham số cho câu lệnh SQL
-            st.setInt(1, status);
-            st.setInt(2, orderId);
-
-            // Thực thi câu lệnh và kiểm tra kết quả
-            int rowsAffected = st.executeUpdate();
-            return rowsAffected > 0; // Trả về true nếu thêm thành công
-        } catch (SQLException e) {
-            e.printStackTrace(); // In lỗi ra console
-        }
-
-        return false; // Trả về false nếu có lỗi
-    }
+//    public List<StatusAdminModel> getAllStatus () {
+//        List<StatusAdminModel> statusAdminModels = new ArrayList<>();
+//        String sql = "select * from statusestype" ;
+//        try (Connection con = JDBCUtil.getConnection();
+//             PreparedStatement st = con.prepareStatement(sql)) {
+//            ResultSet rs = st.executeQuery();
+//            while (rs.next()) {
+//                StatusAdminModel statusAdminModel = new StatusAdminModel(rs.getInt(1), rs.getString(2),rs.getString(3));
+//                statusAdminModels.add(statusAdminModel);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return statusAdminModels;
+//    }
+//    public boolean insertStatus(int status, int orderId) throws SQLException {
+//        String sql = "INSERT INTO Statuses (statusTypeId, orderId) VALUES (?, ?)";
+//
+//        try (Connection con = JDBCUtil.getConnection();
+//             PreparedStatement st = con.prepareStatement(sql)) {
+//
+//            // Thiết lập các tham số cho câu lệnh SQL
+//            st.setInt(1, status);
+//            st.setInt(2, orderId);
+//
+//            // Thực thi câu lệnh và kiểm tra kết quả
+//            int rowsAffected = st.executeUpdate();
+//            return rowsAffected > 0; // Trả về true nếu thêm thành công
+//        } catch (SQLException e) {
+//            e.printStackTrace(); // In lỗi ra console
+//        }
+//
+//        return false; // Trả về false nếu có lỗi
+//    }
 
 }
 

@@ -20,17 +20,17 @@ public class AdminUpdateStatusController extends HttpServlet {
         int status =  Integer.parseInt(request.getParameter("nameStatus"));
         int orderId = Integer.parseInt(request.getParameter("orderId"));
 
-        OrderAdminService orderAdminService = new OrderAdminService();
-        try {
-            if (orderAdminService.insertStatus(status,orderId)){
-                response.sendRedirect("OrderAdminController");
-            }
-            else {
-                response.sendRedirect("OrderAdminController");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+//        OrderAdminService orderAdminService = new OrderAdminService();
+//        try {
+//            if (orderAdminService.insertStatus(status,orderId)){
+//                response.sendRedirect("OrderAdminController");
+//            }
+//            else {
+//                response.sendRedirect("OrderAdminController");
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
 
 
     }

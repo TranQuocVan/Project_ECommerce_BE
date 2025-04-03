@@ -14,8 +14,10 @@ public class ShoppingCartItemsModel {
     private int quantity;
     private int discount;
     private float discountPrice;
+    private String imageBase64;
 
-    public ShoppingCartItemsModel(int sizeId,int discount, String nameProduct, float price, String nameColor, String nameSize, int stock, int quantity, float discountPrice) {
+
+    public ShoppingCartItemsModel(int sizeId,int discount, String nameProduct, float price, String nameColor, String nameSize, int stock, int quantity, float discountPrice, String imageBase64) {
         this.nameProduct = nameProduct;
         this.discount = discount;
         this.price = price;
@@ -26,6 +28,7 @@ public class ShoppingCartItemsModel {
         this.stock = stock;
         this.quantity = quantity;
         this.discountPrice = discountPrice;
+        this.imageBase64 = imageBase64;
     }
 
     public float getDiscountPrice() {
@@ -75,4 +78,9 @@ public class ShoppingCartItemsModel {
     public int getSizeId() {
         return sizeId;
     }
+
+    public String getImageBase64() {
+        return imageBase64;
+    }
+
 }
