@@ -56,7 +56,7 @@
                                                             <input type="checkbox" class="select-item" data-item-id="${item.sizeId}" data-price="${item.discountPrice}" />
                                                         </div>
                                                         <div class="col-md-2 col-lg-2 col-xl-2">
-                                                            <img src="assets/shoeMens/1.png" class="img-fluid rounded-3" alt="Fashion shoes">
+                                                            <img src="data:image/jpeg;base64,${item.imageBase64}" class="img-fluid rounded-3" alt="Fashion shoes">
                                                         </div>
                                                         <div class="col-md-3 col-lg-3 col-xl-3">
                                                             <h6 class="text-muted">${item.nameProduct}</h6>

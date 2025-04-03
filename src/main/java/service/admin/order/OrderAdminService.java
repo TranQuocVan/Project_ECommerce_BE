@@ -13,14 +13,14 @@ public class OrderAdminService {
         OrderAdminDAO dao = new OrderAdminDAO();
         return dao.getAllOrders(paymentId, deliveryId, orderDate, statusTypeId);
     }
-    public List<StatusAdminModel> getAllStatus () {
-        OrderAdminDAO dao = new OrderAdminDAO();
-        return dao.getAllStatus();
-    }
-    public boolean insertStatus(int status, int orderId) throws SQLException {
-        OrderAdminDAO dao = new OrderAdminDAO();
-        return dao.insertStatus(status,orderId);
-    }
+//    public List<StatusAdminModel> getAllStatus () {
+//        OrderAdminDAO dao = new OrderAdminDAO();
+//        return dao.getAllStatus();
+//    }
+//    public boolean insertStatus(int status, int orderId) throws SQLException {
+//        OrderAdminDAO dao = new OrderAdminDAO();
+//        return dao.insertStatus(status,orderId);
+//    }
 
 
     }

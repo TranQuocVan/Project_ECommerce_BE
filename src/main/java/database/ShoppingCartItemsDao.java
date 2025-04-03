@@ -2,11 +2,15 @@ package database;
 
 import model.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 public class ShoppingCartItemsDao {
@@ -163,12 +167,15 @@ public class ShoppingCartItemsDao {
     public List<ShoppingCartItemsModel> getAllShoppingCartItems(int userId) {
         List<ShoppingCartItemsModel> lists = new ArrayList<ShoppingCartItemsModel>();
         String sql = """
-        SELECT p.discount, s.sizeId, p.name,p.price, c.name, s.size, s.stock, spc.quantity
-        FROM Sizes s 
-        LEFT JOIN  ShoppingCartItems spc ON spc.sizeId = s.sizeId 
-        LEFT JOIN  Colors c ON c.colorId = s.colorId 
-        LEFT JOIN  Products p ON c.productId = p.productId 
-        WHERE  spc.userId = ?
+        SELECT p.discount, s.sizeId, p.name, p.price, c.name, s.size, s.stock, spc.quantity, i.image
+                             FROM Sizes s
+                             LEFT JOIN ShoppingCartItems spc ON spc.sizeId = s.sizeId
+                             LEFT JOIN Colors c ON c.colorId = s.colorId
+                             LEFT JOIN Products p ON c.productId = p.productId
+                             LEFT JOIN images i ON i.colorId = c.colorId
+                             WHERE spc.userId = ?
+                             AND i.image = (SELECT image FROM images WHERE colorId = c.colorId LIMIT 1);
+                             
     """;
 
         try (Connection con = JDBCUtil.getConnection();
@@ -176,16 +183,30 @@ public class ShoppingCartItemsDao {
             st.setInt(1, userId);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
+                String base64Image = null;
+                InputStream imageStream = rs.getBinaryStream("image");
+                if (imageStream != null) {
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[1024];
+                    int bytesRead;
+                    while ((bytesRead = imageStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+                    byte[] imageBytes = outputStream.toByteArray();
+                    base64Image = Base64.getEncoder().encodeToString(imageBytes);
+                }
                ShoppingCartItemsModel shoppingCartItemsModel =
                        new ShoppingCartItemsModel( rs.getInt("sizeId"), rs.getInt("discount"), rs.getString("name"),rs.getFloat("price"),
                                rs.getString("name"),
                                rs.getString("size"), rs.getInt("stock"), rs.getInt("quantity"),
-                               rs.getFloat("price") - (rs.getInt("discount") * rs.getFloat("price") / 100)) ;
+                               rs.getFloat("price") - (rs.getInt("discount") * rs.getFloat("price") / 100), base64Image) ;
                 lists.add(shoppingCartItemsModel);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return lists;
     }
