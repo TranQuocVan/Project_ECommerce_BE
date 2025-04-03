@@ -143,94 +143,100 @@
                                                 <!-- Modal -->
                                                 <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="myModalLabel">Voucher hiện có</h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <h6>Giảm giá vận chuyển</h6>
-                                                                <c:choose>
-                                                                    <c:when test="${not empty listVoucherShipping}">
-                                                                        <table class="table table-hover">
-                                                                            <tbody>
-                                                                            <c:forEach var="voucher" items="${listVoucherShipping}">
-                                                                                <tr style="cursor: pointer;" onclick="selectVoucherShipping(this)">
-                                                                                    <td><i class="fa-solid fa-truck-fast" style="font-size: 40px"></i></td>
-                                                                                    <td>
-                                                                                        <div style="font-weight: 600">Voucher giảm giá: ${voucher.discountPercent.intValue()}%</div>
-                                                                                        <div>Giảm tối đa:
-                                                                                            <fmt:setLocale value="vi_VN" />
-                                                                                            <fmt:formatNumber value="${voucher.discountMaxValue}" type="number" groupingUsed="true" />đ</div>
-                                                                                        <div>Số lượng: x${voucher.quantity}</div>
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        <input type="radio" name="selectedVoucherShipping" value="${voucher.voucherId}" onchange="highlightRow(this)" style="cursor: pointer !important;">
-                                                                                    </td>
-                                                                                </tr>
-                                                                            </c:forEach>
-                                                                            </tbody>
-                                                                        </table>
+                                                        <form id="voucherForm" method="post">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="myModalLabel">Voucher hiện có</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
 
-                                                                    </c:when>
-                                                                    <c:otherwise>
-                                                                        <p>Hiện không có voucher.</p>
-                                                                    </c:otherwise>
-                                                                </c:choose>
+                                                                <div class="modal-body">
+                                                                    <h6>Giảm giá vận chuyển</h6>
+                                                                    <c:choose>
+                                                                        <c:when test="${not empty listVoucherShipping}">
+                                                                            <table class="table table-hover">
+                                                                                <tbody>
+                                                                                <c:forEach var="voucher" items="${listVoucherShipping}">
+                                                                                    <tr style="cursor: pointer;" onclick="selectVoucherShipping(this)">
+                                                                                        <td><i class="fa-solid fa-truck-fast" style="font-size: 40px"></i></td>
+                                                                                        <td>
+                                                                                            <div style="font-weight: 600">Voucher giảm giá: ${voucher.discountPercent.intValue()}%</div>
+                                                                                            <div>Giảm tối đa:
+                                                                                                <fmt:setLocale value="vi_VN" />
+                                                                                                <fmt:formatNumber value="${voucher.discountMaxValue}" type="number" groupingUsed="true" />đ
+                                                                                            </div>
+                                                                                            <div>Số lượng: x${voucher.quantity}</div>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <input type="radio" name="selectedVoucherShipping" value="${voucher.voucherId}" onchange="highlightRow(this)" style="cursor: pointer !important;">
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </c:forEach>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <p>Hiện không có voucher.</p>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
 
-                                                                <br>
+                                                                    <br>
 
-                                                                <h6>Giảm giá sản phẩm</h6>
-                                                                <c:choose>
-                                                                    <c:when test="${not empty listVoucherItems}">
-                                                                        <table class="table table-hover">
-                                                                            <tbody>
-                                                                            <c:forEach var="voucher" items="${listVoucherItems}">
-                                                                                <tr style="cursor: pointer;" onclick="selectVoucherItems(this)">
-                                                                                    <td><i class="fa-solid fa-bag-shopping" style="font-size: 40px"></i></td>
-                                                                                    <td>
-                                                                                        <div style="font-weight: 600">Voucher giảm giá: ${voucher.discountPercent.intValue()}%</div>
-                                                                                        <div>Giảm tối đa:
-                                                                                            <fmt:setLocale value="vi_VN" />
-                                                                                            <fmt:formatNumber value="${voucher.discountMaxValue}" type="number" groupingUsed="true" />đ</div>
-                                                                                        <div>Số lượng: x${voucher.quantity}</div>
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        <input type="radio" name="selectedVoucherItems" value="${voucher.voucherId}" onchange="highlightRow(this)" style="cursor: pointer !important;">
-                                                                                    </td>
-                                                                                </tr>
-                                                                            </c:forEach>
-                                                                            </tbody>
-                                                                        </table>
+                                                                    <h6>Giảm giá sản phẩm</h6>
+                                                                    <c:choose>
+                                                                        <c:when test="${not empty listVoucherItems}">
+                                                                            <table class="table table-hover">
+                                                                                <tbody>
+                                                                                <c:forEach var="voucher" items="${listVoucherItems}">
+                                                                                    <tr style="cursor: pointer;" onclick="selectVoucherItems(this)">
+                                                                                        <td><i class="fa-solid fa-bag-shopping" style="font-size: 40px"></i></td>
+                                                                                        <td>
+                                                                                            <div style="font-weight: 600">Voucher giảm giá: ${voucher.discountPercent.intValue()}%</div>
+                                                                                            <div>Giảm tối đa:
+                                                                                                <fmt:setLocale value="vi_VN" />
+                                                                                                <fmt:formatNumber value="${voucher.discountMaxValue}" type="number" groupingUsed="true" />đ
+                                                                                            </div>
+                                                                                            <div>Số lượng: x${voucher.quantity}</div>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <input type="radio" name="selectedVoucherItems" value="${voucher.voucherId}" onchange="highlightRow(this)" style="cursor: pointer !important;">
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </c:forEach>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <p>Hiện không có voucher.</p>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
+                                                                </div>
 
-                                                                    </c:when>
-                                                                    <c:otherwise>
-                                                                        <p>Hiện không có voucher.</p>
-                                                                    </c:otherwise>
-                                                                </c:choose>
+                                                                <input type="hidden" id="selectedVoucherShippingHidden" name="selectedVoucherShipping">
+                                                                <input type="hidden" id="selectedVoucherItemsHidden" name="selectedVoucherItems">
 
-                                                            </div>
-                                                            <div class="modal-footer d-flex justify-content-between">
-                                                                <div class="me-auto">
-                                                                    <div>
-                                                                        <span>Giảm giá vận chuyển: </span>
-                                                                        <span id="disscountFee">0đ</span>
+                                                                <div class="modal-footer d-flex justify-content-between">
+                                                                    <div class="me-auto">
+                                                                        <div>
+                                                                            <span>Giảm giá vận chuyển: </span>
+                                                                            <span id="discountFee">0đ</span>
+                                                                        </div>
+                                                                        <div>
+                                                                            <span>Giảm giá sản phẩm: </span>
+                                                                            <span id="discountItems">0đ</span>
+                                                                        </div>
+                                                                        <div>
+                                                                            <span>Tổng thanh toán: </span>
+                                                                            <span class="text-success" id="totalAmountModalVoucher">0</span>
+                                                                        </div>
                                                                     </div>
                                                                     <div>
-                                                                        <span>Giảm giá sản phẩm: </span>
-                                                                        <span id="disscountItems">0đ</span>
-                                                                    </div>
-                                                                    <div>
-                                                                        <span>Tổng thanh toán: </span>
-                                                                        <span class="text-success" id="totalAmountModalVoucher">0</span>
+                                                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="confirmVoucher(); submitVoucher();">Xác nhận</button>
                                                                     </div>
                                                                 </div>
-                                                                <div>
-                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="confirmVoucher()">Xác nhận</button>
-                                                                </div>
-                                                            </div>
 
-                                                        </div>
+                                                            </div>
+                                                        </form>
                                                     </div>
                                                 </div>
 

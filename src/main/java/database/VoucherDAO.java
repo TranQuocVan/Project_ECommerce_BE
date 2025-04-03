@@ -154,20 +154,27 @@ public class VoucherDAO {
     }
 
 
-    // Lấy tiền giảm giá khi của voucher shipping
-    public int getDiscountShippingFee(int voucherId, int fee) {
-        String sql = "SELECT discountPercent, discountMaxValue FROM Voucher v " +
+    // Tính toán tiền giảm giá khi sử dụng voucher shipping
+    public float calculateDiscountShippingFee(int voucherId, int deliveryId) {
+        String sql = "SELECT v.discountPercent, v.discountMaxValue, d.fee " +
+                "FROM Voucher v " +
                 "JOIN TypeVoucher tv ON v.typeVoucherId = tv.typeVoucherId " +
+                "JOIN Deliveries d ON d.deliveryId = ? " +
                 "WHERE v.voucherId = ? AND tv.typeName = 'shipping'";
+
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
 
-            st.setInt(1, voucherId);
+            // Set các tham số cho truy vấn
+            st.setInt(1, deliveryId);  // Gắn giá trị deliveryId vào câu truy vấn
+            st.setInt(2, voucherId);   // Gắn giá trị voucherId vào câu truy vấn
+
             ResultSet rs = st.executeQuery();
 
             if (rs.next()) {
                 int discountPercent = rs.getInt("discountPercent");
                 int discountMaxValue = rs.getInt("discountMaxValue");
+                int fee = rs.getInt("fee");  // Lấy giá trị fee từ bảng Deliveries
 
                 // Tính toán giá trị giảm giá ship
                 int discountValue = fee * discountPercent / 100;
@@ -176,52 +183,70 @@ public class VoucherDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return 0; // Nếu không tìm thấy voucher hoặc không phải shipping, không giảm giá
     }
 
+    // Tính toán giảm giá khi sử dụng voucher items
+    public float calculateDiscountItemsFee(int voucherId, List<Integer> listSizeId){
+        float totalPrice = 0;
 
-    // Tính toán giá tiền ship phải trả khi sử dụng voucher shipping
-    public float calculateShippingFee(int deliveryId, int voucherId) {
-        float fee = 0;
-        String getFeeSql = "SELECT fee FROM Deliveries WHERE deliveryId = ?";
-        String getVoucherSql = "SELECT discountPercent, discountMaxValue FROM Voucher v " +
-                "JOIN TypeVoucher tv ON v.typeVoucherId = tv.typeVoucherId " +
-                "WHERE v.voucherId = ? AND tv.typeName = 'shipping'";
+        // Tính tổng giá trị đơn hàng từ danh sách sản phẩm
+        for (Integer sizeId : listSizeId) {
+            String sql = """
+            SELECT p.price, p.discount, spc.quantity
+            FROM Sizes s 
+            LEFT JOIN ShoppingCartItems spc ON spc.sizeId = s.sizeId 
+            LEFT JOIN Colors c ON c.colorId = s.colorId 
+            LEFT JOIN Products p ON c.productId = p.productId 
+            WHERE spc.sizeId = ?
+        """;
+
+            try (Connection con = JDBCUtil.getConnection();
+                 PreparedStatement st = con.prepareStatement(sql)) {
+                st.setInt(1, sizeId);
+                ResultSet rs = st.executeQuery();
+                if (rs.next()) {
+                    float price = rs.getFloat("price");
+                    int discount = rs.getInt("discount");
+                    int quantity = rs.getInt("quantity");
+
+                    // Tính giá sau khi giảm giá của sản phẩm
+                    float discountedPrice = price - (price * discount / 100);
+
+                    // Tính tổng tiền các sản phẩm
+                    totalPrice += discountedPrice * quantity;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return 0; // Trả về 0 nếu có lỗi SQL
+            }
+        }
+
+        // Truy vấn thông tin voucher
+        String voucherSql = "SELECT typeVoucherId, discountPercent, discountMaxValue FROM Voucher WHERE voucherId = ?";
 
         try (Connection con = JDBCUtil.getConnection();
-             PreparedStatement feeStmt = con.prepareStatement(getFeeSql)) {
+             PreparedStatement st = con.prepareStatement(voucherSql)) {
+            st.setInt(1, voucherId);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                int typeVoucherId = rs.getInt("typeVoucherId");
+                float discountPercent = rs.getFloat("discountPercent");
+                float discountMaxValue = rs.getFloat("discountMaxValue");
 
-            // Lấy phí vận chuyển ban đầu
-            feeStmt.setInt(1, deliveryId);
-            ResultSet feeRs = feeStmt.executeQuery();
-            if (feeRs.next()) {
-                fee = feeRs.getFloat("fee");
-            }
-
-            // Kiểm tra voucher hợp lệ
-            try (PreparedStatement voucherStmt = con.prepareStatement(getVoucherSql)) {
-                voucherStmt.setInt(1, voucherId);
-                ResultSet voucherRs = voucherStmt.executeQuery();
-
-                if (voucherRs.next()) {
-                    float discountPercent = voucherRs.getFloat("discountPercent");
-                    float discountMax = voucherRs.getFloat("discountMaxValue");
-
-                    float discountValue = (fee * discountPercent) / 100;
-                    discountValue = Math.min(discountValue, discountMax);
-                    fee -= discountValue;
+                // Chỉ áp dụng giảm giá nếu typeVoucherId == 2
+                if (typeVoucherId == 2) {
+                    float discountAmount = totalPrice * (discountPercent / 100);
+                    return Math.min(discountAmount, discountMaxValue);
                 }
             }
-
-            // Đảm bảo phí ship không âm
-            return Math.max(fee, 0);
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return -1; // Trả về -1 nếu có lỗi
-    }
 
+        return 0; // Nếu không hợp lệ, không có giảm giá
+    }
 
 }
 
