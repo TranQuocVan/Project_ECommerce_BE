@@ -15,61 +15,57 @@ public class OrderDao {
         String orderSql = "INSERT INTO orders (paymentId, orderDate, deliveryAddress, totalPrice, userId, deliveryId, statusPayment) VALUES (?, ?, ?, ?, ?, ?, ?)";
         int orderId = -1;
 
-        try (Connection con = JDBCUtil.getConnection()) {
-            con.setAutoCommit(false); // Bắt đầu transaction
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement orderSt = con.prepareStatement(orderSql, Statement.RETURN_GENERATED_KEYS)) {
 
-            try (PreparedStatement orderSt = con.prepareStatement(orderSql, Statement.RETURN_GENERATED_KEYS)) {
-                orderSt.setInt(1, order.getPaymentId());
-                orderSt.setTimestamp(2, order.getOrderDate());
-                orderSt.setString(3, order.getDeliveryAddress());
-                orderSt.setFloat(4, order.getTotalPrice());
-                orderSt.setInt(5, order.getUserId());
-                orderSt.setInt(6, order.getDeliveryId());
-                orderSt.setInt(7, 0);
+            // Không cần transaction trừ khi có nhiều thao tác quan trọng cần rollback cùng nhau
+            orderSt.setInt(1, order.getPaymentId());
+            orderSt.setTimestamp(2, order.getOrderDate());
+            orderSt.setString(3, order.getDeliveryAddress());
+            orderSt.setFloat(4, order.getTotalPrice());
+            orderSt.setInt(5, order.getUserId());
+            orderSt.setInt(6, order.getDeliveryId());
+            orderSt.setInt(7, 0);
 
-                int affectedRows = orderSt.executeUpdate();
-                if (affectedRows == 0) {
-                    System.out.println("Creating order failed, no rows affected.");
-                    con.rollback();
+            int affectedRows = orderSt.executeUpdate();
+            if (affectedRows == 0) {
+                System.out.println("Creating order failed, no rows affected.");
+                return -1;
+            }
+
+            try (ResultSet rs = orderSt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    orderId = rs.getInt(1);
+                    System.out.println("Generated Order ID: " + orderId);
+                } else {
+                    System.out.println("Creating order failed, no generated ID.");
                     return -1;
                 }
-
-                try (ResultSet rs = orderSt.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        orderId = rs.getInt(1);
-                        System.out.println("Generated Order ID: " + orderId);
-                    } else {
-                        System.out.println("Creating order failed, no generated ID.");
-                        con.rollback();
-                        return -1;
-                    }
-                }
             }
 
-            // Thêm trạng thái đơn hàng nhưng KHÔNG rollback nếu lỗi
-            StatusModel status = new StatusModel();
-            status.setName("Đặt hàng thành công");
-            status.setOrderId(orderId);
-            status.setDescription("Chờ người bán xác nhận");
-            status.setStatusTypeId(1);
-
-            StatusDao statusDao = new StatusDao();
-            boolean statusAdded = statusDao.addStatus(status);
-            if (!statusAdded) {
-                System.out.println("Adding status failed.");
-                // Không rollback để không mất đơn hàng
-            }
-
-            con.commit(); // Chỉ commit khi tất cả thành công
         } catch (SQLException e) {
             e.printStackTrace();
             return -1;
         }
 
-        return orderId; // Luôn trả về orderId mới nhất
+        // Thêm trạng thái đơn hàng sau khi có Order ID, nhưng không chặn phương thức
+        int finalOrderId = orderId;
+        new Thread(() -> {
+            try (Connection con = JDBCUtil.getConnection()) {
+                StatusModel status = new StatusModel();
+                status.setName("Đặt hàng thành công");
+                status.setOrderId(finalOrderId);
+                status.setDescription("Chờ người bán xác nhận");
+
+                StatusDao statusDao = new StatusDao();
+                statusDao.addStatus(status);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }).start(); // Chạy thêm trạng thái trong thread khác để không làm chậm hàm chính
+
+        return orderId;
     }
-
-
 
 
 
@@ -237,20 +233,29 @@ public class OrderDao {
         float totalPrice = 0;
         for (Integer sizeId : listSizeId) {
             String sql = """
-        SELECT p.price, spc.quantity
+        SELECT p.price, p.discount, spc.quantity
         FROM Sizes s 
-        LEFT JOIN  ShoppingCartItems spc ON spc.sizeId = s.sizeId 
-        LEFT JOIN  Colors c ON c.colorId = s.colorId 
-        LEFT JOIN  Products p ON c.productId = p.productId 
-        WHERE  spc.sizeId = ? and spc.userId = ? 
-    """;
+        LEFT JOIN ShoppingCartItems spc ON spc.sizeId = s.sizeId 
+        LEFT JOIN Colors c ON c.colorId = s.colorId 
+        LEFT JOIN Products p ON c.productId = p.productId 
+        WHERE spc.sizeId = ? AND spc.userId = ?
+        """;
+
             try (Connection con = JDBCUtil.getConnection();
                  PreparedStatement st = con.prepareStatement(sql)) {
                 st.setInt(1, sizeId);
                 st.setInt(2, userId);
                 ResultSet rs = st.executeQuery();
                 if (rs.next()) {
-                    totalPrice += rs.getFloat("price") * rs.getInt("quantity");
+                    float price = rs.getFloat("price");
+                    int discount = rs.getInt("discount");
+                    int quantity = rs.getInt("quantity");
+
+                    // Tính giá sau khi giảm
+                    float discountedPrice = price - (price * discount / 100);
+
+                    // Tính tổng tiền
+                    totalPrice += discountedPrice * quantity;
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -259,6 +264,7 @@ public class OrderDao {
         totalPrice += deliveryFee(paymentId);
         return totalPrice;
     }
+
 
 
     public OrderModel getOrderById(int orderId) {

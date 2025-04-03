@@ -21,11 +21,13 @@
 }
 
 #img_main {
-    width: 100%;
-    height: 500px;
+    width: 95%;
+    height: 400px;
     object-fit: cover;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     border-radius: 10px;
+    padding: 2%;
+    margin: 4%;
 }
 
 #img_main img {
@@ -144,3 +146,45 @@
     background: black;
     color: white;
 }
+
+.images {
+    max-height: 430px;
+    overflow-y: scroll; /* Giữ cuộn */
+    scrollbar-width: none; /* Ẩn scrollbar trên Firefox */
+    -ms-overflow-style: none; /* Ẩn scrollbar trên IE/Edge */
+}
+
+.images::-webkit-scrollbar {
+    display: none; /* Ẩn scrollbar trên Chrome, Safari */
+}
+
+.color-item-img {
+    margin-bottom: 10px; /* Khoảng cách giữa các ảnh */
+}
+
+/* Khi màn hình nhỏ hơn hoặc bằng 768px (Tablet & Mobile) */
+@media (max-width: 768px) {
+    .images {
+        max-height: none;
+        max-width: 100%;
+        overflow-y: hidden; /* Ẩn cuộn dọc */
+        overflow-x: auto; /* Hiển thị thanh cuộn ngang */
+        white-space: nowrap;
+        display: flex;
+        flex-direction: row !important; /* Chuyển sang trục ngang */
+        align-items: center;
+        justify-content: flex-start;
+        padding-bottom: 10px;
+    }
+
+    .color-item-img {
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+    /* Tùy chỉnh thanh cuộn ngang cho Mobile */
+    .images::-webkit-scrollbar {
+        height: 6px;
+    }
+}
+

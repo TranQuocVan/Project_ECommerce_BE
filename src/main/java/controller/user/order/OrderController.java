@@ -8,6 +8,7 @@ import service.log.LogService;
 import service.user.order.OrderService;
 import service.user.cart.ShoppingCartItemOrderService;
 import service.user.cart.ShoppingCartService;
+import service.user.voucher.VoucherService;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @WebServlet(name = "OrderController", value = "/OrderController")
 public class OrderController extends HttpServlet {
+    private final VoucherService voucherService = new VoucherService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -69,12 +71,35 @@ public class OrderController extends HttpServlet {
             int paymentId = Integer.parseInt(request.getParameter("paymentId"));
             int deliveryId = Integer.parseInt(request.getParameter("deliveryId"));
 
+            // Lấy giá trị của selectedVoucherShipping và selectedVoucherItems
+            String selectedVoucherShipping = request.getParameter("selectedVoucherShipping");
+            String selectedVoucherItems = request.getParameter("selectedVoucherItems");
+
+            // Nếu không có voucher nào được chọn, có thể trả về lỗi hoặc xử lý theo yêu cầu
+            if (selectedVoucherShipping == null || selectedVoucherShipping.isEmpty()) {
+                selectedVoucherShipping = "0";  // Hoặc có thể trả về lỗi nếu cần
+            }
+            if (selectedVoucherItems == null || selectedVoucherItems.isEmpty()) {
+                selectedVoucherItems = "0";  // Hoặc có thể trả về lỗi nếu cần
+            }
+
+            // Chuyển thành Integer nếu cần thiết, hoặc có thể xử lý theo cách khác
+            int voucherShippingId = Integer.parseInt(selectedVoucherShipping);
+            int voucherItemsId = Integer.parseInt(selectedVoucherItems);
+
             List<Integer> selectedItems = parseSelectedItems(request.getParameter("selectedItems"));
             Timestamp sqlTimestamp = Timestamp.valueOf(LocalDateTime.now());
 
             // Tạo đối tượng Order
             OrderService orderService = new OrderService();
-            float totalPrice = orderService.calculateTotalPrice(selectedItems, user.getId(), deliveryId);
+
+            // Tính toán tổng giá
+            float discountShippingFee = 0;
+            float discountItemsFee = 0;
+            discountShippingFee = voucherService.calculateDiscountShippingFee(voucherShippingId, deliveryId);
+            discountItemsFee = voucherService.calculateDiscountItemsFee(voucherItemsId, selectedItems);
+
+            float totalPrice = orderService.calculateTotalPrice(selectedItems, user.getId(), deliveryId) - discountShippingFee - discountItemsFee;
             Order order = new Order(paymentId, sqlTimestamp, request.getParameter("address"), totalPrice, user.getId(),
                     deliveryId);
 

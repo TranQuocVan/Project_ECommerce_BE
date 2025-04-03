@@ -43,6 +43,10 @@ i {
     color: #6c757d;
 }
 
+.navigation a{
+    padding: 6px;
+}
+
 .main-bg-color {
     background-color: var(--while-color);
 }
@@ -61,7 +65,7 @@ i {
     position: fixed;
     padding: 10px 0 60px 0;
     display: none;
-    top: 48px;
+    top: 56px;
 }
 
 .content-when-hover-a {

@@ -163,7 +163,7 @@ public class ShoppingCartItemsDao {
     public List<ShoppingCartItemsModel> getAllShoppingCartItems(int userId) {
         List<ShoppingCartItemsModel> lists = new ArrayList<ShoppingCartItemsModel>();
         String sql = """
-        SELECT s.sizeId, p.name,p.price, c.name, s.size, s.stock, spc.quantity
+        SELECT p.discount, s.sizeId, p.name,p.price, c.name, s.size, s.stock, spc.quantity
         FROM Sizes s 
         LEFT JOIN  ShoppingCartItems spc ON spc.sizeId = s.sizeId 
         LEFT JOIN  Colors c ON c.colorId = s.colorId 
@@ -177,9 +177,10 @@ public class ShoppingCartItemsDao {
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                ShoppingCartItemsModel shoppingCartItemsModel =
-                       new ShoppingCartItemsModel( rs.getInt("sizeId"), rs.getString("name"),rs.getFloat("price"),
+                       new ShoppingCartItemsModel( rs.getInt("sizeId"), rs.getInt("discount"), rs.getString("name"),rs.getFloat("price"),
                                rs.getString("name"),
-                               rs.getString("size"), rs.getInt("stock"), rs.getInt("quantity")) ;
+                               rs.getString("size"), rs.getInt("stock"), rs.getInt("quantity"),
+                               rs.getFloat("price") - (rs.getInt("discount") * rs.getFloat("price") / 100)) ;
                 lists.add(shoppingCartItemsModel);
             }
 

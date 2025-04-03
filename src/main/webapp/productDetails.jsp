@@ -32,7 +32,7 @@
                         </div>
                     </div>
                     <!-- Bắt đầu phần hiển thị sản phẩm -->
-                    <div class="col-md-1">
+                    <div class="col-md-1 col-sm-12">
                         <div class="images">
                             <c:if test="${not empty product}">
                                 <c:forEach var="color" items="${product.colorModels}" varStatus="status">

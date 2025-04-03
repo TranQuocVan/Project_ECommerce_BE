@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.vnpay.common;
+package controller.user.payment;
 
+import controller.user.payment.config.Config;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpSession;
 import model.Order;
@@ -26,19 +27,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.logging.Logger;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import service.user.voucher.VoucherService;
 
 /**
  *
  * @author CTT VNPAY
  */
 @WebServlet(name = "VnpayPaymentController", value = "/VnpayPaymentController")
-public class ajaxServlet extends HttpServlet {
+public class VnpayPaymentController extends HttpServlet {
+    private final VoucherService voucherService = new VoucherService();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -60,12 +62,36 @@ public class ajaxServlet extends HttpServlet {
             int paymentId = Integer.parseInt(req.getParameter("paymentId"));
             int deliveryId = Integer.parseInt(req.getParameter("deliveryId"));
 
+            // Lấy giá trị của selectedVoucherShipping và selectedVoucherItems
+            String selectedVoucherShipping = req.getParameter("selectedVoucherShipping");
+            String selectedVoucherItems = req.getParameter("selectedVoucherItems");
+
+            // Nếu không có voucher nào được chọn, có thể trả về lỗi hoặc xử lý theo yêu cầu
+            if (selectedVoucherShipping == null || selectedVoucherShipping.isEmpty()) {
+                selectedVoucherShipping = "0";  // Hoặc có thể trả về lỗi nếu cần
+            }
+            if (selectedVoucherItems == null || selectedVoucherItems.isEmpty()) {
+                selectedVoucherItems = "0";  // Hoặc có thể trả về lỗi nếu cần
+            }
+
+            // Chuyển thành Integer nếu cần thiết, hoặc có thể xử lý theo cách khác
+            int voucherShippingId = Integer.parseInt(selectedVoucherShipping);
+            int voucherItemsId = Integer.parseInt(selectedVoucherItems);
+
             List<Integer> selectedItems = parseSelectedItems(req.getParameter("selectedItems"));
             Timestamp sqlTimestamp = Timestamp.valueOf(LocalDateTime.now());
 
             // Tạo đối tượng Order
             OrderService orderService = new OrderService();
-            totalPrice = orderService.calculateTotalPrice(selectedItems, user.getId(), deliveryId);
+
+            // Tính toán tổng giá
+            float discountShippingFee = 0;
+            float discountItemsFee = 0;
+            discountShippingFee = voucherService.calculateDiscountShippingFee(voucherShippingId, deliveryId);
+            discountItemsFee = voucherService.calculateDiscountItemsFee(voucherItemsId, selectedItems);
+
+            totalPrice = orderService.calculateTotalPrice(selectedItems, user.getId(), deliveryId) - discountShippingFee - discountItemsFee;
+            System.out.println("Tổng giá: " + totalPrice);
             Order order = new Order(paymentId, sqlTimestamp, req.getParameter("address"), totalPrice, user.getId(), deliveryId);
 
             // Xử lý đặt hàng

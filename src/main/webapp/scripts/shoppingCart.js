@@ -16,6 +16,7 @@ async function increaseQuantity(button, event) {
 
         if (isUpdated) {
             input.value = currentValue; // Update the input field with the new quantity
+            updateTotalPrice();
         } else {
             // Show a message if the update fails due to inventory limits
             Swal.fire({
@@ -55,6 +56,7 @@ function decreaseQuantity(button,event) {
 
         // Gửi AJAX request để cập nhật số lượng
         updateQuantityInDatabase(sizeId, input.value,true);
+        updateTotalPrice();
     } else {
         Swal.fire({
             icon: 'info',
@@ -201,26 +203,6 @@ const selectedItems = new Set();
 let totalPrice = 0;  // Khởi tạo tổng tiền
 
 
-function updateTotalPrice() {
-    let total = 0;
-
-    // Tính tổng từ các sản phẩm đã chọn
-    selectedItems.forEach(sizeId => {
-        const item = document.querySelector(`.items input[type="hidden"][value="${sizeId}"]`).closest('.items');
-        const price = parseFloat(item.querySelector('.select-item').getAttribute('data-price').replace(/[^0-9.-]+/g, ""));
-        const quantity = parseInt(item.querySelector('input[name="quantity"]').value, 10);
-        total += price * quantity;
-    });
-
-    // Lấy phí vận chuyển
-    const feeDisplayText = document.querySelector("#feeDisplay").textContent;
-    const deliveryFee = parseFloat(feeDisplayText.replace(/[.,đ\s]+/g, ""));
-    total += deliveryFee;
-
-
-    // Cập nhật hiển thị tổng tiền
-    document.getElementById('totalAmount').textContent = formatPrice(total);
-}
 // Hàm xử lý thay đổi số lượng
 function handleQuantityChange(input) {
     const item = input.closest('.items');
@@ -322,4 +304,235 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// Xử lý action của form thanh toán dựa vào paymentId
+
+// VOUCHER
+let originalTotalAmount = 0;
+let discountShipping = 0;
+let discountItems = 0;
+
+function updateTotalPrice() {
+    let total = 0;
+
+    // Kiểm tra nếu không có sản phẩm nào được chọn
+    if (selectedItems.size === 0) {
+        document.getElementById('totalAmount').textContent = formatPrice(0);
+        document.getElementById('totalAmountModalVoucher').textContent = formatPrice(0);
+        return; // Dừng lại không tính tiếp nếu không có sản phẩm nào được chọn
+    }
+
+    // Tính tổng từ các sản phẩm đã chọn
+    selectedItems.forEach(sizeId => {
+        const item = document.querySelector(`.items input[type="hidden"][value="${sizeId}"]`).closest('.items');
+        const price = parseFloat(item.querySelector('.select-item').getAttribute('data-price').replace(/[^0-9.-]+/g, ""));
+        const quantity = parseInt(item.querySelector('input[name="quantity"]').value, 10);
+        total += price * quantity;
+    });
+
+    // Lấy phí vận chuyển
+    const feeDisplayText = document.querySelector("#feeDisplay").textContent;
+    const deliveryFee = parseFloat(feeDisplayText.replace(/[.,đ\s]+/g, ""));
+    total += deliveryFee;
+
+    // Lưu giá trị tổng tiền gốc (chưa áp dụng giảm giá)
+    originalTotalAmount = total;
+
+    // **Cập nhật hiển thị tổng tiền đã áp dụng giảm giá**
+    let finalTotal = originalTotalAmount - discountShipping - discountItems;
+
+    document.getElementById('totalAmount').textContent = formatPrice(finalTotal);
+    document.getElementById('totalAmountModalVoucher').textContent = formatPrice(finalTotal);
+}
+
+function selectVoucherShipping(row) {
+    let isSelected = row.style.backgroundColor === "rgb(144, 238, 144)";
+
+    if (isSelected) {
+        row.style.backgroundColor = "";
+        let radio = row.querySelector('input[type="radio"]');
+        if (radio) {
+            radio.checked = false;
+        }
+
+        discountShipping = 0;
+        document.querySelector("#discountFee").textContent = "0đ";
+        document.querySelector("#discountFee").classList.remove("text-danger");
+
+    } else {
+        let table = row.closest("table");
+        table.querySelectorAll("tr").forEach(tr => tr.style.backgroundColor = "");
+
+        let radio = row.querySelector('input[type="radio"]');
+        if (radio) {
+            radio.checked = true;
+            row.style.backgroundColor = "#90EE90";
+        }
+
+        let discountPercent = parseFloat(row.querySelector("td:nth-child(2) div:nth-child(1)").textContent.replace(/[^\d]/g, ""));
+        let discountMaxValue = parseFloat(row.querySelector("td:nth-child(2) div:nth-child(2)").textContent.replace(/[^\d]/g, ""));
+        const deliveryFee = parseFloat(document.querySelector("#feeDisplay").textContent.replace(/[.,đ\s]+/g, ""));
+
+        discountShipping = Math.min((deliveryFee * discountPercent) / 100, discountMaxValue);
+        document.querySelector("#discountFee").textContent = `-${discountShipping.toLocaleString("vi-VN")}đ`;
+        document.querySelector("#discountFee").classList.add("text-danger");
+    }
+
+    updateFinalTotal();
+}
+
+function selectVoucherItems(row) {
+    let isSelected = row.style.backgroundColor === "rgb(144, 238, 144)";
+
+    if (isSelected) {
+        row.style.backgroundColor = "";
+        let radio = row.querySelector('input[type="radio"]');
+        if (radio) {
+            radio.checked = false;
+        }
+
+        discountItems = 0;
+        document.querySelector("#discountItems").textContent = "0đ";
+        document.querySelector("#discountItems").classList.remove("text-danger");
+
+    } else {
+        let table = row.closest("table");
+        table.querySelectorAll("tr").forEach(tr => tr.style.backgroundColor = "");
+
+        let radio = row.querySelector('input[type="radio"]');
+        if (radio) {
+            radio.checked = true;
+            row.style.backgroundColor = "#90EE90";
+        }
+
+        let total = 0;
+        let discountPercent = parseFloat(row.querySelector("td:nth-child(2) div:nth-child(1)").textContent.replace(/[^\d]/g, ""));
+        let discountMaxValue = parseFloat(row.querySelector("td:nth-child(2) div:nth-child(2)").textContent.replace(/[^\d]/g, ""));
+
+        selectedItems.forEach(sizeId => {
+            const item = document.querySelector(`.items input[type="hidden"][value="${sizeId}"]`).closest('.items');
+            const price = parseFloat(item.querySelector('.select-item').getAttribute('data-price').replace(/[^0-9.-]+/g, ""));
+            const quantity = parseInt(item.querySelector('input[name="quantity"]').value, 10);
+            total += price * quantity;
+        });
+
+        discountItems = Math.min((total * discountPercent) / 100, discountMaxValue);
+        document.querySelector("#discountItems").textContent = `-${discountItems.toLocaleString("vi-VN")}đ`;
+        document.querySelector("#discountItems").classList.add("text-danger");
+    }
+
+    updateFinalTotal();
+}
+
+
+
+function updateFinalTotal() {
+    let finalTotal = originalTotalAmount - discountShipping - discountItems;
+    document.getElementById('totalAmountModalVoucher').textContent = formatPrice(finalTotal);
+}
+
+function confirmVoucher() {
+    Swal.fire({
+        title: 'Bạn có chắc chắn chọn các Voucher này?',
+        text: 'Hãy kiểm tra kỹ thông tin trước khi xác nhận!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'OK',
+        cancelButtonText: 'Hủy'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let finalTotal = parseFloat(document.getElementById('totalAmountModalVoucher').textContent.replace(/[.,đ\s]+/g, ""));
+
+            // Cập nhật totalAmount với giá trị đã trừ giảm giá
+            document.getElementById('totalAmount').textContent = formatPrice(finalTotal);
+
+            // **Lưu lại giảm giá để trừ khi thay đổi số lượng sản phẩm**
+            discountShipping = parseFloat(document.querySelector("#discountFee").textContent.replace(/[^\d]/g, "")) || 0;
+            discountItems = parseFloat(document.querySelector("#discountItems").textContent.replace(/[^\d]/g, "")) || 0;
+
+            // Hiển thị thông báo thành công
+            Swal.fire({
+                title: 'Xác nhận thành công!',
+                text: 'Voucher của bạn đã được áp dụng thành công.',
+                icon: 'success',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            });
+        } else {
+            // Nếu chọn "Hủy" thì mở lại modal
+            let myModal = new bootstrap.Modal(document.getElementById('myModal'));
+            myModal.show();
+        }
+    });
+}
+
+
+
+function highlightRow(radio) {
+    // Xóa màu nền của các hàng trong cùng danh sách
+    let table = radio.closest("table");
+    table.querySelectorAll("tr").forEach(tr => tr.style.backgroundColor = "");
+
+    // Lấy hàng chứa radio và đặt màu nền
+    let row = radio.closest("tr");
+    if (row) {
+        row.style.backgroundColor = "#90EE90";
+    }
+}
+
+// Kiểm tra có lựa chọn sản phẩm chưa
+function handleChooseVoucher() {
+    const totalCount = selectedItems.size; // Lấy số lượng sản phẩm đã chọn
+
+    if (totalCount === 0) {
+        Swal.fire({
+            title: 'Vui lòng chọn sản phẩm cần mua trước khi chọn Voucher!',
+            text: 'Hãy kiểm tra kỹ thông tin trước khi xác nhận!',
+            icon: 'warning',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK'
+        });
+    } else {
+        // Nếu tổng tiền > 0 thì mở modal
+        let myModal = new bootstrap.Modal(document.getElementById('myModal'));
+        myModal.show();
+    }
+}
+
+function submitVoucher() {
+    // Lấy phương thức thanh toán
+    let paymentId = parseInt(document.getElementById("paymentId").value, 10);
+
+    // Lấy voucher đã chọn
+    let selectedShipping = document.querySelector('input[name="selectedVoucherShipping"]:checked');
+    let selectedItems = document.querySelector('input[name="selectedVoucherItems"]:checked');
+
+    // Gán giá trị vào input ẩn để gửi đi
+    document.getElementById('selectedVoucherShippingHidden').value = selectedShipping ? selectedShipping.value : "";
+    document.getElementById('selectedVoucherItemsHidden').value = selectedItems ? selectedItems.value : "";
+
+    // Tạo đối tượng FormData
+    let formData = new FormData(document.getElementById('voucherForm'));
+
+    // Xác định URL dựa vào paymentId
+    let url = (paymentId === 1) ? '/OrderController' : '/VnpayPaymentController';
+
+    // Gửi yêu cầu AJAX (POST)
+    fetch(url, {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.json()) // Giả sử bạn muốn trả về JSON
+        .then(data => {
+            console.log("Dữ liệu gửi đi thành công:", data);
+            // Xử lý kết quả từ server (ví dụ: cập nhật giỏ hàng)
+        })
+        .catch(error => {
+            console.error("Có lỗi xảy ra:", error);
+        });
+}
+
+
+
+
+
