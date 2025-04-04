@@ -15,6 +15,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+<<<<<<< HEAD:src/main/java/com/vnpay/common/VnpayReturn.java
+import model.Order;
+import model.OrderModel;
+import service.log.LogService;
+import service.user.account.UserService;
+=======
+>>>>>>> a76b18adcfe1345f9c01fc907025531dcb8a9d0d:src/main/java/controller/user/payment/VnpayReturnController.java
 
 @WebServlet(name = "VnpayReturnController", value = "/VnpayReturnController")
 public class VnpayReturnController extends HttpServlet {
@@ -29,6 +36,7 @@ public class VnpayReturnController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        String ipAddress = request.getRemoteAddr();
         try ( PrintWriter out = response.getWriter()) {
             Map fields = new HashMap();
             for (Enumeration params = request.getParameterNames(); params.hasMoreElements();) {
@@ -68,6 +76,8 @@ public class VnpayReturnController extends HttpServlet {
                     System.out.println("Cập nhật trạng thái thanh toán thất bại!");
                 }
                 request.setAttribute("transResult", transSuccess);
+                UserService userService = new UserService();
+                LogService.paymentVNPay(userService.getUserIdByOrderId(orderIdInt), String.valueOf(orderId),ipAddress);
                 request.getRequestDispatcher("paymentResult.jsp").forward(request, response);
             } else {
                 //RETURN PAGE ERROR
