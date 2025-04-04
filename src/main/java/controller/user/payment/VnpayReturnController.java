@@ -15,13 +15,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-<<<<<<< HEAD:src/main/java/com/vnpay/common/VnpayReturn.java
 import model.Order;
 import model.OrderModel;
 import service.log.LogService;
 import service.user.account.UserService;
-=======
->>>>>>> a76b18adcfe1345f9c01fc907025531dcb8a9d0d:src/main/java/controller/user/payment/VnpayReturnController.java
 
 @WebServlet(name = "VnpayReturnController", value = "/VnpayReturnController")
 public class VnpayReturnController extends HttpServlet {
