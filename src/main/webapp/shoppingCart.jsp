@@ -240,7 +240,7 @@
                                                     </div>
                                                 </div>
 
-
+                                                <div id="voucherSelected"></div>
 
                                                 <hr class="my-4">
                                                 <div class="d-flex justify-content-between mb-5">

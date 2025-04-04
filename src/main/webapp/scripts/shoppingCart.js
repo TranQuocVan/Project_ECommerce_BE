@@ -236,8 +236,6 @@ itemShoppingCart.forEach(item => {
         const totalCount = selectedItems.size;
         document.getElementById("totalSelectedItems").textContent = `${totalCount} món`;
 
-
-
         // Cập nhật tổng tiền
         updateTotalPrice();
     });
@@ -344,6 +342,11 @@ function updateTotalPrice() {
 }
 
 function selectVoucherShipping(row) {
+    // Kiểm tra nếu không có sản phẩm nào được chọn
+    if (selectedItems.size === 0) {
+        return; // Dừng lại nếu không có sản phẩm nào được chọn
+    }
+
     let isSelected = row.style.backgroundColor === "rgb(144, 238, 144)";
 
     if (isSelected) {
@@ -380,6 +383,11 @@ function selectVoucherShipping(row) {
 }
 
 function selectVoucherItems(row) {
+    // Kiểm tra nếu không có sản phẩm nào được chọn
+    if (selectedItems.size === 0) {
+        return; // Dừng lại nếu không có sản phẩm nào được chọn
+    }
+
     let isSelected = row.style.backgroundColor === "rgb(144, 238, 144)";
 
     if (isSelected) {
@@ -422,8 +430,6 @@ function selectVoucherItems(row) {
     updateFinalTotal();
 }
 
-
-
 function updateFinalTotal() {
     let finalTotal = originalTotalAmount - discountShipping - discountItems;
     document.getElementById('totalAmountModalVoucher').textContent = formatPrice(finalTotal);
@@ -449,6 +455,61 @@ function confirmVoucher() {
             // **Lưu lại giảm giá để trừ khi thay đổi số lượng sản phẩm**
             discountShipping = parseFloat(document.querySelector("#discountFee").textContent.replace(/[^\d]/g, "")) || 0;
             discountItems = parseFloat(document.querySelector("#discountItems").textContent.replace(/[^\d]/g, "")) || 0;
+
+            let selectedVouchers = [];
+
+            // Lấy voucher vận chuyển
+            let selectedShipping = document.querySelector('input[name="selectedVoucherShipping"]:checked');
+            if (selectedShipping) {
+                let row = selectedShipping.closest("tr");
+                let discountText = row.querySelector("td:nth-child(2) div:nth-child(1)").textContent;
+                let discountMaxValue = row.querySelector("td:nth-child(2) div:nth-child(2)").textContent;
+                let quantity = row.querySelector("td:nth-child(2) div:nth-child(3)").textContent;
+
+                selectedVouchers.push(`
+                    <tr style="cursor: pointer">
+                        <td><i class="fa-solid fa-truck-fast" style="font-size: 40px"></i></td>
+                        <td>
+                            <div style="font-weight: 600">Giảm giá vận chuyển</div>
+                            <div>${discountText}</div>
+                            <div>${discountMaxValue}</div>
+                        </td>
+                    </tr>
+                `);
+            }
+
+            // Lấy voucher sản phẩm
+            let selectedItem = document.querySelector('input[name="selectedVoucherItems"]:checked');
+            if (selectedItem) {
+                let row = selectedItem.closest("tr");
+                let discountText = row.querySelector("td:nth-child(2) div:nth-child(1)").textContent;
+                let discountMaxValue = row.querySelector("td:nth-child(2) div:nth-child(2)").textContent;
+
+                selectedVouchers.push(`
+                    <tr style="cursor: pointer">
+                        <td><i class="fa-solid fa-bag-shopping" style="font-size: 40px"></i></td>
+                        <td>
+                            <div style="font-weight: 600">Giảm giá vận chuyển</div>
+                            <div>${discountText}</div>
+                            <div>${discountMaxValue}</div>
+                        </td>
+                    </tr>
+                `);
+            }
+
+            // Nếu không có voucher nào được chọn
+            if (selectedVouchers.length === 0) {
+                document.getElementById("voucherSelected").innerHTML = ``;
+            } else {
+                // Cập nhật vào div voucherSelected
+                document.getElementById("voucherSelected").innerHTML = `
+                    <br>
+                    <h5 class=" mb-3">Voucher đang sử dụng</h5>
+                    <table class="table table-hover">
+                        <tbody>${selectedVouchers.join("")}</tbody>
+                    </table>
+                `;
+            }
 
             // Hiển thị thông báo thành công
             Swal.fire({

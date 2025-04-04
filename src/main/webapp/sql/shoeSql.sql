@@ -185,3 +185,49 @@ VALUES
 -- Thêm vô table statuses nha ae
 ALTER TABLE statuses
     ADD COLUMN timeline TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+
+-- Update database 05/04/2025
+CREATE TABLE IF NOT EXISTS `TypeVoucher` (
+                                             `typeVoucherId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                                             `typeName` VARCHAR(50) NOT NULL UNIQUE COLLATE utf8mb4_unicode_ci,
+    `description` VARCHAR(255) COLLATE utf8mb4_unicode_ci
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `Voucher` (
+                                         `voucherId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                                         `typeVoucherId` INT NOT NULL,
+                                         `discountPercent` FLOAT NOT NULL,
+                                         `discountMaxValue` FLOAT NOT NULL,
+                                         `startDate` DATE NOT NULL,
+                                         `endDate` DATE NOT NULL,
+                                         `quantity` INT NOT NULL DEFAULT 0,
+                                         FOREIGN KEY (`typeVoucherId`) REFERENCES `TypeVoucher`(`typeVoucherId`) ON DELETE CASCADE ON UPDATE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `UserVoucher` (
+                                             `userVoucherId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                                             `userId` INT NOT NULL,
+                                             `voucherId` INT NOT NULL,
+                                             `used_at` TIMESTAMP NULL DEFAULT NULL,
+                                             UNIQUE (`userId`, `voucherId`),
+    FOREIGN KEY (`userId`) REFERENCES `Users`(`userId`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`voucherId`) REFERENCES `Voucher`(`voucherId`) ON DELETE CASCADE ON UPDATE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO TypeVoucher (`typeName`, `description`) VALUES ('shipping', 'Giảm giá giao hàng');
+INSERT INTO TypeVoucher (`typeName`, `description`) VALUES ('items', 'Giảm giá sản phẩm');
+
+INSERT INTO Voucher (typeVoucherId, discountPercent, discountMaxValue, startDate, endDate, quantity)
+VALUES
+    (1, 10, 10000, '2025-04-01', '2025-04-30', 100),
+    (1, 30, 12000, '2025-04-05', '2025-04-25', 150),
+    (1, 20, 10000, '2025-04-10', '2025-04-20', 200),
+    (1, 50, 22000, '2025-04-15', '2025-05-01', 120),
+    (1, 25, 10000, '2025-04-20', '2025-05-05', 80),
+
+    (2, 10, 10000, '2025-04-01', '2025-04-30', 100),
+    (2, 30, 12000, '2025-04-05', '2025-04-25', 150),
+    (2, 20, 10000, '2025-04-10', '2025-04-20', 200),
+    (2, 50, 22000, '2025-04-15', '2025-05-01', 120),
+    (2, 25, 10000, '2025-04-20', '2025-05-05', 80);
