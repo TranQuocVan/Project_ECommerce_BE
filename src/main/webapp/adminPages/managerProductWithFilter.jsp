@@ -8,6 +8,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 <html>
 <head>
     <meta charset="UTF-8">
@@ -169,7 +171,7 @@
 
                                         <div class="col-md-2">
                                             <p class="small text-muted mb-1">Giá sản phẩm</p>
-                                            <p class="lead fw-normal mb-0 product">${pm.price}</p>
+                                            <fmt:formatNumber value="${pm.price}" type="number" groupingUsed="true" />đ
 
                                             <div class="edit-list" style="display: none;">
                                                 <input class="lead fw-normal mb-0" type="number" name="priceProduct" id="priceProduct" placeholder="Giá sản phẩm" required style="width: 90px;">

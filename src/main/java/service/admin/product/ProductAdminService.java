@@ -11,6 +11,10 @@ public class ProductAdminService {
         ProductAdminDAO dao = new ProductAdminDAO();
         return dao.getAllProduct(groupProductID, productCategoryId, size, nameColor);
     }
+    public List<ProductModel> getAllProduct() throws SQLException {
+        ProductAdminDAO dao = new ProductAdminDAO();
+        return dao.getAllProduct();
+    }
     public List<GroupProductModel> getAllGroupProduct (){
         ProductAdminDAO dao = new ProductAdminDAO();
         return dao.getAllGroupProduct();

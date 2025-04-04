@@ -146,6 +146,11 @@ public class ProductAdminDAO {
             return products;
         }
     }
+
+    public List<ProductModel> getAllProduct() throws SQLException {
+        return getAllProduct(0, 0, "", "");
+    }
+
     public List<GroupProductModel> getAllGroupProduct (){
         List<GroupProductModel> groupProductModels = new ArrayList<>();
         String sql = "select * from groupproducts" ;
