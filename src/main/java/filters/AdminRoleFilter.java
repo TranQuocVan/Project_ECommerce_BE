@@ -9,6 +9,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.UserModel;
 
 import java.io.IOException;
@@ -33,6 +34,8 @@ public class AdminRoleFilter implements Filter {
 
         if (userModel.getRole()!= null && userModel.getRole().equals("admin")) {
             // User is an admin, continue processing the request
+            HttpSession session =  ((HttpServletRequest) request).getSession();
+            session.setAttribute("user", userModel);
             chain.doFilter(request, response);
         } else {
             // User is not an admin, redirect to an error page or login

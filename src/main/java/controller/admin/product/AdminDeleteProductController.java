@@ -4,7 +4,9 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import model.ProductModel;
+import model.UserModel;
 import service.admin.product.ProductAdminService;
+import service.log.LogService;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -20,6 +22,7 @@ public class AdminDeleteProductController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int productId = Integer.parseInt(request.getParameter("productId"));
         int colorId = Integer.parseInt(request.getParameter("colorId"));
+        String ipAddress = request.getRemoteAddr();
 
         ProductAdminService productAdminService = new ProductAdminService();
         ProductModel productModel = new ProductModel();
@@ -31,6 +34,9 @@ public class AdminDeleteProductController extends HttpServlet {
             if (result){
                 response.sendRedirect("ProductAdminController");
 
+                HttpSession session = request.getSession();
+                UserModel user = (UserModel) session.getAttribute("user");
+                LogService.adminDeleteProduct(user.getId(), String.valueOf(productModel.getId()), ipAddress);
             }
             else {
                 response.sendRedirect("ProductAdminController");

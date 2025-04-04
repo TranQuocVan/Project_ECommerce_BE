@@ -6,6 +6,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import model.UserModel;
+import service.log.LogService;
 import service.user.account.UserService;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -81,8 +82,8 @@ public class SignInFacebookController extends HttpServlet {
         }
 
 
-        LogDAO.insertLog(userModel.getId(), "LOGIN_SUCCESS", "users", email, "FACEBOOK_LOGIN", ipAddress);
-
+//        LogDAO.insertLog(userModel.getId(), "LOGIN_SUCCESS", "users", email, "FACEBOOK_LOGIN", ipAddress);
+        LogService.logLoginWithFB(userModel.getId(),String.valueOf(facebook_id),true,ipAddress);
         result.put("status", "success");
         result.put("redirect", request.getContextPath() + "/IndexController");
 

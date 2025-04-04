@@ -13,15 +13,18 @@ CREATE TABLE IF NOT EXISTS `Membership` (
 -- Users Table
 CREATE TABLE IF NOT EXISTS `Users` (
     `userId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `gmail` VARCHAR(255) UNIQUE NOT NULL COLLATE utf8mb4_unicode_ci,
+    `gmail` VARCHAR(255) UNIQUE COLLATE utf8mb4_unicode_ci,
     `point` FLOAT NOT NULL DEFAULT 0,
     `role` VARCHAR(50) NOT NULL COLLATE utf8mb4_unicode_ci DEFAULT 'user',
-    `password` VARCHAR(255) NOT NULL COLLATE utf8mb4_unicode_ci,
+    `password` VARCHAR(255) COLLATE utf8mb4_unicode_ci,
     `created_at` DATE NOT NULL,
     `membershipId` INT,
     `remember_me_token` VARCHAR(255),
+    `facebook_Id` LONG,
     FOREIGN KEY (`membershipId`) REFERENCES `Membership`(`membershipId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
 
 CREATE TABLE IF NOT EXISTS `PasswordResetTokens` (
     `userId` INT NOT NULL,
@@ -116,6 +119,7 @@ CREATE TABLE IF NOT EXISTS `Orders` (
     `userId` INT NOT NULL,
     `paymentId` INT NOT NULL,
     `deliveryId` INT NOT NULL,
+    `statusPayment` INT NOT NULL DEFAULT 0,
     FOREIGN KEY (`userId`) REFERENCES `Users`(`userId`),
     FOREIGN KEY (`paymentId`) REFERENCES `Payments`(`paymentId`),
     FOREIGN KEY (`deliveryId`) REFERENCES `Deliveries`(`deliveryId`)
@@ -171,7 +175,7 @@ VALUES
 
 INSERT INTO `payments` (`methodPayment`) 
 VALUES 
-    ('Cod' );
+    ("VNPAY");
 INSERT INTO `deliveries` (`fee`,`name`) 
 VALUES 
     (10,"Hoả Tốc" );

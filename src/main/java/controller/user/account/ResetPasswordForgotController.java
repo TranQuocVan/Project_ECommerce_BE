@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import service.log.LogService;
 import service.user.account.UserService;
 
 import java.io.BufferedReader;
@@ -20,6 +21,7 @@ public class ResetPasswordForgotController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        String ipAddress = request.getRemoteAddr();
 
         // Đọc dữ liệu từ request
         BufferedReader reader = request.getReader();
@@ -34,7 +36,10 @@ public class ResetPasswordForgotController extends HttpServlet {
 
         // Nếu đặt lại mật khẩu thành công, thêm URL chuyển hướng vào JSON response
         if (jsonResponse.get("success").getAsBoolean()) {
+            LogService.resetPassword(1,token,true,ipAddress);
             jsonResponse.addProperty("redirect", request.getContextPath() + "/signIn.jsp");
+        }else {
+            LogService.resetPassword(userService.getUserIdByPasswordResetToken(token),token,true,ipAddress);
         }
 
         PrintWriter out = response.getWriter();

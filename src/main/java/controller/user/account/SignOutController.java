@@ -3,6 +3,8 @@ package controller.user.account;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import model.UserModel;
+import service.log.LogService;
 import service.user.account.UserService;
 import service.util.CookiesServices;
 import service.util.SessionServices;
@@ -19,6 +21,7 @@ public class SignOutController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String ipAddress = request.getRemoteAddr();
         // Xóa session
         HttpSession session = request.getSession(false);
         if (sessionServices.isSessionExistence(session)) {
@@ -28,22 +31,14 @@ public class SignOutController extends HttpServlet {
         // Xóa cookie remember_me và cập nhật token trong cơ sở dữ liệu
         Cookie[] cookies = request.getCookies();
         if (cookiesServices.checkCookiesExistence(cookies)) {
-//            for (Cookie cookie : cookies) {
-//                if ("remember_me".equals(cookie.getName())) {
-//                    String token = cookie.getValue();
-//                    try {
-//                        userService.invalidateToken(token);
-//                    } catch (SQLException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                    // Xóa cookie trên trình duyệt
-//                    cookie.setValue("");
-//                    cookie.setPath("/");
-//                    cookie.setMaxAge(0);
-//                    response.addCookie(cookie);
-//                }
-//            }
+            String token = cookiesServices.getCookie(cookies);
+            try {
+                UserModel user = UserService.getUserByToken(token);
+                LogService.logout(user.getId(),user.getGmail(),true,ipAddress);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            
             response.addCookie(cookiesServices.clearRememberMeCookie(cookies));
         }
 

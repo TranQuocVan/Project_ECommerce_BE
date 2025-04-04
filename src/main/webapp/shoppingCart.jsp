@@ -262,6 +262,7 @@
             </div>
         </div>
     </div>
+
 </header>
 
 <footer></footer>
@@ -269,5 +270,7 @@
 <script src="components/footer.js"></script>
 <script src="scripts/shoppingCart.js?v=${System.currentTimeMillis()}"></script>
 </body>
+
+
 
 </html>

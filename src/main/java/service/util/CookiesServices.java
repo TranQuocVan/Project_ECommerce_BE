@@ -32,7 +32,17 @@ public class CookiesServices {
         }
         return null;
 
+       
 
+    }
+
+    public String getCookie(Cookie[] cookie){
+        for (Cookie ck : cookie) {
+            if ("remember_me".equals(ck.getName())) {
+                return ck.getValue();
+            }
+        }
+        return null;
     }
 
 }

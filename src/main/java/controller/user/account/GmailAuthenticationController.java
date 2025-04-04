@@ -4,6 +4,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import model.UserModel;
+import service.log.LogService;
 import service.user.account.AuthenticationService;
 import service.user.account.UserService;
 import service.util.SessionServices;
@@ -19,6 +20,7 @@ public class GmailAuthenticationController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String authCode = request.getParameter("authCode");
+        String ipAddress = request.getRemoteAddr();
 
         // Lấy session hiện tại (không tạo mới nếu chưa có)
         HttpSession session = request.getSession(false);
@@ -32,7 +34,6 @@ public class GmailAuthenticationController extends HttpServlet {
             dispatcher.forward(request, response);
             return;
         }
-
         try {
             // Đăng ký người dùng nếu Gmail chưa tồn tại
             String gmail = (String) session.getAttribute("gmail");
@@ -42,9 +43,12 @@ public class GmailAuthenticationController extends HttpServlet {
             // Xử lý "Remember Me" và cập nhật session
             UserService.handleRememberMe(userModel, session, response);
 
+            LogService.signUp(userModel.getId(),gmail,true,ipAddress);
+
             // Chuyển tiếp về trang chính sau khi đăng nhập thành công
             response.sendRedirect(request.getContextPath() + "/IndexController");
         } catch (SQLException e) {
+            LogService.signUp(0,(String) session.getAttribute("gmail"),false,ipAddress);
             e.printStackTrace(); // Có thể thay bằng logging
             request.setAttribute("res", "Có lỗi xảy ra khi xử lý yêu cầu. Vui lòng thử lại sau.");
             RequestDispatcher dispatcher = request.getRequestDispatcher("/gmailAuthentication.jsp");

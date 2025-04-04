@@ -387,6 +387,21 @@ public class OrderDao {
         }
         return orders;
     }
+
+    public int getUserIdByOrderId(int id) {
+        String sql = "SELECT userId FROM orders WHERE orderId = ?";
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+            st.setInt(1, id);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("userId");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1; // Trả về -1 nếu không tìm thấy
+    }
 }
 
 
