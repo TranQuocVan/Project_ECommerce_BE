@@ -11,7 +11,7 @@ import java.util.List;
 public class OrderAdminService {
     public List<OrderAdminModel> getAllOrders(Integer paymentId, Integer deliveryId, Date orderDate, Integer statusTypeId) throws SQLException, SQLException {
         OrderAdminDAO dao = new OrderAdminDAO();
-        return dao.getAllOrders(paymentId, deliveryId, orderDate, statusTypeId);
+        return dao.getAllOrders(paymentId, deliveryId, orderDate);
     }
 //    public List<StatusAdminModel> getAllStatus () {
 //        OrderAdminDAO dao = new OrderAdminDAO();

@@ -1,6 +1,6 @@
 package model;
 
-public class ShoppingCartItemOrderModel {
+public class    ShoppingCartItemOrderModel {
 
     public int orderId ;
     public  int sizeId ;
