@@ -17,7 +17,6 @@ public class ProductAdminController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ProductAdminService productAdminService = new ProductAdminService();
 
-
         List<GroupProductModel> groupProductModels = productAdminService.getAllGroupProduct();
 
         List<ProductCategoryModel>  productCategoryModels = productAdminService.getAllCatelogyProduct();
@@ -30,6 +29,17 @@ public class ProductAdminController extends HttpServlet {
         request.setAttribute("productCategoryModels", productCategoryModels);
         request.setAttribute("sizeModels", sizeModels);
         request.setAttribute("colorModels", colorModels);
+
+
+        List<ProductModel> productModels = null;
+        try {
+            productModels = productAdminService.getAllProduct();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        request.setAttribute("productModels", productModels);
 
         request.getRequestDispatcher("adminPages/managerProductWithFilter.jsp").forward(request, response);
 

@@ -70,7 +70,13 @@ public class AdminUpdateProductController extends HttpServlet {
         ProductAdminService productAdminService = new ProductAdminService();
         try {
             productAdminService.updateProduct(product);
-
+            List<ProductModel> productModels = null;
+            try {
+                productModels = productAdminService.getAllProduct();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            request.setAttribute("productModels", productModels);
 
             request.getRequestDispatcher("adminPages/managerProductWithFilter.jsp").forward(request, response);
 

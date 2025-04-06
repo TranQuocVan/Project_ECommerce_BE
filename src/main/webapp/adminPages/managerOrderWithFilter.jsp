@@ -137,7 +137,7 @@
                         <!-- Trạng thái -->
                         <div class="col-md-2">
                           <p class="small text-muted mb-1">Trạng thái</p>
-                          <p class="status fw-normal mb-0">${od.nameStatus}</p>
+<%--                          <p class="status fw-normal mb-0">${od.nameStatus}</p>--%>
                           <div class="status-list" style="display: none;">
                             <form action="AdminUpdateStatusController" method="post" class="edit-status-form">
                               <input type="hidden" name="nameStatus" id="nameStatus" value="">

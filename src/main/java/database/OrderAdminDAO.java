@@ -11,27 +11,21 @@ import java.util.List;
 
 public class OrderAdminDAO {
 
-    public List<OrderAdminModel> getAllOrders(int paymentId, int deliveryId, Date orderDate, int statusTypeId) throws SQLException, SQLException {
+    public List<OrderAdminModel> getAllOrders(int paymentId, int deliveryId, Date orderDate ) throws SQLException, SQLException {
         // Khởi tạo câu truy vấn cơ bản
         StringBuilder sql = new StringBuilder("SELECT o.orderId, p.methodPayment, o.orderDate, o.deliveryAddress, \n" +
-                "       o.totalPrice, d.name AS deliveryName, st.nameType, \n" +
+                "       o.totalPrice, d.name AS deliveryName, \n" +
                 "       scio.quantity, scio.sizeId" +
                 " FROM Orders o " +
                 "LEFT JOIN statuses s ON o.orderId = s.orderId " +
                 "LEFT JOIN payments p ON o.paymentId = p.paymentId " +
                 "LEFT JOIN deliveries d ON o.deliveryId = d.deliveryId " +
                 "LEFT JOIN shoppingcartitemsorder scio ON o.orderId = scio.orderId " +
-                "LEFT JOIN statusestype st ON s.statusTypeId = st.id " +
-
                 "where 1=1");
 
         // Danh sách tham số để truyền vào PreparedStatement
         List<Object> parameters = new ArrayList<>();
 
-        if (statusTypeId!=0)  {
-            sql.append(" AND s.statusTypeId = ?");
-            parameters.add(statusTypeId);
-        }
         if (paymentId != 0) {
             sql.append(" AND o.paymentId = ?");
             parameters.add(paymentId);
@@ -59,7 +53,6 @@ public class OrderAdminDAO {
                         rs.getInt("orderId"), rs.getString("methodPayment"),
                         rs.getDate("orderDate"), rs.getString("deliveryAddress"),
                         rs.getFloat("totalPrice"), rs.getString("deliveryName"),
-                        rs.getString("nameType"),
                         rs.getInt("quantity"), rs.getInt("sizeId")
 
                 );
