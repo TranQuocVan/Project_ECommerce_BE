@@ -16,31 +16,16 @@ public class VoucherAdminService {
         return voucherDAO.getAllVouchers();
     }
 
-    public boolean addVoucher(VoucherModel voucher) {
-        try {
-            return voucherDAO.addVoucher(voucher);
-        } catch (Exception e) {
-            e.printStackTrace(); // Ghi log lỗi (có thể thay bằng Logger)
-            return false;
-        }
+    public void addVoucher(VoucherModel voucher) {
+        voucherDAO.addVoucher(voucher);
     }
 
-    public boolean updateVoucher(VoucherModel voucher) {
-        try {
-            return voucherDAO.updateVoucher(voucher);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+    public VoucherModel updateVoucher(VoucherModel voucher) {
+        return voucherDAO.updateVoucher(voucher);
     }
 
-    public boolean deleteVoucher(int voucherId) {
-        try {
-            return voucherDAO.deleteVoucher(voucherId);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+    public void deleteVoucher(int voucherId) {
+        voucherDAO.deleteVoucher(voucherId);
     }
 
     public List<VoucherModel> getAllVoucherShipping() {

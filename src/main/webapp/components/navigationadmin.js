@@ -54,7 +54,7 @@ const addNavigationAdmin = () => {
 
                 <div class="navAdmin-item" id="orderToggle">
                     <div class="navAdmin-text">
-                       <a>Don hang</a> 
+                       <a>Đơn hàng</a> 
                     </div>
                     <div class="navAdmin-icon">
                         <i class="fa-solid fa-chevron-down"></i>
@@ -87,12 +87,43 @@ const addNavigationAdmin = () => {
                         Quản lí user
                     </div>
                     </a>
-                    
-
                 </div>
                 
                 
+                <div class="navAdmin-item" id="voucherToggle">
+                    <div class="navAdmin-text">
+                       <a>Voucher</a> 
+                    </div>
+                    <div class="navAdmin-icon">
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                </div>
+                <div class="subMenu" id="voucherOptions">
+                    <a href="http://localhost:8080/Shoe_war_exploded/AddTypeVoucherController">
+                        <div class="navAdmin-subItem">
+                            Thêm loại Voucher
+                        </div>
+                    </a>
+                    
+                     <a href="http://localhost:8080/Shoe_war_exploded/AddVoucherController">
+                        <div class="navAdmin-subItem">
+                            Thêm Voucher
+                        </div>
+                    </a>
 
+                     <a href="http://localhost:8080/Shoe_war_exploded/ManagerTypeVoucherController">
+                        <div class="navAdmin-subItem">
+                            Quản lí loại Voucher
+                        </div>
+                    </a>
+                    
+                     <a href="http://localhost:8080/Shoe_war_exploded/ManagerVoucherController">
+                        <div class="navAdmin-subItem">
+                            Quản lí Voucher
+                        </div>
+                     </a>
+
+                </div>
 
 <!--                <a href="./delivery.jsp">-->
 <!--                    <div class="navAdmin-item">-->
@@ -141,6 +172,13 @@ const addNavigationAdmin = () => {
     userToggle.addEventListener("click", ()=>{
 
         userOptions.classList.toggle("show");
+    });
+
+    const voucherToggle = document.getElementById("voucherToggle")
+    const voucherOptions = document.getElementById("voucherOptions")
+    voucherToggle.addEventListener("click", ()=>{
+
+        voucherOptions.classList.toggle("show");
     });
 };
 
