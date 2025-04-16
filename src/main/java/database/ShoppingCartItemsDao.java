@@ -16,8 +16,8 @@ import java.util.List;
 public class ShoppingCartItemsDao {
 
     public boolean addProductToShoppingCart(int quantity, int sizeId, int userId) {
-        String insertSql = "INSERT INTO ShoppingCartItems (quantity, sizeId, userId) VALUES(?, ?, ?)";
-        String updateSql = "UPDATE ShoppingCartItems SET quantity = quantity + ? WHERE sizeId = ? and userId = ?";
+        String insertSql = "INSERT INTO shoppingcartitems (quantity, sizeId, userId) VALUES(?, ?, ?)";
+        String updateSql = "UPDATE shoppingcartitems SET quantity = quantity + ? WHERE sizeId = ? and userId = ?";
 
         try (Connection con = JDBCUtil.getConnection()) {
             if (checkProductDetailId(sizeId, userId)) {
@@ -51,7 +51,7 @@ public class ShoppingCartItemsDao {
     }
 
     public boolean updateProductToShoppingCart(int quantity, int sizeId, int userId) {
-        String updateSql = "UPDATE ShoppingCartItems SET quantity =  ? WHERE sizeId = ? and userId = ?";
+        String updateSql = "UPDATE shoppingcartitems SET quantity =  ? WHERE sizeId = ? and userId = ?";
 
         try (Connection con = JDBCUtil.getConnection()) {
                 if (checkStockUpdateProduct(sizeId, userId, quantity)) {
@@ -75,8 +75,8 @@ public class ShoppingCartItemsDao {
     private boolean checkStockUpdateProduct(int sizeId, int userId, int quantity) {
         String sql = """
     SELECT s.stock, IFNULL(SUM(spc.quantity), 0) AS cartQuantity
-    FROM Sizes s
-    LEFT JOIN ShoppingCartItems spc ON spc.sizeId = s.sizeId AND spc.userId = ?
+    FROM sizes s
+    LEFT JOIN shoppingcartitems spc ON spc.sizeId = s.sizeId AND spc.userId = ?
     WHERE s.sizeId = ?
     GROUP BY s.sizeId
     """;
@@ -99,7 +99,7 @@ public class ShoppingCartItemsDao {
 
 
     private boolean checkProductDetailId(int sizeId, int userId) {
-        String sql = "SELECT 1 FROM ShoppingCartItems WHERE sizeId = ? and userId = ? LIMIT 1";
+        String sql = "SELECT 1 FROM shoppingcartitems WHERE sizeId = ? and userId = ? LIMIT 1";
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
             st.setInt(1, sizeId);
@@ -119,8 +119,8 @@ public class ShoppingCartItemsDao {
     public boolean checkStockProduct(int sizeId, int userId, int quantityToAdd) {
         String sql = """
             SELECT s.stock, IFNULL(SUM(spc.quantity), 0) AS cartQuantity
-            FROM Sizes s
-            LEFT JOIN ShoppingCartItems spc ON spc.sizeId = s.sizeId AND spc.userId = ?
+            FROM sizes s
+            LEFT JOIN shoppingcartitems spc ON spc.sizeId = s.sizeId AND spc.userId = ?
             WHERE s.sizeId = ?
             GROUP BY s.sizeId
         """;
@@ -145,7 +145,7 @@ public class ShoppingCartItemsDao {
     public boolean checkStockProduct(int sizeId, int quantityToAdd) {
         String sql = """
             SELECT stock
-            FROM Sizes
+            FROM sizes
             WHERE sizeId = ?
             """;
         try (Connection con = JDBCUtil.getConnection();
@@ -168,10 +168,10 @@ public class ShoppingCartItemsDao {
         List<ShoppingCartItemsModel> lists = new ArrayList<ShoppingCartItemsModel>();
         String sql = """
         SELECT p.discount, s.sizeId, p.name, p.price, c.name, s.size, s.stock, spc.quantity, i.image
-                             FROM Sizes s
-                             LEFT JOIN ShoppingCartItems spc ON spc.sizeId = s.sizeId
-                             LEFT JOIN Colors c ON c.colorId = s.colorId
-                             LEFT JOIN Products p ON c.productId = p.productId
+                             FROM sizes s
+                             LEFT JOIN shoppingcartitems spc ON spc.sizeId = s.sizeId
+                             LEFT JOIN colors c ON c.colorId = s.colorId
+                             LEFT JOIN products p ON c.productId = p.productId
                              LEFT JOIN images i ON i.colorId = c.colorId
                              WHERE spc.userId = ?
                              AND i.image = (SELECT image FROM images WHERE colorId = c.colorId LIMIT 1);
@@ -247,7 +247,7 @@ public class ShoppingCartItemsDao {
 
         public boolean deleteProductToShoppingCart( int sizeId, int userId) {
 
-         String sql = "delete from shoppingCartItems where sizeId = ? and userId = ?";
+         String sql = "delete from shoppingcartitems where sizeId = ? and userId = ?";
 
          try (Connection con = JDBCUtil.getConnection()) {
 
@@ -266,7 +266,7 @@ public class ShoppingCartItemsDao {
     public boolean updateStockProduct(int userId) {
         String sql = """
         SELECT spc.quantity, s.sizeId
-        FROM shoppingCartItems spc
+        FROM shoppingcartitems spc
         JOIN sizes s ON spc.sizeId = s.sizeId 
         WHERE spc.userId = ?
     """;
@@ -311,7 +311,7 @@ public class ShoppingCartItemsDao {
 
 
     public boolean cleanShoppingCartItems(List<Integer> listSizeId) {
-        String sql = "DELETE FROM shoppingCartItems WHERE sizeId = ?";
+        String sql = "DELETE FROM shoppingcartitems WHERE sizeId = ?";
         try (Connection con = JDBCUtil.getConnection()) {
             // Tắt auto-commit để bắt đầu transaction
             con.setAutoCommit(false);

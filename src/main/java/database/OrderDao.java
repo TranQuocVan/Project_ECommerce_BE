@@ -128,7 +128,7 @@ public class OrderDao {
     }
 
     public String methodPayment(int paymentId) {
-        String sql = "select methodPayment from Payments where paymentId = ?";
+        String sql = "select methodPayment from payments where paymentId = ?";
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
             st.setInt(1, paymentId);
@@ -239,10 +239,10 @@ public class OrderDao {
         for (Integer sizeId : listSizeId) {
             String sql = """
         SELECT p.price, p.discount, spc.quantity
-        FROM Sizes s 
-        LEFT JOIN ShoppingCartItems spc ON spc.sizeId = s.sizeId 
-        LEFT JOIN Colors c ON c.colorId = s.colorId 
-        LEFT JOIN Products p ON c.productId = p.productId 
+        FROM sizes s 
+        LEFT JOIN shoppingcartitems spc ON spc.sizeId = s.sizeId 
+        LEFT JOIN colors c ON c.colorId = s.colorId 
+        LEFT JOIN products p ON c.productId = p.productId 
         WHERE spc.sizeId = ? AND spc.userId = ?
         """;
 

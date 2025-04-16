@@ -11,7 +11,7 @@ import java.util.List;
 
 public class TypeVoucherDAO {
     public boolean addTypeVoucher(TypeVoucherModel typeVoucher) {
-        String sql = "INSERT INTO TypeVoucher (typeName) VALUES (?)";
+        String sql = "INSERT INTO typevoucher (typeName) VALUES (?)";
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
 
@@ -25,7 +25,7 @@ public class TypeVoucherDAO {
     }
 
     public boolean updateTypeVoucher(TypeVoucherModel typeVoucher) {
-        String sql = "UPDATE TypeVoucher SET typeName = ? WHERE typeVoucherId = ?";
+        String sql = "UPDATE typevoucher SET typeName = ? WHERE typeVoucherId = ?";
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
 
@@ -40,7 +40,7 @@ public class TypeVoucherDAO {
     }
 
     public boolean deleteTypeVoucher(int typeVoucherId) {
-        String sql = "DELETE FROM TypeVoucher WHERE typeVoucherId = ?";
+        String sql = "DELETE FROM typevoucher WHERE typeVoucherId = ?";
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
 
@@ -55,7 +55,7 @@ public class TypeVoucherDAO {
 
     public List<TypeVoucherModel> getAllTypeVouchers() {
         List<TypeVoucherModel> typeVouchers = new ArrayList<>();
-        String sql = "SELECT * FROM TypeVoucher";
+        String sql = "SELECT * FROM typevoucher";
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql);
              ResultSet rs = st.executeQuery()) {

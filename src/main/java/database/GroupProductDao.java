@@ -16,7 +16,7 @@ public class GroupProductDao {
     public List<GroupProductModel> getAllGroupProduct() {
         List<GroupProductModel> list = new ArrayList<>();
 
-        String sql = "SELECT * FROM GroupProducts";
+        String sql = "SELECT * FROM groupproducts";
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql);
              ResultSet rs = st.executeQuery()) {
@@ -35,7 +35,7 @@ public class GroupProductDao {
 
 
     public boolean addGroupProduct(GroupProductModel groupProductModel) {
-        String sql = "INSERT INTO GroupProducts (name, image, description) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO groupproducts (name, image, description) VALUES (?, ?, ?)";
 
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
@@ -57,8 +57,8 @@ public class GroupProductDao {
         List<ProductModel> productList = new ArrayList<>();
         String getProductsByCategoryQuery = """
         SELECT p.* 
-        FROM Products p 
-        JOIN GroupProducts gp ON p.groupProductId = gp.groupProductId 
+        FROM products p 
+        JOIN groupproducts gp ON p.groupProductId = gp.groupProductId 
         WHERE gp.name LIKE ? AND p.name LIKE ? 
         LIMIT ? OFFSET ?
     """;
@@ -98,8 +98,8 @@ public class GroupProductDao {
     public int countProductsByGroupName(String groupName, String name) {
         String countProductsQuery = """
         SELECT COUNT(*) AS totalProducts 
-        FROM Products p 
-        JOIN GroupProducts gp ON p.groupProductId = gp.groupProductId 
+        FROM products p 
+        JOIN groupproducts gp ON p.groupProductId = gp.groupProductId 
         WHERE gp.name LIKE ? AND p.name LIKE ?
     """;
         int totalProducts = 0;
@@ -125,7 +125,7 @@ public class GroupProductDao {
 
 
     public List<GroupProductModel> getAllGroupProducts() {
-        String sql = "SELECT * FROM GroupProducts";
+        String sql = "SELECT * FROM groupproducts";
         List<GroupProductModel> groupProducts = new ArrayList<>();
 
         try (Connection con = JDBCUtil.getConnection();
