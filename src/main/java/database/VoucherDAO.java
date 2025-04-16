@@ -11,7 +11,7 @@ public class VoucherDAO {
     // Lấy tất cả voucher
     public List<VoucherModel> getAllVouchers() {
         List<VoucherModel> vouchers = new ArrayList<>();
-        String sql = "SELECT * FROM Voucher";
+        String sql = "SELECT * FROM voucher";
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql);
              ResultSet rs = st.executeQuery()) {
@@ -61,7 +61,7 @@ public class VoucherDAO {
 
     // Lấy voucher bằng id
     public VoucherModel getVoucherById(int voucherId) {
-        String query = "SELECT * FROM Voucher WHERE voucherId = ?";
+        String query = "SELECT * FROM voucher WHERE voucherId = ?";
         try (Connection conn = JDBCUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, voucherId);
@@ -88,6 +88,7 @@ public class VoucherDAO {
     // Thêm voucher
     public void addVoucher(VoucherModel voucher) {
         String sql = "INSERT INTO Voucher (typeVoucherId, discountPercent, discountMaxValue, startDate, endDate, quantity) VALUES (?, ?, ?, ?, ?, ?)";
+
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
 
@@ -131,6 +132,7 @@ public class VoucherDAO {
     // Xóa voucher
     public void deleteVoucher(int voucherId) {
         String sql = "DELETE FROM Voucher WHERE voucherId = ?";
+
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
 
@@ -182,7 +184,7 @@ public class VoucherDAO {
     // Tính toán tiền giảm giá khi sử dụng voucher shipping
     public float calculateDiscountShippingFee(int voucherId, int deliveryId) {
         String sql = "SELECT v.discountPercent, v.discountMaxValue, d.fee " +
-                "FROM Voucher v " +
+                "FROM voucher v " +
                 "JOIN TypeVoucher tv ON v.typeVoucherId = tv.typeVoucherId " +
                 "JOIN Deliveries d ON d.deliveryId = ? " +
                 "WHERE v.voucherId = ? AND tv.typeName = 'shipping'";
@@ -249,7 +251,7 @@ public class VoucherDAO {
         }
 
         // Truy vấn thông tin voucher
-        String voucherSql = "SELECT typeVoucherId, discountPercent, discountMaxValue FROM Voucher WHERE voucherId = ?";
+        String voucherSql = "SELECT typeVoucherId, discountPercent, discountMaxValue FROM voucher WHERE voucherId = ?";
 
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(voucherSql)) {

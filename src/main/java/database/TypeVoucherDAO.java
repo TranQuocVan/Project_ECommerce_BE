@@ -12,6 +12,7 @@ import java.util.List;
 public class TypeVoucherDAO {
     public void addTypeVoucher(TypeVoucherModel typeVoucher) {
         String sql = "INSERT INTO TypeVoucher (typeName, description) VALUES (?, ?)";
+
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
 
@@ -28,6 +29,7 @@ public class TypeVoucherDAO {
 
     public TypeVoucherModel updateTypeVoucher(TypeVoucherModel typeVoucher) {
         String sql = "UPDATE TypeVoucher SET typeName = ?, description = ? WHERE typeVoucherId = ?";
+
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
 
@@ -47,6 +49,7 @@ public class TypeVoucherDAO {
 
     public void deleteTypeVoucher(int typeVoucherId) {
         String sql = "DELETE FROM TypeVoucher WHERE typeVoucherId = ?";
+
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
 
@@ -59,7 +62,7 @@ public class TypeVoucherDAO {
 
     public List<TypeVoucherModel> getAllTypeVouchers() {
         List<TypeVoucherModel> typeVouchers = new ArrayList<>();
-        String sql = "SELECT * FROM TypeVoucher";
+        String sql = "SELECT * FROM typevoucher";
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql);
              ResultSet rs = st.executeQuery()) {

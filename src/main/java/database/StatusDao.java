@@ -33,7 +33,7 @@ public class StatusDao {
 
     //check
     public List<StatusModel> getStatusesByOrderId(int orderId) {
-        String sql = "SELECT * FROM Statuses  WHERE orderId = ?";
+        String sql = "SELECT * FROM statuses  WHERE orderId = ?";
         List<StatusModel> statuses = new ArrayList<>();
 
         try (Connection con = JDBCUtil.getConnection();
