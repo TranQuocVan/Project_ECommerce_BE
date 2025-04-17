@@ -29,7 +29,6 @@ body {
 #navigation {
     position: fixed;
     z-index: 2000;
-    padding: 12px 0;
 }
 
 .navigation,

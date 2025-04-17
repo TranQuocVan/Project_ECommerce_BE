@@ -6,11 +6,9 @@ import jakarta.servlet.annotation.*;
 import model.*;
 import service.user.cart.ShoppingCartService;
 import service.user.voucher.VoucherService;
-import service.util.FormatPriceServices;
+import util.FormatPriceServices;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.List;
 
 @WebServlet(name = "ShoppingCartItemsController", value = "/ShoppingCartItemsController")

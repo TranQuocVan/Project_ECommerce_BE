@@ -3,19 +3,44 @@ package model;
 import java.sql.Timestamp;
 import java.util.List;
 
-public class Order
-{
+public class Order {
     int id;
-    int paymentId ;
-    Timestamp orderDate ;
-    String deliveryAddress ;
-    float totalPrice ;
-    int userId ;
-    int deliveryId ;
+    int paymentId;
+    Timestamp orderDate;
+    String deliveryAddress;
+    float totalPrice;
+    int userId;
+    int deliveryId;
     int statusPayment;
+    String publishKey;
+    String sign;
 
-    public Order(int paymentId, Timestamp orderDate, String deliveryAddress, float totalPrice, int userId, int deliveryId) {
+    public Order(int paymentId, Timestamp orderDate, String deliveryAddress, float totalPrice, int userId,
+            int deliveryId, String publishKey, String sign) {
+        this.paymentId = paymentId;
+        this.orderDate = orderDate;
+        this.deliveryAddress = deliveryAddress;
+        this.totalPrice = totalPrice;
+        this.userId = userId;
+        this.deliveryId = deliveryId;
+        this.publishKey = publishKey;
+        this.sign = sign;
 
+    }
+
+    public Order(Timestamp orderDate, float totalPrice, int userId) {
+        this.totalPrice = totalPrice;
+        this.orderDate = orderDate;
+        this.userId = userId;
+    }
+
+    public Order(Timestamp orderDate, int userId) {
+        this.orderDate = orderDate;
+        this.userId = userId;
+    }
+
+    public Order(int paymentId, Timestamp orderDate, String deliveryAddress, float totalPrice, int userId,
+            int deliveryId) {
         this.paymentId = paymentId;
         this.orderDate = orderDate;
         this.deliveryAddress = deliveryAddress;
@@ -24,17 +49,8 @@ public class Order
         this.deliveryId = deliveryId;
     }
 
-    public Order(Timestamp orderDate, float totalPrice, int userId) {
-        this.totalPrice = totalPrice;
-        this.orderDate = orderDate;
-        this.userId = userId;
+    public Order() {
     }
-    public Order(Timestamp orderDate, int userId) {
-        this.orderDate = orderDate;
-        this.userId = userId;
-    }
-
-    public Order(){}
 
     public int getId() {
         return id;
@@ -76,12 +92,23 @@ public class Order
         this.statusPayment = statusPayment;
     }
 
-    //    public List<ShoppingCartItemOrders> getShoppingCartItemOrders() {
-//        return shoppingCartItemOrders;
-//    }
-//    public void setShoppingCartItemOrders(List<ShoppingCartItemOrders> shoppingCartItemOrders) {
-//        this.shoppingCartItemOrders = shoppingCartItemOrders;
-//    }
+    public String getPublishKey() {
+        return publishKey;
+    }
 
+    public String getSign() {
+        return sign;
+    }
+
+    public void setSign(String sign) {
+        this.sign = sign;
+    }
+    // public List<ShoppingCartItemOrders> getShoppingCartItemOrders() {
+    // return shoppingCartItemOrders;
+    // }
+    // public void setShoppingCartItemOrders(List<ShoppingCartItemOrders>
+    // shoppingCartItemOrders) {
+    // this.shoppingCartItemOrders = shoppingCartItemOrders;
+    // }
 
 }

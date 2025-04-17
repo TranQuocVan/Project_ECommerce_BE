@@ -1,6 +1,17 @@
-h6{
+/* General styles */
+h6 {
     font-size: 20px;
 }
+
+.text-body {
+    font-size: 20px;
+}
+
+.hover-red:hover {
+    color: red !important;
+}
+
+/* Hide number input spin buttons */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -11,64 +22,238 @@ input[type="number"] {
     text-align: center;
 }
 
+/* Button styles */
 .btn * {
-    margin: 1px ;
-}
-.text-body{
-    font-size: 20px
-}
-.hover-red:hover {
-    color: red !important;
+    margin: 1px;
 }
 
-/* Viền xanh mặc định cho các sản phẩm */
+/* Item container styles */
 .items {
-    border: 2px solid transparent; /* Viền trong suốt ban đầu */
+    border: 2px solid transparent;
     border-radius: 8px;
     padding: 20px;
-    transition: border 0.3s ease; /* Thêm hiệu ứng chuyển đổi khi thay đổi viền */
+    transition: border 0.3s ease;
 }
 
-/* Viền xanh khi sản phẩm được chọn */
 .items.selected {
-    border: 2px solid #000000; /* Màu xanh khi chọn */
+    border: 2px solid #000000;
 }
 
-.checkbox{
+.checkbox {
     display: none;
 }
 
-
-#paymentId,#deliverySelect {
-    min-width: 200px; /* Set width of the dropdown */
-    padding: 10px; /* Add padding inside the select */
-    border: 2px solid #ccc; /* Border color */
-    border-radius: 5px; /* Rounded corners */
-    font-size: 16px; /* Font size of the text */
-    background-color: #f9f9f9; /* Background color */
-    transition: border 0.3s ease; /* Smooth transition on focus */
+/* Select dropdown styles */
+#paymentId, #deliverySelect {
+    min-width: 200px;
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    transition: border 0.3s ease;
 }
 
-/* Style options inside the select */
-#paymentId option,#deliverySelect option {
-    padding: 10px; /* Add padding inside the options */
-    font-size: 16px; /* Font size for the options */
-    background-color: #fff; /* Background color of options */
+#paymentId option, #deliverySelect option {
+    padding: 10px;
+    font-size: 16px;
+    background-color: #fff;
 }
 
-/* Change border color when the select is focused */
 #paymentId:focus, #deliverySelect:focus {
-    border-color: #007BFF; /* Change border color on focus */
+    border-color: #007BFF;
 }
 
-/* Style for option hover */
 #paymentId option:hover, #deliverySelect option:hover {
-    background-color: #eaeaea; /* Hover effect */
+    background-color: #eaeaea;
 }
 
-#feeDisplay,#totalSelectedItems,#convenient{
+/* Display elements */
+#feeDisplay, #totalSelectedItems, #convenient {
     font-size: 16px;
 }
-.quantityShoppingCart{
+
+.quantityShoppingCart {
     background-color: transparent !important;
+}
+
+.original-price {
+    color: #c4c4c4;
+    font-size: 16px;
+    line-height: 16px;
+    text-decoration: line-through;
+}
+
+/* Signature container */
+#signatureContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000; /* Ensure it appears above other elements */
+}
+
+/* Digital signature form */
+#form-digitalSignature {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 800px;
+    max-width: 90vw; /* Responsive width */
+    position: relative;
+    opacity: 0;
+    transform: scale(0.95);
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    display: none; /* Hidden by default */
+}
+
+#form-digitalSignature.show {
+    display: block;
+    opacity: 1;
+    transform: scale(1);
+    animation: fadeInScale 0.3s ease-out;
+    pointer-events: auto;
+}
+
+#form-digitalSignature.hide {
+    opacity: 0;
+    transform: scale(0.95);
+    animation: fadeOutScale 0.3s ease-in;
+    pointer-events: none;
+}
+
+/* Animations */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeOutScale {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+}
+
+/* Form content */
+#form-digitalSignature h2 {
+    margin-bottom: 10px;
+}
+
+#form-digitalSignature #support {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+#form-digitalSignature textarea {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 14px;
+    margin-bottom: 1.5rem;
+    background-color: #fdfdfd;
+    padding-right: 60px;
+    white-space: pre-line;
+    position: relative;
+    resize: none;
+    padding-top: 20px;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+#form-digitalSignature label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+#publishKey {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 8px;
+}
+
+/* Buttons */
+#form-digitalSignature #copyBtn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    padding: 4px 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    width: fit-content;
+    text-align: center;
+    font-size: 14px;
+    z-index: 2;
+}
+
+#form-digitalSignature #copyBtn:hover, #form-digitalSignature #submit:hover {
+    background-color: #333;
+}
+
+#form-digitalSignature #submit {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+#form-digitalSignature #copyBtn svg {
+    height: 16px;
+    width: 16px;
+    vertical-align: middle;
+}
+
+/* Close button */
+#close-digitalSignature {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: red;
+    font-size: 20px;
+    line-height: 20px;
+    cursor: pointer;
+    color: white;
+    z-index: 2;
+    border-radius: 3px;
+    width: 45px;
+    height: 25px;
+    font-weight: 700;
+    border: 1px solid red;
+    text-align: center;
+}
+
+#close-digitalSignature:hover {
+    color: red;
+    background-color: transparent;
+    border: 1px solid red;
+}
+
+/* Textarea wrapper */
+.textarea-wrapper {
+    position: relative;
 }

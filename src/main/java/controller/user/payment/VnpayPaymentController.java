@@ -14,7 +14,8 @@ import service.user.cart.ShoppingCartItemOrderService;
 import service.user.cart.ShoppingCartService;
 import service.user.order.OrderService;
 
-import java.io.IOException;import java.net.URLEncoder;
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -33,6 +34,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import service.user.voucher.VoucherService;
+import util.SignatureVerifier;
 
 /**
  *
@@ -55,6 +57,21 @@ public class VnpayPaymentController extends HttpServlet {
             return;
         }
 
+        String publishKey = req.getParameter("publishKey");
+        String hash = req.getParameter("hash");
+        String data = req.getParameter("data");
+
+        if (!SignatureVerifier.verifySignature(data, hash, publishKey)) {
+            // Thêm log để kiểm tra trạng thái
+            System.out.println("Signature verification failed.");
+
+            // Chặn việc tiếp tục xử lý, không chuyển hướng nữa
+            resp.getWriter().write("{\"status\":\"false\",\"message\":\"Signature verification failed.\"}");
+            req.setAttribute("orderError", "Signature verification failed.");
+            req.getRequestDispatcher("/shoppingCart.jsp").forward(req, resp);
+            return; // Dừng lại tại đây và không làm gì thêm
+        }
+
         float totalPrice = 0;
         int orderId = 0;
         try {
@@ -66,15 +83,16 @@ public class VnpayPaymentController extends HttpServlet {
             String selectedVoucherShipping = req.getParameter("selectedVoucherShipping");
             String selectedVoucherItems = req.getParameter("selectedVoucherItems");
 
+
+
             // Nếu không có voucher nào được chọn, có thể trả về lỗi hoặc xử lý theo yêu cầu
             if (selectedVoucherShipping == null || selectedVoucherShipping.isEmpty()) {
-                selectedVoucherShipping = "0";  // Hoặc có thể trả về lỗi nếu cần
+                selectedVoucherShipping = "0";
             }
             if (selectedVoucherItems == null || selectedVoucherItems.isEmpty()) {
-                selectedVoucherItems = "0";  // Hoặc có thể trả về lỗi nếu cần
+                selectedVoucherItems = "0";
             }
 
-            // Chuyển thành Integer nếu cần thiết, hoặc có thể xử lý theo cách khác
             int voucherShippingId = Integer.parseInt(selectedVoucherShipping);
             int voucherItemsId = Integer.parseInt(selectedVoucherItems);
 
@@ -90,9 +108,11 @@ public class VnpayPaymentController extends HttpServlet {
             discountShippingFee = voucherService.calculateDiscountShippingFee(voucherShippingId, deliveryId);
             discountItemsFee = voucherService.calculateDiscountItemsFee(voucherItemsId, selectedItems);
 
-            totalPrice = orderService.calculateTotalPrice(selectedItems, user.getId(), deliveryId) - discountShippingFee - discountItemsFee;
+            totalPrice = orderService.calculateTotalPrice(selectedItems, user.getId(), deliveryId) - discountShippingFee
+                    - discountItemsFee;
             System.out.println("Tổng giá: " + totalPrice);
-            Order order = new Order(paymentId, sqlTimestamp, req.getParameter("address"), totalPrice, user.getId(), deliveryId);
+            Order order = new Order(paymentId, sqlTimestamp, req.getParameter("address"), totalPrice, user.getId(),
+                    deliveryId, publishKey, hash);
 
             // Xử lý đặt hàng
             ShoppingCartService shoppingCartService = new ShoppingCartService();
@@ -109,22 +129,19 @@ public class VnpayPaymentController extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
             resp.getWriter().write("{\"status\":\"false\",\"message\":\"Failed to place order.\"}");
+            return;
         }
 
         double amountDouble = (double) (totalPrice * 100);
-        
+
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String orderType = "other";
         long amount = (long) amountDouble;
         String bankCode = req.getParameter("bankCode");
 
-//        String vnp_TxnRef = Config.getRandomNumber(8);
         String vnp_TxnRef = String.valueOf(orderId);
-//        orderService.updateTransactionRef(orderId, vnp_TxnRef);
-
         String vnp_IpAddr = Config.getIpAddress(req);
-
         String vnp_TmnCode = Config.vnp_TmnCode;
 
         Map<String, String> vnp_Params = new HashMap<>();
@@ -168,11 +185,11 @@ public class VnpayPaymentController extends HttpServlet {
             String fieldName = (String) itr.next();
             String fieldValue = (String) vnp_Params.get(fieldName);
             if ((fieldValue != null) && (fieldValue.length() > 0)) {
-                //Build hash data
+                // Build hash data
                 hashData.append(fieldName);
                 hashData.append('=');
                 hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
-                //Build query
+                // Build query
                 query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII.toString()));
                 query.append('=');
                 query.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
@@ -182,18 +199,28 @@ public class VnpayPaymentController extends HttpServlet {
                 }
             }
         }
-        String queryUrl = query.toString();
+
+        // Generate secure hash
         String vnp_SecureHash = Config.hmacSHA512(Config.secretKey, hashData.toString());
-        queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
-        String paymentUrl = Config.vnp_PayUrl + "?" + queryUrl;
-        System.out.println("Redirecting to: " + paymentUrl);
-        resp.sendRedirect(paymentUrl);
-//        JsonObject job = new JsonObject();
-//        job.addProperty("code", "00");
-//        job.addProperty("message", "success");
-//        job.addProperty("data", paymentUrl);
-//        Gson gson = new Gson();
-//        resp.getWriter().write(gson.toJson(job));
+        System.out.println("Hash Data: " + hashData.toString());
+        System.out.println("Secure Hash: " + vnp_SecureHash);
+
+        // Add secure hash to query
+        query.append("&vnp_SecureHash=").append(vnp_SecureHash);
+
+        // Build final payment URL
+        String paymentUrl = Config.vnp_PayUrl + "?" + query.toString();
+        System.out.println("Payment URL: " + paymentUrl);
+
+        // Store debug information in request attributes
+        req.setAttribute("orderInfo", "Order ID: " + orderId + "\nTotal Price: " + totalPrice);
+        req.setAttribute("paymentUrl", paymentUrl);
+        req.setAttribute("requestParams", vnp_Params);
+        req.setAttribute("secureHash", vnp_SecureHash);
+        req.setAttribute("hashData", hashData.toString());
+
+        // Forward to debug page instead of redirecting directly
+
     }
 
     // Utility method to parse selected items from a comma-separated string
@@ -210,5 +237,12 @@ public class VnpayPaymentController extends HttpServlet {
             }
         }
         return selectedItems;
+    }
+
+    // Utility method to send JSON error response
+    private void sendErrorResponse(HttpServletResponse response, String message) throws IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(String.format("{\"status\":\"false\",\"message\":\"%s\"}", message));
     }
 }

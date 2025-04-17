@@ -13,13 +13,22 @@ import java.util.List;
 
 public class OrderDao {
     public int addOrder(Order order) {
-        String orderSql = "INSERT INTO orders (paymentId, orderDate, deliveryAddress, totalPrice, userId, deliveryId, statusPayment) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String orderSql = "INSERT INTO orders (paymentId, orderDate, deliveryAddress, totalPrice, userId, deliveryId, statusPayment,publishKey,sign) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         int orderId = -1;
 
         try (Connection con = JDBCUtil.getConnection();
-             PreparedStatement orderSt = con.prepareStatement(orderSql, Statement.RETURN_GENERATED_KEYS)) {
+                PreparedStatement orderSt = con.prepareStatement(orderSql, Statement.RETURN_GENERATED_KEYS)) {
 
-            // Không cần transaction trừ khi có nhiều thao tác quan trọng cần rollback cùng nhau
+            System.out.println("Attempting to create order with values:");
+            System.out.println("paymentId: " + order.getPaymentId());
+            System.out.println("orderDate: " + order.getOrderDate());
+            System.out.println("deliveryAddress: " + order.getDeliveryAddress());
+            System.out.println("totalPrice: " + order.getTotalPrice());
+            System.out.println("userId: " + order.getUserId());
+            System.out.println("deliveryId: " + order.getDeliveryId());
+            System.out.println("publishKey: " + order.getPublishKey());
+            System.out.println("sign: " + order.getSign());
+
             orderSt.setInt(1, order.getPaymentId());
             orderSt.setTimestamp(2, order.getOrderDate());
             orderSt.setString(3, order.getDeliveryAddress());
@@ -27,8 +36,12 @@ public class OrderDao {
             orderSt.setInt(5, order.getUserId());
             orderSt.setInt(6, order.getDeliveryId());
             orderSt.setInt(7, 0);
+            orderSt.setString(8, order.getPublishKey());
+            orderSt.setString(9, order.getSign());
 
             int affectedRows = orderSt.executeUpdate();
+            System.out.println("Number of affected rows: " + affectedRows);
+
             if (affectedRows == 0) {
                 System.out.println("Creating order failed, no rows affected.");
                 return -1;
@@ -37,7 +50,7 @@ public class OrderDao {
             try (ResultSet rs = orderSt.getGeneratedKeys()) {
                 if (rs.next()) {
                     orderId = rs.getInt(1);
-                    System.out.println("Generated Order ID: " + orderId);
+                    System.out.println("Successfully generated Order ID: " + orderId);
                 } else {
                     System.out.println("Creating order failed, no generated ID.");
                     return -1;
@@ -45,11 +58,12 @@ public class OrderDao {
             }
 
         } catch (SQLException e) {
+            System.out.println("SQL Exception while creating order: " + e.getMessage());
             e.printStackTrace();
             return -1;
         }
 
-        // Thêm trạng thái đơn hàng sau khi có Order ID, nhưng không chặn phương thức
+        // Thêm trạng thái đơn hàng sau khi có Order ID
         int finalOrderId = orderId;
         new Thread(() -> {
             try (Connection con = JDBCUtil.getConnection()) {
@@ -58,26 +72,26 @@ public class OrderDao {
                 status.setOrderId(finalOrderId);
                 status.setDescription("Chờ người bán xác nhận");
 
-                LocalDateTime localDateTime = LocalDateTime.now(); // Lấy ngày và giờ hiện tại
-                Timestamp sqlTimestamp = Timestamp.valueOf(localDateTime); // Chuyển đổi thành Timestamp (cả ngày và giờ)
-                status.setTimeline(sqlTimestamp); // Lưu vào status
+                LocalDateTime localDateTime = LocalDateTime.now();
+                Timestamp sqlTimestamp = Timestamp.valueOf(localDateTime);
+                status.setTimeline(sqlTimestamp);
 
                 StatusDao statusDao = new StatusDao();
                 statusDao.addStatus(status);
+                System.out.println("Successfully added status for order ID: " + finalOrderId);
             } catch (SQLException e) {
+                System.out.println("Failed to add status for order ID: " + finalOrderId);
                 e.printStackTrace();
             }
-        }).start(); // Chạy thêm trạng thái trong thread khác để không làm chậm hàm chính
+        }).start();
 
         return orderId;
     }
 
-
-
     public boolean checkOrder(int userId) {
         String sql = "select * from orders where userId = ?";
         try (Connection con = JDBCUtil.getConnection();
-             PreparedStatement st = con.prepareStatement(sql)) {
+                PreparedStatement st = con.prepareStatement(sql)) {
             st.setInt(1, userId);
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
@@ -94,7 +108,7 @@ public class OrderDao {
         List<OrderModel> orders = new ArrayList<>();
 
         try (Connection con = JDBCUtil.getConnection();
-             PreparedStatement st = con.prepareStatement(sql)) {
+                PreparedStatement st = con.prepareStatement(sql)) {
             st.setInt(1, userId);
             ResultSet rs = st.executeQuery();
 
@@ -104,8 +118,11 @@ public class OrderDao {
             while (rs.next()) {
                 // Lấy ngày từ ResultSet
                 Timestamp orderDateTimestamp = rs.getTimestamp("orderDate");
-                String formattedDate = orderDateTimestamp != null ?
-                        dateFormatter.format(orderDateTimestamp) : "N/A"; // Nếu null, trả về "N/A"
+                String formattedDate = orderDateTimestamp != null ? dateFormatter.format(orderDateTimestamp) : "N/A"; // Nếu
+                                                                                                                      // null,
+                                                                                                                      // trả
+                                                                                                                      // về
+                                                                                                                      // "N/A"
 
                 OrderModel orderModel = new OrderModel(
                         rs.getInt("orderId"),
@@ -115,8 +132,7 @@ public class OrderDao {
                         rs.getFloat("totalPrice"),
                         deliveryName(rs.getInt("deliveryId")),
                         deliveryFee(rs.getInt("deliveryId")),
-                        nameStatusPayment(rs.getInt("statusPayment"))
-                );
+                        nameStatusPayment(rs.getInt("statusPayment")));
 
                 orders.add(orderModel);
             }
@@ -130,7 +146,7 @@ public class OrderDao {
     public String methodPayment(int paymentId) {
         String sql = "select methodPayment from Payments where paymentId = ?";
         try (Connection con = JDBCUtil.getConnection();
-             PreparedStatement st = con.prepareStatement(sql)) {
+                PreparedStatement st = con.prepareStatement(sql)) {
             st.setInt(1, paymentId);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
@@ -142,11 +158,10 @@ public class OrderDao {
         return "Trống";
     }
 
-
     public String deliveryName(int deliveryId) {
         String sql = "select name from deliveries where deliveryId = ?";
         try (Connection con = JDBCUtil.getConnection();
-             PreparedStatement st = con.prepareStatement(sql)) {
+                PreparedStatement st = con.prepareStatement(sql)) {
             st.setInt(1, deliveryId);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
@@ -158,18 +173,21 @@ public class OrderDao {
         return "Trống";
     }
 
-    public String nameStatusPayment(int statusPaymentId){
+    public String nameStatusPayment(int statusPaymentId) {
         switch (statusPaymentId) {
-            case 0: return "Chưa thanh toán";
-            case 1: return "Đã thanh toán";
-            default: return "Trạng thái không hợp lệ";
+            case 0:
+                return "Chưa thanh toán";
+            case 1:
+                return "Đã thanh toán";
+            default:
+                return "Trạng thái không hợp lệ";
         }
     }
 
     public boolean updateStatusPayment(int orderId, int status) {
         String sql = "UPDATE orders SET statusPayment = ? WHERE orderId = ?";
         try (Connection con = JDBCUtil.getConnection();
-             PreparedStatement st = con.prepareStatement(sql)) {
+                PreparedStatement st = con.prepareStatement(sql)) {
             st.setInt(1, status);
             st.setInt(2, orderId);
             return st.executeUpdate() > 0;
@@ -193,7 +211,7 @@ public class OrderDao {
         String sql = "UPDATE orders SET statusPayment = ? WHERE orderId = ?";
 
         try (Connection con = JDBCUtil.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+                PreparedStatement ps = con.prepareStatement(sql)) {
 
             // Chuyển đổi từ String -> int trước khi lưu vào CSDL
             int statusPaymentInt = convertStatusPaymentToInt(order.getStatusPayment());
@@ -221,7 +239,7 @@ public class OrderDao {
     public float deliveryFee(int deliveryId) {
         String sql = "select fee from deliveries where deliveryId = ?";
         try (Connection con = JDBCUtil.getConnection();
-             PreparedStatement st = con.prepareStatement(sql)) {
+                PreparedStatement st = con.prepareStatement(sql)) {
             st.setInt(1, deliveryId);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
@@ -233,21 +251,20 @@ public class OrderDao {
         return 0;
     }
 
-
     public float calculateTotalPrice(List<Integer> listSizeId, int userId, int paymentId) throws SQLException {
         float totalPrice = 0;
         for (Integer sizeId : listSizeId) {
             String sql = """
-        SELECT p.price, p.discount, spc.quantity
-        FROM Sizes s 
-        LEFT JOIN ShoppingCartItems spc ON spc.sizeId = s.sizeId 
-        LEFT JOIN Colors c ON c.colorId = s.colorId 
-        LEFT JOIN Products p ON c.productId = p.productId 
-        WHERE spc.sizeId = ? AND spc.userId = ?
-        """;
+                    SELECT p.price, p.discount, spc.quantity
+                    FROM Sizes s
+                    LEFT JOIN ShoppingCartItems spc ON spc.sizeId = s.sizeId
+                    LEFT JOIN Colors c ON c.colorId = s.colorId
+                    LEFT JOIN Products p ON c.productId = p.productId
+                    WHERE spc.sizeId = ? AND spc.userId = ?
+                    """;
 
             try (Connection con = JDBCUtil.getConnection();
-                 PreparedStatement st = con.prepareStatement(sql)) {
+                    PreparedStatement st = con.prepareStatement(sql)) {
                 st.setInt(1, sizeId);
                 st.setInt(2, userId);
                 ResultSet rs = st.executeQuery();
@@ -270,14 +287,12 @@ public class OrderDao {
         return totalPrice;
     }
 
-
-
     public OrderModel getOrderById(int orderId) {
         String sql = "select * from orders where orderId = ?";
         OrderModel orderModel = null;
 
         try (Connection con = JDBCUtil.getConnection();
-             PreparedStatement st = con.prepareStatement(sql)) {
+                PreparedStatement st = con.prepareStatement(sql)) {
             st.setInt(1, orderId);
             ResultSet rs = st.executeQuery();
 
@@ -287,8 +302,11 @@ public class OrderDao {
             if (rs.next()) {
                 // Lấy ngày từ ResultSet
                 Timestamp orderDateTimestamp = rs.getTimestamp("orderDate");
-                String formattedDate = orderDateTimestamp != null ?
-                        dateFormatter.format(orderDateTimestamp) : "N/A"; // Nếu null, trả về "N/A"
+                String formattedDate = orderDateTimestamp != null ? dateFormatter.format(orderDateTimestamp) : "N/A"; // Nếu
+                                                                                                                      // null,
+                                                                                                                      // trả
+                                                                                                                      // về
+                                                                                                                      // "N/A"
 
                 // Tạo đối tượng OrderModel
                 orderModel = new OrderModel(
@@ -299,8 +317,7 @@ public class OrderDao {
                         rs.getFloat("totalPrice"),
                         deliveryName(rs.getInt("deliveryId")),
                         deliveryFee(rs.getInt("deliveryId")),
-                        nameStatusPayment(rs.getInt("statusPayment"))
-                );
+                        nameStatusPayment(rs.getInt("statusPayment")));
             }
 
         } catch (SQLException e) {
@@ -314,18 +331,20 @@ public class OrderDao {
         List<OrderModel> orders = new ArrayList<>();
 
         try (Connection con = JDBCUtil.getConnection();
-             PreparedStatement st = con.prepareStatement(sql)) {
+                PreparedStatement st = con.prepareStatement(sql)) {
             st.setInt(1, userId);
             ResultSet rs = st.executeQuery();
-
 
             SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
 
             while (rs.next()) {
 
                 Timestamp orderDateTimestamp = rs.getTimestamp("orderDate");
-                String formattedDate = orderDateTimestamp != null ?
-                        dateFormatter.format(orderDateTimestamp) : "N/A"; // Nếu null, trả về "N/A"
+                String formattedDate = orderDateTimestamp != null ? dateFormatter.format(orderDateTimestamp) : "N/A"; // Nếu
+                                                                                                                      // null,
+                                                                                                                      // trả
+                                                                                                                      // về
+                                                                                                                      // "N/A"
 
                 OrderModel orderModel = new OrderModel(
                         rs.getInt("orderId"),
@@ -334,9 +353,8 @@ public class OrderDao {
                         rs.getString("deliveryAddress"),
                         rs.getFloat("totalPrice"),
                         deliveryName(rs.getInt("deliveryId")),
-//                        deliveryFee(rs.getInt("deliveryId")),
-                        rs.getString("nameStatus")
-                );
+                        // deliveryFee(rs.getInt("deliveryId")),
+                        rs.getString("nameStatus"));
 
                 orders.add(orderModel);
             }
@@ -346,13 +364,14 @@ public class OrderDao {
         }
         return orders;
     }
-// bug
+
+    // bug
     public List<OrderModel> getOrderByDate(Timestamp orderDate) {
         List<OrderModel> orders = new ArrayList<>();
         String query = "SELECT * FROM orders WHERE orderDate BETWEEN ? AND ?";
 
         try (Connection connection = JDBCUtil.getConnection();
-             PreparedStatement ps = connection.prepareStatement(query)) {
+                PreparedStatement ps = connection.prepareStatement(query)) {
 
             // Tính khoảng thời gian trong ngày
             LocalDateTime orderDateTime = orderDate.toLocalDateTime();
@@ -370,8 +389,8 @@ public class OrderDao {
             while (rs.next()) {
                 // Lấy ngày từ ResultSet
                 Timestamp orderDateTimestamp = rs.getTimestamp("orderDate");
-                String formattedDate = (orderDateTimestamp != null) ?
-                        orderDate.toGMTString() : "N/A"; // Nếu null, trả về "N/A"
+                String formattedDate = (orderDateTimestamp != null) ? orderDate.toGMTString() : "N/A"; // Nếu null, trả
+                                                                                                       // về "N/A"
 
                 OrderModel orderModel = new OrderModel(
                         rs.getInt("orderId"),
@@ -380,9 +399,8 @@ public class OrderDao {
                         rs.getString("deliveryAddress"),
                         rs.getFloat("totalPrice"),
                         deliveryName(rs.getInt("deliveryId")),
-//                        deliveryFee(rs.getInt("deliveryId")),
-                        rs.getString("nameStatus")
-                );
+                        // deliveryFee(rs.getInt("deliveryId")),
+                        rs.getString("nameStatus"));
 
                 orders.add(orderModel);
             }
@@ -396,7 +414,7 @@ public class OrderDao {
     public int getUserIdByOrderId(int id) {
         String sql = "SELECT userId FROM orders WHERE orderId = ?";
         try (Connection con = JDBCUtil.getConnection();
-             PreparedStatement st = con.prepareStatement(sql)) {
+                PreparedStatement st = con.prepareStatement(sql)) {
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
@@ -408,5 +426,3 @@ public class OrderDao {
         return -1; // Trả về -1 nếu không tìm thấy
     }
 }
-
-

@@ -1,3 +1,4 @@
+<%@ page import="model.UserModel" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -5,6 +6,8 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
+
 
 <head>
     <meta charset="UTF-8">
@@ -24,14 +27,25 @@
     <link rel="stylesheet" href="styles/voucherModal.css?v=${System.currentTimeMillis()}">
 </head>
 
+<%
+    UserModel user = (UserModel) session.getAttribute("user");
+    String gmail = "Chưa có thông tin";
+    if(user != null) {
+        gmail = user.getGmail();
+    }
+
+
+%>
+
 <body>
 <header>
     <nav></nav>
     <div class="under-navigation">
         <div class="h-100 h-custom mt-5">
             <div class="container py-5 h-100">
-                <div class="row d-flex justify-content-center align-items-center h-100">
-                    <div class="col-12">
+                <div  class="row d-flex justify-content-center align-items-center h-100">
+                    <div style="position: relative" class="col-12">
+                        <div id="signatureContainer"></div>
                         <div class="card card-registration card-registration-2" style="border-radius: 15px;">
                             <div class="card-body p-0">
                                 <div class="row g-0">
@@ -39,6 +53,7 @@
                                         <div class="p-5">
                                             <div class="d-flex justify-content-between align-items-center mb-5">
                                                 <h1 class="fw-bold mb-0">Giỏ hàng</h1>
+                                                <div style="display: none" id="gmaiHiden"> <%=gmail%></div>
                                             </div>
                                             <!-- Display message if shopping cart is empty -->
                                             <c:if test="${empty shoppingCartItemsList}">
@@ -46,6 +61,16 @@
                                                     Giỏ hàng của bạn đang trống. Hãy thêm sản phẩm vào giỏ hàng để tiếp tục mua sắm!
                                                 </div>
                                             </c:if>
+                                            <%
+                                                String orderError = (String) request.getAttribute("orderError");
+                                                if (orderError != null) {
+                                            %>
+                                            <div style="color: red; font-weight: bold; margin-bottom: 10px;">
+                                                <%= orderError %>
+                                            </div>
+                                            <%
+                                                }
+                                            %>
                                             <!-- Display shopping cart items -->
                                             <c:if test="${not empty shoppingCartItemsList}">
                                                 <c:forEach var="item" items="${shoppingCartItemsList}">
@@ -59,8 +84,8 @@
                                                             <img src="data:image/jpeg;base64,${item.imageBase64}" class="img-fluid rounded-3" alt="Fashion shoes">
                                                         </div>
                                                         <div class="col-md-3 col-lg-3 col-xl-3">
-                                                            <h6 class="text-muted">${item.nameProduct}</h6>
-                                                            <h6 class="mb-0">Size ${item.nameSize} | ${item.nameColor}</h6>
+                                                            <h6 class="text-muted name">${item.nameProduct}</h6>
+                                                            <h6 class="mb-0 des">Size ${item.nameSize} | ${item.nameColor}</h6>
 
                                                         </div>
                                                         <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
@@ -73,8 +98,8 @@
                                                             </button>
                                                         </div>
                                                         <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                                                            <h6 class="mb-0"><fmt:formatNumber value="${item.discountPrice}" type="number" groupingUsed="true"/>
-                                                            </h6>
+                                                            <h6 class="mb-0 original-price"><fmt:formatNumber value="${item.price}" type="number" groupingUsed="true"/></h6>
+                                                            <h6 class="mb-0 discountPrice"><fmt:formatNumber value="${item.discountPrice}" type="number" groupingUsed="true"/></h6>
                                                         </div>
                                                         <div class="col-md-1 col-lg-1 col-xl-1 text-end">
                                                             <form method="POST" action="DeleteCartItemController">
@@ -263,11 +288,15 @@
         </div>
     </div>
 
+
 </header>
 
 <footer></footer>
 <script src="components/navigation.js"></script>
 <script src="components/footer.js"></script>
+<script>
+    const contextPath = '${pageContext.request.contextPath}';
+</script>
 <script src="scripts/shoppingCart.js?v=${System.currentTimeMillis()}"></script>
 </body>
 

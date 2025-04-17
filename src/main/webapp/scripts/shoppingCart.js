@@ -1,599 +1,441 @@
-async function increaseQuantity(button, event) {
-    event.stopPropagation();
+// Constants and global variables
+const selectedItems = new Set();
+let totalPrice = 0;
+let originalTotalAmount = 0;
+let discountShipping = 0;
+let discountItems = 0;
 
-    // Get the input field and calculate the new quantity
-    var input = button.parentNode.querySelector('input[type=number]');
-    var currentValue = parseInt(input.value) + 1;
+// Utility functions
+const formatPrice = (price) =>
+    `${new Intl.NumberFormat('vi-VN', { style: 'decimal', minimumFractionDigits: 0 }).format(price)}đ`;
 
-    // Get the sizeId from the current item's container
-    var itemContainer = button.closest('.items');
-    var sizeId = itemContainer.querySelector('input[name="sizeId"]').value;
+const showAlert = (title, text, icon, confirmButtonText = 'OK', showCancelButton = false) =>
+    Swal.fire({ title, text, icon, confirmButtonText, showCancelButton, confirmButtonColor: '#3085d6', cancelButtonColor: '#d33' });
 
+const getElement = (selector, context = document) => context.querySelector(selector);
+const getElements = (selector, context = document) => context.querySelectorAll(selector);
+
+// AJAX utility for database updates
+async function updateQuantityInDatabase(sizeId, quantity, isDecreaseQuantity = false) {
     try {
-        // Wait for the database update result
-        const isUpdated = await updateQuantityInDatabase(sizeId, currentValue);
-        console.log(isUpdated)
-
-        if (isUpdated) {
-            input.value = currentValue; // Update the input field with the new quantity
-            updateTotalPrice();
-        } else {
-            // Show a message if the update fails due to inventory limits
-            Swal.fire({
-                icon: 'info',
-                title: 'Thông báo',
-                text: 'Số lượng sản phẩm đã đạt giới hạn tồn kho.',
-                confirmButtonText: 'OK'
-            });
-        }
-
-        // Call the quantity change handler regardless of success or failure
-        handleQuantityChange(input);
-    } catch (error) {
-        // Handle errors (e.g., network issues)
-        console.error('Failed to update quantity:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Lỗi',
-            text: 'Đã xảy ra lỗi khi cập nhật số lượng. Vui lòng thử lại sau.',
-            confirmButtonText: 'OK'
+        const response = await fetch('/Shoe_war_exploded/UpdateQuantityCartController', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idSize: sizeId, quantity, isDecreaseQuantity }),
         });
+        const data = await response.json();
+        if (data.status === 'ok') return true;
+        console.warn('Server validation failed:', data.message);
+        return false;
+    } catch (error) {
+        console.error('Request error:', error);
+        throw error;
     }
 }
 
-function decreaseQuantity(button,event) {
+// Quantity management
+async function increaseQuantity(button, event) {
     event.stopPropagation();
-    var input = button.parentNode.querySelector('input[type=number]');
-    var currentValue = parseInt(input.value);
-    var minValue = parseInt(input.getAttribute('min'));
+    const input = getElement('input[type=number]', button.parentNode);
+    const currentValue = parseInt(input.value) + 1;
+    const itemContainer = button.closest('.items');
+    const sizeId = getElement('input[name="sizeId"]', itemContainer).value;
 
-    // Lấy container của item hiện tại
-    var itemContainer = button.closest('.items');
-    var sizeId = itemContainer.querySelector('input[name="sizeId"]').value;
-
-    if (currentValue > minValue) {
-        input.value = currentValue - 1;
-
-        // Gửi AJAX request để cập nhật số lượng
-        updateQuantityInDatabase(sizeId, input.value,true);
-        updateTotalPrice();
-    } else {
-        Swal.fire({
-            icon: 'info',
-            title: 'Thông báo',
-            text: 'Không thể giảm số lượng dưới 1.',
-            confirmButtonText: 'OK'
-        });
+    try {
+        const isUpdated = await updateQuantityInDatabase(sizeId, currentValue);
+        if (isUpdated) {
+            input.value = currentValue;
+            updateTotalPrice();
+        } else {
+            showAlert('Thông báo', 'Số lượng sản phẩm đã đạt giới hạn tồn kho.', 'info');
+        }
+        handleQuantityChange(input);
+    } catch (error) {
+        showAlert('Lỗi', 'Đã xảy ra lỗi khi cập nhật số lượng. Vui lòng thử lại sau.', 'error');
     }
+}
+
+function decreaseQuantity(button, event) {
+    event.stopPropagation();
+    const input = getElement('input[type=number]', button.parentNode);
+    const currentValue = parseInt(input.value);
+    const minValue = parseInt(input.getAttribute('min'));
+    const itemContainer = button.closest('.items');
+    const sizeId = getElement('input[name="sizeId"]', itemContainer).value;
+
+    if (currentValue <= minValue) {
+        showAlert('Thông báo', 'Không thể giảm số lượng dưới 1.', 'info');
+        return;
+    }
+
+    input.value = currentValue - 1;
+    updateQuantityInDatabase(sizeId, input.value, true)
+        .then(() => updateTotalPrice())
+        .catch(() => showAlert('Lỗi', 'Đã xảy ra lỗi khi cập nhật số lượng.', 'error'));
     handleQuantityChange(input);
 }
 
-
-function updateQuantityInDatabase(sizeId, quantity,isDecreaseQuantity = false) {
-    return new Promise((resolve, reject) => {
-        $.ajax({
-            url: '/Shoe_war_exploded/UpdateQuantityCartController', // Server endpoint
-            type: 'POST',
-            contentType: 'application/json', // Ensure data is sent as JSON
-            data: JSON.stringify({
-                idSize: sizeId,
-                quantity: quantity,
-                isDecreaseQuantity: isDecreaseQuantity, // This will always be true, no need to pass as a parameter
-            }),
-            success: function (response) {
-                if (response.status === "ok") {
-                    resolve(true); // Resolve promise with true if the operation was successful
-                } else {
-                    console.warn('Request failed due to server-side validation:', response.message);
-                    resolve(false); // Resolve promise with false if the operation failed
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error('Request error:', {
-                    status: status,
-                    error: error,
-                    responseText: xhr.responseText
-                });
-                reject(false); // Reject promise with false in case of an error
-            }
-        });
-    });
-}
-
-
-
-
-
-
-
-
+// Cart item deletion
 function handleDelete(button, nameProduct, nameSize) {
-    // Hiển thị hộp thoại xác nhận
-    Swal.fire({
-        icon: 'warning',
-        title: 'Bạn không thể hoàn tác',
-        text: `Bạn có muốn xóa sản phẩm này ra khỏi giỏ hàng? (Tên: ${nameProduct}, Size: ${nameSize})`,
-        showCancelButton: true,
-        confirmButtonText: 'OK',
-        cancelButtonText: 'Hủy'
-    }).then((result) => {
+    showAlert(
+        'Bạn không thể hoàn tác',
+        `Bạn có muốn xóa sản phẩm này ra khỏi giỏ hàng? (Tên: ${nameProduct}, Size: ${nameSize})`,
+        'warning',
+        'OK',
+        true
+    ).then((result) => {
         if (result.isConfirmed) {
-            // Tìm form chứa nút bấm
             const form = button.closest('form');
             if (form) {
                 updateSelectedItemsInForm();
                 form.submit();
             } else {
-                console.error('Không tìm thấy form!');
+                console.error('Form not found!');
             }
         }
     });
 }
 
-
+// Form and order management
 function updateQuantityInForm() {
-    const cartItems = document.querySelectorAll('.items');  // Lấy tất cả các sản phẩm trong giỏ hàng
-    cartItems.forEach(item => {
-        const sizeId = item.querySelector('input[type="hidden"]').value;  // Lấy sizeId của sản phẩm
-        const quantity = item.querySelector('input[name="quantity"]').value;  // Lấy số lượng sản phẩm hiện tại
-
-        // Tạo một hidden input trong form để gửi số lượng
-        let input = document.querySelector(`#orderForm input[name="quantity_${sizeId}"]`);
+    const cartItems = getElements('.items');
+    cartItems.forEach((item) => {
+        const sizeId = getElement('input[type="hidden"]', item).value;
+        const quantity = getElement('input[name="quantity"]', item).value;
+        let input = getElement(`#orderForm input[name="quantity_${sizeId}"]`);
         if (!input) {
             input = document.createElement('input');
             input.type = 'hidden';
-            input.name = `quantity_${sizeId}`;  // Tạo tên input dựa trên sizeId
-            document.getElementById('orderForm').appendChild(input);
+            input.name = `quantity_${sizeId}`;
+            getElement('#orderForm').appendChild(input);
         }
-        input.value = quantity;  // Cập nhật số lượng vào hidden input
+        input.value = quantity;
     });
 }
-
-
-
-function orderButton(button, event) {
-    event.preventDefault();
-    // Kiểm tra nếu không có sản phẩm nào được chọn
-    if (selectedItems.size === 0) {
-        Swal.fire({
-            title: 'Thông báo',
-            text: 'Bạn phải chọn ít nhất một sản phẩm để thanh toán!',
-            icon: 'info',
-            confirmButtonText: 'OK'
-        });
-        return; // Dừng thực thi nếu không có sản phẩm nào được chọn
-    }
-    updateQuantityInForm();
-
-    let paymentId = parseInt(document.getElementById("paymentId").value, 10);
-    let form = document.getElementById("orderForm");
-
-    if (paymentId === 1) {
-        form.action = "OrderController";
-    } else if (paymentId === 2) {
-        form.action = "VnpayPaymentController";
-    }
-
-    // Hiển thị hộp thoại SweetAlert để xác nhận
-    Swal.fire({
-        title: 'Bạn có chắc chắn muốn thanh toán?',
-        text: 'Hãy kiểm tra kỹ thông tin trước khi xác nhận!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'OK',
-        cancelButtonText: 'Hủy'
-    }).then((result) => {
-        if (result.isConfirmed ) {
-            // Cập nhật giá trị `selectedItems` vào form trước khi submit
-            updateSelectedItemsInForm();
-
-            form.submit();
-        } else {
-            console.log('Hủy thanh toán');
-        }
-    });
-}
-
-
-
-
-const selectedItems = new Set();
-let totalPrice = 0;  // Khởi tạo tổng tiền
-
-
-// Hàm xử lý thay đổi số lượng
-function handleQuantityChange(input) {
-    const item = input.closest('.items');
-    const sizeId = item.querySelector('input[type="hidden"]').value;
-
-    // Cập nhật tổng tiền khi số lượng thay đổi
-    updateTotalPrice();
-}
-
-
-
-const itemShoppingCart = document.querySelectorAll(".items")
-itemShoppingCart.forEach(item => {
-    item.addEventListener("click", () => {
-        const checkbox = item.querySelector(".checkbox"); // Tìm checkbox trong item
-        const sizeId = item.querySelector('input[type="hidden"]').value; // Lấy sizeId từ input hidden
-
-        if (selectedItems.has(sizeId)) {
-            // Nếu sizeId đã được chọn, bỏ chọn
-            selectedItems.delete(sizeId); // Xóa sizeId khỏi danh sách
-            item.classList.remove("selected"); // Xóa class "selected"
-
-        } else {
-            // Nếu sizeId chưa được chọn, thêm vào danh sách
-            selectedItems.add(sizeId); // Thêm sizeId vào danh sách
-            item.classList.add("selected"); // Thêm class "selected"
-
-        }
-
-        // Cập nhật tổng số mục đã chọn
-        const totalCount = selectedItems.size;
-        document.getElementById("totalSelectedItems").textContent = `${totalCount} món`;
-
-        // Cập nhật tổng tiền
-        updateTotalPrice();
-    });
-});
-
-// Theo dõi sự thay đổi của select phương thức giao hàng
-
-document.getElementById('deliverySelect').addEventListener('change', function () {
-    const selectedOption = this.options[this.selectedIndex];  // Lấy option đã chọn
-    const deliveryFee = parseFloat(selectedOption.getAttribute('data-fee')) || 0;  // Lấy phí giao hàng
-
-    // Cập nhật phí giao hàng lên màn hình
-    document.getElementById('feeDisplay').textContent = formatPrice(deliveryFee);
-
-    // Cập nhật lại tổng tiền sau khi thay đổi phí
-    updateTotalPrice();
-});
-
-// Tính tổng tiền khi trang được tải, bao gồm phí giao hàng mặc định
-window.addEventListener('load', function () {
-    // Lấy phương thức giao hàng mặc định
-    const defaultOption = document.querySelector('#deliverySelect option:first-child');
-    const deliveryFee = parseFloat(selectedOption.getAttribute('data-fee')) || 0;
-
-    // Định dạng và hiển thị phí giao hàng mặc định
-    document.getElementById('feeDisplay').textContent = formatPrice(deliveryFee);
-
-    // Cập nhật tổng tiền
-    updateTotalPrice();
-});
-
-function formatPrice(price) {
-    return `${new Intl.NumberFormat('vi-VN', { style: 'decimal', minimumFractionDigits: 0 }).format(price)}đ`;
-}
-
-
 
 function updateSelectedItemsInForm() {
-    const selectedItemsList = Array.from(selectedItems);
-    const selectedItemsInput = document.getElementById('selectedItems');
-    selectedItemsInput.value = selectedItemsList.join(',');
+    const selectedItemsInput = getElement('#selectedItems');
+    selectedItemsInput.value = Array.from(selectedItems).join(',');
 }
 
+function getInfoOrder() {
+    const listItem = getElements('.selected');
+    const gmail = getElement('#gmaiHiden').innerText;
+    let info = `Email: ${gmail}\n--- Danh sách sản phẩm ---\n`;
 
-
-document.addEventListener('DOMContentLoaded', function () {
-    // Hàm cập nhật giá ban đầu
-    function updateFeeDisplay() {
-        var selectedOption = document.getElementById('deliverySelect').options[document.getElementById('deliverySelect').selectedIndex];
-        var fee = selectedOption.getAttribute('data-fee');
-
-        // Định dạng số với dấu phân cách hàng nghìn
-        var formattedFee = formatPrice(parseFloat(fee));
-
-        // Hiển thị giá với dấu phân cách và "đ" ở cuối
-        document.getElementById('feeDisplay').innerText = formattedFee;
-    }
-    // Gọi hàm để cập nhật giá ngay khi trang tải xong
-    updateFeeDisplay();
-
-    // Thêm sự kiện thay đổi khi người dùng chọn option khác
-    document.getElementById('deliverySelect').addEventListener('change', function() {
-        updateFeeDisplay();
+    listItem.forEach((item, index) => {
+        const name = getElement('.name', item)?.innerText || '';
+        const des = getElement('.des', item)?.innerText || '';
+        const quantity = getElement('.quantityShoppingCart', item)?.value || '';
+        const price = getElement('.discountPrice', item)?.innerText || '';
+        info += `${index + 1}. Tên: ${name}\n   Mô tả: ${des}\n   Số lượng: ${quantity}\n   Giá: ${price}\n\n`;
     });
-});
 
+    const select = getElement('#deliverySelect');
+    const selectedOption = select.options[select.selectedIndex];
+    const deliveryName = selectedOption.text;
+    const fee = selectedOption.getAttribute('data-fee');
+    info += `--- Thông tin giao hàng ---\nPhương thức: ${deliveryName}\n   Phí vận chuyển: ${fee}đ\n\n`;
 
-// VOUCHER
-let originalTotalAmount = 0;
-let discountShipping = 0;
-let discountItems = 0;
+    const paymentSelect = getElement('#paymentId');
+    const selectedPayment = paymentSelect.options[paymentSelect.selectedIndex];
+    const paymentName = selectedPayment.text;
+    const paymentValue = selectedPayment.value;
+    info += `--- Thanh toán ---\nPhương thức: ${paymentName}\n   Giá trị: ${paymentValue}\n`;
 
-function updateTotalPrice() {
-    let total = 0;
+    const totalPrice = getElement('#totalAmount').innerText;
+    info += `Tổng cộng: ${totalPrice}`;
+    return info;
+}
 
-    // Kiểm tra nếu không có sản phẩm nào được chọn
+// Digital signature form
+function createDigitalSignature(infoOrder) {
+    const div = document.createElement('div');
+    div.id = 'form-digitalSignature';
+    div.innerHTML = `
+    <div id="support">Nếu bạn chưa có key truy cập <a href="#" target="_blank" rel="noopener noreferrer">tại đây</a></div>
+    <button id="close-digitalSignature" type="button">×</button>
+    <h2>Nội dung đơn hàng</h2>
+    <div class="textarea-wrapper">
+      <div id="copyBtn">
+        <svg style="vertical-align: middle" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-xs">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M7 5C7 3.34315 8.34315 2 10 2H19C20.6569 2 22 3.34315 22 5V14C22 15.6569 20.6569 17 19 17H17V19C17 20.6569 15.6569 22 14 22H5C3.34315 22 2 20.6569 2 19V10C2 8.34315 3.34315 7 5 7H7V5ZM9 7H14C15.6569 7 17 8.34315 17 10V15H19C19.5523 15 20 14.5523 20 14V5C20 4.44772 19.5523 4 19 4H10C9.44772 4 9 4.44772 9 5V7ZM5 9C4.44772 9 4 9.44772 4 10V19C4 19.5523 4.44772 20 5 20H14C14.5523 20 15 19.5523 15 19V10C15 9.44772 14.5523 9 14 9H5Z" fill="currentColor"></path>
+        </svg> Copy
+      </div>
+      <textarea id="orderContent" rows="10" readonly>${infoOrder}</textarea>
+    </div>
+    <h3>Nhập thông tin xác thực</h3>
+    <form method="post">
+      <div class="form-group">
+        <label for="publishKey">Publish Key:</label>
+        <input type="text" id="publishKey" name="publishKey" required>
+      </div>
+      <div class="form-group">
+        <label for="signature">Chữ ký:</label>
+        <textarea id="signature" name="signature" rows="4" required></textarea>
+      </div>
+      <button id="submit" type="submit">Xác nhận đơn hàng</button>
+    </form>
+  `;
+    return div;
+}
+
+// Form animations
+function showDigitalSignature() {
+    const form = getElement('#form-digitalSignature');
+    form.classList.remove('hide');
+    form.classList.add('show');
+    form.style.display = 'block';
+}
+
+function closeDigitalSignature() {
+    const form = getElement('#form-digitalSignature');
+    form.classList.remove('show');
+    form.classList.add('hide');
+    setTimeout(() => (form.style.display = 'none'), 300);
+}
+
+// Order submission
+function orderButton(button, event) {
+    event.preventDefault();
+
     if (selectedItems.size === 0) {
-        document.getElementById('totalAmount').textContent = formatPrice(0);
-        document.getElementById('totalAmountModalVoucher').textContent = formatPrice(0);
-        return; // Dừng lại không tính tiếp nếu không có sản phẩm nào được chọn
+        showAlert('Thông báo', 'Bạn phải chọn ít nhất một sản phẩm để thanh toán!', 'info');
+        return;
     }
 
-    // Tính tổng từ các sản phẩm đã chọn
-    selectedItems.forEach(sizeId => {
-        const item = document.querySelector(`.items input[type="hidden"][value="${sizeId}"]`).closest('.items');
-        const price = parseFloat(item.querySelector('.select-item').getAttribute('data-price').replace(/[^0-9.-]+/g, ""));
-        const quantity = parseInt(item.querySelector('input[name="quantity"]').value, 10);
+    updateQuantityInForm();
+    const info = getInfoOrder();
+    const signatureContainer = getElement('#signatureContainer');
+    if (!signatureContainer) {
+        console.error('Signature container not found!');
+        return;
+    }
+
+    signatureContainer.innerHTML = '';
+    signatureContainer.appendChild(createDigitalSignature(info));
+    showDigitalSignature();
+
+    getElement('#close-digitalSignature').addEventListener('click', closeDigitalSignature);
+    const submitButton = getElement('#submit');
+    const form = getElement('#orderForm');
+    const paymentId = parseInt(getElement('#paymentId').value, 10);
+
+    submitButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        const publishKey = getElement('#publishKey').value;
+        const signature = getElement('#signature').value;
+
+        if (!publishKey || !signature) {
+            showAlert('Thiếu chữ ký', 'Không thể tiến hành nếu thiếu chữ ký số!', 'error');
+            return;
+        }
+
+        addHiddenInput(form, 'publishKey', publishKey);
+        addHiddenInput(form, 'hash', signature);
+        addHiddenInput(form, 'data', info);
+
+        form.action = paymentId === 1
+            ? contextPath + '/OrderController'
+            : contextPath + '/VnpayPaymentController';
+        updateSelectedItemsInForm();
+        form.submit();
+    });
+
+    copyInfo();
+}
+
+function addHiddenInput(form, name, value) {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = name;
+    input.value = value;
+    form.appendChild(input);
+}
+
+// Total price calculation
+function updateTotalPrice() {
+    if (selectedItems.size === 0) {
+        getElement('#totalAmount').textContent = formatPrice(0);
+        getElement('#totalAmountModalVoucher').textContent = formatPrice(0);
+        return;
+    }
+
+    let total = 0;
+    selectedItems.forEach((sizeId) => {
+        const item = getElement(`.items input[type="hidden"][value="${sizeId}"]`).closest('.items');
+        const price = parseFloat(getElement('.select-item', item).getAttribute('data-price').replace(/[^0-9.-]+/g, ''));
+        const quantity = parseInt(getElement('input[name="quantity"]', item).value, 10);
         total += price * quantity;
     });
 
-    // Lấy phí vận chuyển
-    const feeDisplayText = document.querySelector("#feeDisplay").textContent;
-    const deliveryFee = parseFloat(feeDisplayText.replace(/[.,đ\s]+/g, ""));
+    const deliveryFee = parseFloat(getElement('#feeDisplay').textContent.replace(/[.,đ\s]+/g, ''));
     total += deliveryFee;
-
-    // Lưu giá trị tổng tiền gốc (chưa áp dụng giảm giá)
     originalTotalAmount = total;
 
-    // **Cập nhật hiển thị tổng tiền đã áp dụng giảm giá**
-    let finalTotal = originalTotalAmount - discountShipping - discountItems;
-
-    document.getElementById('totalAmount').textContent = formatPrice(finalTotal);
-    document.getElementById('totalAmountModalVoucher').textContent = formatPrice(finalTotal);
+    const finalTotal = originalTotalAmount - discountShipping - discountItems;
+    getElement('#totalAmount').textContent = formatPrice(finalTotal);
+    getElement('#totalAmountModalVoucher').textContent = formatPrice(finalTotal);
 }
 
+// Voucher management
 function selectVoucherShipping(row) {
-    // Kiểm tra nếu không có sản phẩm nào được chọn
-    if (selectedItems.size === 0) {
-        return; // Dừng lại nếu không có sản phẩm nào được chọn
-    }
+    if (selectedItems.size === 0) return;
 
-    let isSelected = row.style.backgroundColor === "rgb(144, 238, 144)";
+    const isSelected = row.style.backgroundColor === 'rgb(144, 238, 144)';
+    const table = row.closest('table');
+    table.querySelectorAll('tr').forEach((tr) => (tr.style.backgroundColor = ''));
 
+    const radio = getElement('input[type="radio"]', row);
     if (isSelected) {
-        row.style.backgroundColor = "";
-        let radio = row.querySelector('input[type="radio"]');
-        if (radio) {
-            radio.checked = false;
-        }
-
+        radio.checked = false;
         discountShipping = 0;
-        document.querySelector("#discountFee").textContent = "0đ";
-        document.querySelector("#discountFee").classList.remove("text-danger");
-
+        getElement('#discountFee').textContent = '0đ';
+        getElement('#discountFee').classList.remove('text-danger');
     } else {
-        let table = row.closest("table");
-        table.querySelectorAll("tr").forEach(tr => tr.style.backgroundColor = "");
-
-        let radio = row.querySelector('input[type="radio"]');
-        if (radio) {
-            radio.checked = true;
-            row.style.backgroundColor = "#90EE90";
-        }
-
-        let discountPercent = parseFloat(row.querySelector("td:nth-child(2) div:nth-child(1)").textContent.replace(/[^\d]/g, ""));
-        let discountMaxValue = parseFloat(row.querySelector("td:nth-child(2) div:nth-child(2)").textContent.replace(/[^\d]/g, ""));
-        const deliveryFee = parseFloat(document.querySelector("#feeDisplay").textContent.replace(/[.,đ\s]+/g, ""));
-
+        radio.checked = true;
+        row.style.backgroundColor = '#90EE90';
+        const discountPercent = parseFloat(getElement('td:nth-child(2) div:nth-child(1)', row).textContent.replace(/[^\d]/g, ''));
+        const discountMaxValue = parseFloat(getElement('td:nth-child(2) div:nth-child(2)', row).textContent.replace(/[^\d]/g, ''));
+        const deliveryFee = parseFloat(getElement('#feeDisplay').textContent.replace(/[.,đ\s]+/g, ''));
         discountShipping = Math.min((deliveryFee * discountPercent) / 100, discountMaxValue);
-        document.querySelector("#discountFee").textContent = `-${discountShipping.toLocaleString("vi-VN")}đ`;
-        document.querySelector("#discountFee").classList.add("text-danger");
+        getElement('#discountFee').textContent = `-${discountShipping.toLocaleString('vi-VN')}đ`;
+        getElement('#discountFee').classList.add('text-danger');
     }
 
     updateFinalTotal();
 }
 
 function selectVoucherItems(row) {
-    // Kiểm tra nếu không có sản phẩm nào được chọn
-    if (selectedItems.size === 0) {
-        return; // Dừng lại nếu không có sản phẩm nào được chọn
-    }
+    if (selectedItems.size === 0) return;
 
-    let isSelected = row.style.backgroundColor === "rgb(144, 238, 144)";
+    const isSelected = row.style.backgroundColor === 'rgb(144, 238, 144)';
+    const table = row.closest('table');
+    table.querySelectorAll('tr').forEach((tr) => (tr.style.backgroundColor = ''));
 
+    const radio = getElement('input[type="radio"]', row);
     if (isSelected) {
-        row.style.backgroundColor = "";
-        let radio = row.querySelector('input[type="radio"]');
-        if (radio) {
-            radio.checked = false;
-        }
-
+        radio.checked = false;
         discountItems = 0;
-        document.querySelector("#discountItems").textContent = "0đ";
-        document.querySelector("#discountItems").classList.remove("text-danger");
-
+        getElement('#discountItems').textContent = '0đ';
+        getElement('#discountItems').classList.remove('text-danger');
     } else {
-        let table = row.closest("table");
-        table.querySelectorAll("tr").forEach(tr => tr.style.backgroundColor = "");
-
-        let radio = row.querySelector('input[type="radio"]');
-        if (radio) {
-            radio.checked = true;
-            row.style.backgroundColor = "#90EE90";
-        }
-
+        radio.checked = true;
+        row.style.backgroundColor = '#90EE90';
         let total = 0;
-        let discountPercent = parseFloat(row.querySelector("td:nth-child(2) div:nth-child(1)").textContent.replace(/[^\d]/g, ""));
-        let discountMaxValue = parseFloat(row.querySelector("td:nth-child(2) div:nth-child(2)").textContent.replace(/[^\d]/g, ""));
-
-        selectedItems.forEach(sizeId => {
-            const item = document.querySelector(`.items input[type="hidden"][value="${sizeId}"]`).closest('.items');
-            const price = parseFloat(item.querySelector('.select-item').getAttribute('data-price').replace(/[^0-9.-]+/g, ""));
-            const quantity = parseInt(item.querySelector('input[name="quantity"]').value, 10);
+        const discountPercent = parseFloat(getElement('td:nth-child(2) div:nth-child(1)', row).textContent.replace(/[^\d]/g, ''));
+        const discountMaxValue = parseFloat(getElement('td:nth-child(2) div:nth-child(2)', row).textContent.replace(/[^\d]/g, ''));
+        selectedItems.forEach((sizeId) => {
+            const item = getElement(`.items input[type="hidden"][value="${sizeId}"]`).closest('.items');
+            const price = parseFloat(getElement('.select-item', item).getAttribute('data-price').replace(/[^0-9.-]+/g, ''));
+            const quantity = parseInt(getElement('input[name="quantity"]', item).value, 10);
             total += price * quantity;
         });
-
         discountItems = Math.min((total * discountPercent) / 100, discountMaxValue);
-        document.querySelector("#discountItems").textContent = `-${discountItems.toLocaleString("vi-VN")}đ`;
-        document.querySelector("#discountItems").classList.add("text-danger");
+        getElement('#discountItems').textContent = `-${discountItems.toLocaleString('vi-VN')}đ`;
+        getElement('#discountItems').classList.add('text-danger');
     }
 
     updateFinalTotal();
 }
 
 function updateFinalTotal() {
-    let finalTotal = originalTotalAmount - discountShipping - discountItems;
-    document.getElementById('totalAmountModalVoucher').textContent = formatPrice(finalTotal);
+    const finalTotal = originalTotalAmount - discountShipping - discountItems;
+    getElement('#totalAmountModalVoucher').textContent = formatPrice(finalTotal);
 }
 
 function confirmVoucher() {
-    Swal.fire({
-        title: 'Bạn có chắc chắn chọn các Voucher này?',
-        text: 'Hãy kiểm tra kỹ thông tin trước khi xác nhận!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'OK',
-        cancelButtonText: 'Hủy'
-    }).then((result) => {
+    showAlert(
+        'Bạn có chắc chắn chọn các Voucher này?',
+        'Hãy kiểm tra kỹ thông tin trước khi xác nhận!',
+        'warning',
+        'OK',
+        true
+    ).then((result) => {
         if (result.isConfirmed) {
-            let finalTotal = parseFloat(document.getElementById('totalAmountModalVoucher').textContent.replace(/[.,đ\s]+/g, ""));
+            const finalTotal = parseFloat(getElement('#totalAmountModalVoucher').textContent.replace(/[.,đ\s]+/g, ''));
+            getElement('#totalAmount').textContent = formatPrice(finalTotal);
 
-            // Cập nhật totalAmount với giá trị đã trừ giảm giá
-            document.getElementById('totalAmount').textContent = formatPrice(finalTotal);
+            discountShipping = parseFloat(getElement('#discountFee').textContent.replace(/[^\d]/g, '')) || 0;
+            discountItems = parseFloat(getElement('#discountItems').textContent.replace(/[^\d]/g, '')) || 0;
 
-            // **Lưu lại giảm giá để trừ khi thay đổi số lượng sản phẩm**
-            discountShipping = parseFloat(document.querySelector("#discountFee").textContent.replace(/[^\d]/g, "")) || 0;
-            discountItems = parseFloat(document.querySelector("#discountItems").textContent.replace(/[^\d]/g, "")) || 0;
-
-            let selectedVouchers = [];
-
-            // Lấy voucher vận chuyển
-            let selectedShipping = document.querySelector('input[name="selectedVoucherShipping"]:checked');
+            const selectedVouchers = [];
+            const selectedShipping = getElement('input[name="selectedVoucherShipping"]:checked');
             if (selectedShipping) {
-                let row = selectedShipping.closest("tr");
-                let discountText = row.querySelector("td:nth-child(2) div:nth-child(1)").textContent;
-                let discountMaxValue = row.querySelector("td:nth-child(2) div:nth-child(2)").textContent;
-                let quantity = row.querySelector("td:nth-child(2) div:nth-child(3)").textContent;
-
+                const row = selectedShipping.closest('tr');
+                const discountText = getElement('td:nth-child(2) div:nth-child(1)', row).textContent;
+                const discountMaxValue = getElement('td:nth-child(2) div:nth-child(2)', row).textContent;
                 selectedVouchers.push(`
-                    <tr style="cursor: pointer">
-                        <td><i class="fa-solid fa-truck-fast" style="font-size: 40px"></i></td>
-                        <td>
-                            <div style="font-weight: 600">Giảm giá vận chuyển</div>
-                            <div>${discountText}</div>
-                            <div>${discountMaxValue}</div>
-                        </td>
-                    </tr>
-                `);
+          <tr style="cursor: pointer">
+            <td><i class="fa-solid fa-truck-fast" style="font-size: 40px"></i></td>
+            <td><div style="font-weight: 600">Giảm giá vận chuyển</div><div>${discountText}</div><div>${discountMaxValue}</div></td>
+          </tr>
+        `);
             }
 
-            // Lấy voucher sản phẩm
-            let selectedItem = document.querySelector('input[name="selectedVoucherItems"]:checked');
+            const selectedItem = getElement('input[name="selectedVoucherItems"]:checked');
             if (selectedItem) {
-                let row = selectedItem.closest("tr");
-                let discountText = row.querySelector("td:nth-child(2) div:nth-child(1)").textContent;
-                let discountMaxValue = row.querySelector("td:nth-child(2) div:nth-child(2)").textContent;
-
+                const row = selectedItem.closest('tr');
+                const discountText = getElement('td:nth-child(2) div:nth-child(1)', row).textContent;
+                const discountMaxValue = getElement('td:nth-child(2) div:nth-child(2)', row).textContent;
                 selectedVouchers.push(`
-                    <tr style="cursor: pointer">
-                        <td><i class="fa-solid fa-bag-shopping" style="font-size: 40px"></i></td>
-                        <td>
-                            <div style="font-weight: 600">Giảm giá vận chuyển</div>
-                            <div>${discountText}</div>
-                            <div>${discountMaxValue}</div>
-                        </td>
-                    </tr>
-                `);
+          <tr style="cursor: pointer">
+            <td><i class="fa-solid fa-bag-shopping" style="font-size: 40px"></i></td>
+            <td><div style="font-weight: 600">Giảm giá sản phẩm</div><div>${discountText}</div><div>${discountMaxValue}</div></td>
+          </tr>
+        `);
             }
 
-            // Nếu không có voucher nào được chọn
-            if (selectedVouchers.length === 0) {
-                document.getElementById("voucherSelected").innerHTML = ``;
-            } else {
-                // Cập nhật vào div voucherSelected
-                document.getElementById("voucherSelected").innerHTML = `
-                    <br>
-                    <h5 class=" mb-3">Voucher đang sử dụng</h5>
-                    <table class="table table-hover">
-                        <tbody>${selectedVouchers.join("")}</tbody>
-                    </table>
-                `;
-            }
+            getElement('#voucherSelected').innerHTML = selectedVouchers.length
+                ? `<br><h5 class="mb-3">Voucher đang sử dụng</h5><table class="table table-hover"><tbody>${selectedVouchers.join('')}</tbody></table>`
+                : '';
 
-            // Hiển thị thông báo thành công
-            Swal.fire({
-                title: 'Xác nhận thành công!',
-                text: 'Voucher của bạn đã được áp dụng thành công.',
-                icon: 'success',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'OK'
-            });
+            showAlert('Xác nhận thành công!', 'Voucher của bạn đã được áp dụng thành công.', 'success');
         } else {
-            // Nếu chọn "Hủy" thì mở lại modal
-            let myModal = new bootstrap.Modal(document.getElementById('myModal'));
-            myModal.show();
+            new bootstrap.Modal(getElement('#myModal')).show();
         }
     });
 }
 
-
-
-function highlightRow(radio) {
-    // Xóa màu nền của các hàng trong cùng danh sách
-    let table = radio.closest("table");
-    table.querySelectorAll("tr").forEach(tr => tr.style.backgroundColor = "");
-
-    // Lấy hàng chứa radio và đặt màu nền
-    let row = radio.closest("tr");
-    if (row) {
-        row.style.backgroundColor = "#90EE90";
-    }
+// Copy order info
+function copyInfo() {
+    getElement('#copyBtn').addEventListener('click', () => {
+        const textarea = getElement('#orderContent');
+        const text = textarea.value;
+        navigator.clipboard.writeText(text).then(() => {
+            getElement('#copyBtn').innerHTML = `<svg style="vertical-align: middle" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-xs"><path fill-rule="evenodd" clip-rule="evenodd" d="M18.0633 5.67387C18.5196 5.98499 18.6374 6.60712 18.3262 7.06343L10.8262 18.0634C10.6585 18.3095 10.3898 18.4679 10.0934 18.4957C9.79688 18.5235 9.50345 18.4178 9.29289 18.2072L4.79289 13.7072C4.40237 13.3167 4.40237 12.6835 4.79289 12.293C5.18342 11.9025 5.81658 11.9025 6.20711 12.293L9.85368 15.9396L16.6738 5.93676C16.9849 5.48045 17.607 5.36275 18.0633 5.67387Z" fill="currentColor"></path></svg> Saved`;
+            setTimeout(() => {
+                getElement('#copyBtn').innerHTML = `<svg style="vertical-align: middle" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-xs"><path fill-rule="evenodd" clip-rule="evenodd" d="M7 5C7 3.34315 8.34315 2 10 2H19C20.6569 2 22 3.34315 22 5V14C22 15.6569 20.6569 17 19 17H17V19C17 20.6569 15.6569 22 14 22H5C3.34315 22 2 20.6569 2 19V10C2 8.34315 3.34315 7 5 7H7V5ZM9 7H14C15.6569 7 17 8.34315 17 10V15H19C19.5523 15 20 14.5523 20 14V5C20 4.44772 19.5523 4 19 4H10C9.44772 4 9 4.44772 9 5V7ZM5 9C4.44772 9 4 9.44772 4 10V19C4 19.5523 4.44772 20 5 20H14C14.5523 20 15 19.5523 15 19V10C15 9.44772 14.5523 9 14 9H5Z" fill="currentColor"></path></svg> Copy`;
+            }, 2000);
+        }).catch((err) => console.error('Copy error:', err));
+    });
 }
 
-// Kiểm tra có lựa chọn sản phẩm chưa
-function handleChooseVoucher() {
-    const totalCount = selectedItems.size; // Lấy số lượng sản phẩm đã chọn
+// Event listeners
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize fee display
+    const updateFeeDisplay = () => {
+        const select = getElement('#deliverySelect');
+        const fee = select.options[select.selectedIndex].getAttribute('data-fee');
+        getElement('#feeDisplay').textContent = formatPrice(parseFloat(fee));
+        updateTotalPrice();
+    };
+    updateFeeDisplay();
+    getElement('#deliverySelect').addEventListener('change', updateFeeDisplay);
 
-    if (totalCount === 0) {
-        Swal.fire({
-            title: 'Vui lòng chọn sản phẩm cần mua trước khi chọn Voucher!',
-            text: 'Hãy kiểm tra kỹ thông tin trước khi xác nhận!',
-            icon: 'warning',
-            confirmButtonColor: '#3085d6',
-            confirmButtonText: 'OK'
+    // Cart item selection
+    getElements('.items').forEach((item) => {
+        item.addEventListener('click', () => {
+            const sizeId = getElement('input[type="hidden"]', item).value;
+            if (selectedItems.has(sizeId)) {
+                selectedItems.delete(sizeId);
+                item.classList.remove('selected');
+            } else {
+                selectedItems.add(sizeId);
+                item.classList.add('selected');
+            }
+            getElement('#totalSelectedItems').textContent = `${selectedItems.size} món`;
+            updateTotalPrice();
         });
-    } else {
-        // Nếu tổng tiền > 0 thì mở modal
-        let myModal = new bootstrap.Modal(document.getElementById('myModal'));
-        myModal.show();
-    }
-}
-
-function submitVoucher() {
-    // Lấy phương thức thanh toán
-    let paymentId = parseInt(document.getElementById("paymentId").value, 10);
-
-    // Lấy voucher đã chọn
-    let selectedShipping = document.querySelector('input[name="selectedVoucherShipping"]:checked');
-    let selectedItems = document.querySelector('input[name="selectedVoucherItems"]:checked');
-
-    // Gán giá trị vào input ẩn để gửi đi
-    document.getElementById('selectedVoucherShippingHidden').value = selectedShipping ? selectedShipping.value : "";
-    document.getElementById('selectedVoucherItemsHidden').value = selectedItems ? selectedItems.value : "";
-
-    // Tạo đối tượng FormData
-    let formData = new FormData(document.getElementById('voucherForm'));
-
-    // Xác định URL dựa vào paymentId
-    let url = (paymentId === 1) ? '/OrderController' : '/VnpayPaymentController';
-
-    // Gửi yêu cầu AJAX (POST)
-    fetch(url, {
-        method: 'POST',
-        body: formData
-    })
-        .then(response => response.json()) // Giả sử bạn muốn trả về JSON
-        .then(data => {
-            console.log("Dữ liệu gửi đi thành công:", data);
-            // Xử lý kết quả từ server (ví dụ: cập nhật giỏ hàng)
-        })
-        .catch(error => {
-            console.error("Có lỗi xảy ra:", error);
-        });
-}
-
-
-
-
-
+    });
+});

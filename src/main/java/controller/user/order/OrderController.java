@@ -1,13 +1,18 @@
 package controller.user.order;
 
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
-import model.*;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import model.Order;
+import model.OrderModel;
+import model.UserModel;
 import service.log.LogService;
-import service.user.order.OrderService;
 import service.user.cart.ShoppingCartItemOrderService;
 import service.user.cart.ShoppingCartService;
+import service.user.order.OrderService;
 import service.user.voucher.VoucherService;
 
 import java.io.IOException;
@@ -16,10 +21,19 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Logger;
+import util.SignatureVerifier;
+
 
 @WebServlet(name = "OrderController", value = "/OrderController")
 public class OrderController extends HttpServlet {
+    private static final Logger LOGGER = Logger.getLogger(OrderController.class.getName());
+    private static final String STATUS_PAGE = "statusShoes.jsp";
+    private static final String LOGIN_PAGE = "login.jsp";
+    private final OrderService orderService = new OrderService();
     private final VoucherService voucherService = new VoucherService();
+    private final ShoppingCartService shoppingCartService = new ShoppingCartService();
+    private final ShoppingCartItemOrderService cartItemOrderService = new ShoppingCartItemOrderService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -27,27 +41,22 @@ public class OrderController extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        HttpSession session = request.getSession();
-        UserModel user = (UserModel) session.getAttribute("user");
+        HttpSession session = request.getSession(false);
+        UserModel user = (session != null) ? (UserModel) session.getAttribute("user") : null;
 
         if (user == null) {
-            response.sendRedirect("login.jsp");
+            response.sendRedirect(request.getContextPath() + "/" + LOGIN_PAGE);
             return;
         }
 
-        OrderService orderService = new OrderService();
         try {
-            // Lấy danh sách đơn hàng của user
             List<OrderModel> orders = orderService.getAllOrders(user.getId());
-
-            // Sắp xếp theo ID giảm dần
             orders.sort(Comparator.comparingInt(OrderModel::getId).reversed());
-
             request.setAttribute("listOrder", orders);
-            request.getRequestDispatcher("statusShoes.jsp").forward(request, response);
+            request.getRequestDispatcher(STATUS_PAGE).forward(request, response);
         } catch (Exception e) {
-            e.printStackTrace();
-            response.getWriter().write("{\"status\":\"false\",\"message\":\"Failed to retrieve orders.\"}");
+            LOGGER.severe("Failed to retrieve orders: " + e.getMessage());
+            sendErrorResponse(response, "Failed to retrieve orders.");
         }
     }
 
@@ -56,90 +65,89 @@ public class OrderController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        String ipAddress = request.getRemoteAddr();
 
-        HttpSession session = request.getSession();
-        UserModel user = (UserModel) session.getAttribute("user");
+        HttpSession session = request.getSession(false);
+        UserModel user = (session != null) ? (UserModel) session.getAttribute("user") : null;
 
         if (user == null) {
-            response.getWriter().write("{\"status\":\"false\",\"message\":\"User not logged in.\"}");
+            sendErrorResponse(response, "User not logged in.");
             return;
         }
 
         try {
-            // Thu thập dữ liệu từ form
-            int paymentId = Integer.parseInt(request.getParameter("paymentId"));
-            int deliveryId = Integer.parseInt(request.getParameter("deliveryId"));
+            // Extract and validate form data
+            int paymentId = parseIntParameter(request, "paymentId", -1);
+            int deliveryId = parseIntParameter(request, "deliveryId", -1);
+            String publishKey = request.getParameter("publishKey");
+            String hash = request.getParameter("hash");
+            String data = request.getParameter("data");
+            String address = request.getParameter("address");
 
-            // Lấy giá trị của selectedVoucherShipping và selectedVoucherItems
-            String selectedVoucherShipping = request.getParameter("selectedVoucherShipping");
-            String selectedVoucherItems = request.getParameter("selectedVoucherItems");
 
-            // Nếu không có voucher nào được chọn, có thể trả về lỗi hoặc xử lý theo yêu cầu
-            if (selectedVoucherShipping == null || selectedVoucherShipping.isEmpty()) {
-                selectedVoucherShipping = "0";  // Hoặc có thể trả về lỗi nếu cần
+
+//             Verify digital signature
+            if (!SignatureVerifier.verifySignature(data, hash, publishKey)) {
+                request.setAttribute("orderError", "Signature verification failed.");
+                request.getRequestDispatcher("/shoppingCart.jsp").forward(request, response);
             }
-            if (selectedVoucherItems == null || selectedVoucherItems.isEmpty()) {
-                selectedVoucherItems = "0";  // Hoặc có thể trả về lỗi nếu cần
-            }
 
-            // Chuyển thành Integer nếu cần thiết, hoặc có thể xử lý theo cách khác
-            int voucherShippingId = Integer.parseInt(selectedVoucherShipping);
-            int voucherItemsId = Integer.parseInt(selectedVoucherItems);
-
+            // Parse voucher IDs with default value of 0 if not provided
+            int voucherShippingId = parseIntParameter(request, "selectedVoucherShipping", 0);
+            int voucherItemsId = parseIntParameter(request, "selectedVoucherItems", 0);
             List<Integer> selectedItems = parseSelectedItems(request.getParameter("selectedItems"));
-            Timestamp sqlTimestamp = Timestamp.valueOf(LocalDateTime.now());
 
-            // Tạo đối tượng Order
-            OrderService orderService = new OrderService();
+            if (selectedItems.isEmpty()) {
+                sendErrorResponse(response, "No items selected for the order.");
+                return;
+            }
 
-            // Tính toán tổng giá
-            float discountShippingFee = 0;
-            float discountItemsFee = 0;
-            discountShippingFee = voucherService.calculateDiscountShippingFee(voucherShippingId, deliveryId);
-            discountItemsFee = voucherService.calculateDiscountItemsFee(voucherItemsId, selectedItems);
+            // Calculate discounts and total price
+            float discountShippingFee = voucherService.calculateDiscountShippingFee(voucherShippingId, deliveryId);
+            float discountItemsFee = voucherService.calculateDiscountItemsFee(voucherItemsId, selectedItems);
+            float totalPrice = orderService.calculateTotalPrice(selectedItems, user.getId(), deliveryId)
+                    - discountShippingFee - discountItemsFee;
 
-            float totalPrice = orderService.calculateTotalPrice(selectedItems, user.getId(), deliveryId) - discountShippingFee - discountItemsFee;
-            Order order = new Order(paymentId, sqlTimestamp, request.getParameter("address"), totalPrice, user.getId(),
-                    deliveryId);
-
-            // Xử lý đặt hàng
-            ShoppingCartService shoppingCartService = new ShoppingCartService();
-            ShoppingCartItemOrderService cartItemOrderService = new ShoppingCartItemOrderService();
-
-            shoppingCartService.updateStockProduct(user.getId());
+            // Create and save order
+            Order order = new Order(
+                    paymentId,
+                    Timestamp.valueOf(LocalDateTime.now()),
+                    address,
+                    totalPrice,
+                    user.getId(),
+                    deliveryId,
+                    publishKey,
+                    hash
+            );
 
             int orderId = orderService.addOrder(order);
-
             cartItemOrderService.addShoppingCartItemOrders(selectedItems, user.getId(), orderId);
+            shoppingCartService.updateStockProduct(user.getId());
             shoppingCartService.cleanShoppingCartItems(selectedItems);
 
-            // add status
+            // Log and redirect based on payment method
+            String ipAddress = request.getRemoteAddr();
 
-            switch (paymentId) {
-                case 1:
-                    response.sendRedirect(request.getContextPath() + "/OrderController");
-                    LogService.paymentCod(user.getId(), String.valueOf(orderId),ipAddress);
-                    break;
-                case 2:
-                    response.sendRedirect("https://sandbox.vnpayment.vn/apis/");
-                    break;
-                default:
-                    response.getWriter().write("{\"status\":\"false\",\"message\":\"Invalid payment method.\"}");
-                    break;
-            }
+            LogService.paymentCod(user.getId(), String.valueOf(orderId), ipAddress);
+            response.sendRedirect(request.getContextPath() + "/OrderController");
 
         } catch (Exception e) {
-            e.printStackTrace();
-            response.getWriter().write("{\"status\":\"false\",\"message\":\"Failed to place order.\"}");
+            LOGGER.severe("Failed to place order: " + e.getMessage());
+            sendErrorResponse(response, "Failed to place order.");
         }
     }
 
-    // Utility method to parse a float from a string with a default value
-    private float parseFloatOrDefault(String value, float defaultValue) {
+    // Utility method to send JSON error response
+    private void sendErrorResponse(HttpServletResponse response, String message) throws IOException {
+        response.getWriter().write(String.format("{\"status\":\"false\",\"message\":\"%s\"}", message));
+    }
+
+    // Utility method to parse integer parameters with a default value
+    private int parseIntParameter(HttpServletRequest request, String paramName, int defaultValue) {
+        String paramValue = request.getParameter(paramName);
         try {
-            return Float.parseFloat(value);
+            return (paramValue != null && !paramValue.isEmpty()) ? Integer.parseInt(paramValue) : defaultValue;
         } catch (NumberFormatException e) {
+            LOGGER.warning("Invalid integer format for parameter " + paramName + ": " + paramValue);
             return defaultValue;
         }
     }
@@ -148,12 +156,11 @@ public class OrderController extends HttpServlet {
     private List<Integer> parseSelectedItems(String selectedItemsParam) {
         List<Integer> selectedItems = new ArrayList<>();
         if (selectedItemsParam != null && !selectedItemsParam.isEmpty()) {
-            String[] items = selectedItemsParam.split(",");
-            for (String item : items) {
+            for (String item : selectedItemsParam.split(",")) {
                 try {
                     selectedItems.add(Integer.parseInt(item.trim()));
                 } catch (NumberFormatException e) {
-                    e.printStackTrace();
+                    LOGGER.warning("Invalid item ID: " + item);
                 }
             }
         }

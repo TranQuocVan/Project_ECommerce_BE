@@ -120,10 +120,17 @@ CREATE TABLE IF NOT EXISTS `Orders` (
     `paymentId` INT NOT NULL,
     `deliveryId` INT NOT NULL,
     `statusPayment` INT NOT NULL DEFAULT 0,
+    `publishKey` TEXT NOT NULL COLLATE utf8mb4_unicode_ci,
+    `sign` TEXT NOT NULL COLLATE utf8mb4_unicode_ci,
     FOREIGN KEY (`userId`) REFERENCES `Users`(`userId`),
     FOREIGN KEY (`paymentId`) REFERENCES `Payments`(`paymentId`),
     FOREIGN KEY (`deliveryId`) REFERENCES `Deliveries`(`deliveryId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `Orders`
+ADD COLUMN `publishKey` TEXT NOT NULL COLLATE utf8mb4_unicode_ci,
+ADD COLUMN `sign` TEXT NOT NULL COLLATE utf8mb4_unicode_ci;
+
 
 -- Shopping Cart Items Table
 CREATE TABLE IF NOT EXISTS `ShoppingCartItems` (
