@@ -144,7 +144,7 @@ public class OrderDao {
     }
 
     public String methodPayment(int paymentId) {
-        String sql = "select methodPayment from Payments where paymentId = ?";
+        String sql = "select methodPayment from payments where paymentId = ?";
         try (Connection con = JDBCUtil.getConnection();
                 PreparedStatement st = con.prepareStatement(sql)) {
             st.setInt(1, paymentId);

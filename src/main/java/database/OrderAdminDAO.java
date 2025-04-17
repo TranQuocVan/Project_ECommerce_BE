@@ -16,7 +16,7 @@ public class OrderAdminDAO {
         StringBuilder sql = new StringBuilder("SELECT o.orderId, p.methodPayment, o.orderDate, o.deliveryAddress, \n" +
                 "       o.totalPrice, d.name AS deliveryName, \n" +
                 "       scio.quantity, scio.sizeId" +
-                " FROM Orders o " +
+                " FROM orders o " +
                 "LEFT JOIN statuses s ON o.orderId = s.orderId " +
                 "LEFT JOIN payments p ON o.paymentId = p.paymentId " +
                 "LEFT JOIN deliveries d ON o.deliveryId = d.deliveryId " +

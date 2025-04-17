@@ -10,7 +10,7 @@ import java.util.List;
 public class ProductCategoryDao {
 
     public List<ProductCategoryModel> getAllProductCategory() {
-        String sql = "SELECT * FROM ProductCategory";
+        String sql = "SELECT * FROM productcategory";
         List<ProductCategoryModel> list = new ArrayList<>();
 
         try (Connection con = JDBCUtil.getConnection();
@@ -33,7 +33,7 @@ public class ProductCategoryDao {
     }
 
     public boolean addProductCategory(ProductCategoryModel productCategoryModel) {
-        String sql = "INSERT INTO ProductCategory (name, description) VALUES (?, ?)";
+        String sql = "INSERT INTO productcategory (name, description) VALUES (?, ?)";
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -60,8 +60,8 @@ public class ProductCategoryDao {
 
     public List<ProductModel> getProductByCategoryName(String categoryName) {
         List<ProductModel> productList = new ArrayList<>();
-        String getProductCategoryQuery = "SELECT * FROM ProductCategory WHERE name LIKE ?";
-        String getProductsByCategoryIdQuery = "SELECT * FROM Products WHERE productCategoryId = ?";
+        String getProductCategoryQuery = "SELECT * FROM productcategory WHERE name LIKE ?";
+        String getProductsByCategoryIdQuery = "SELECT * FROM products WHERE productCategoryId = ?";
 
         try (Connection connection = JDBCUtil.getConnection();
              PreparedStatement categoryStatement = connection.prepareStatement(getProductCategoryQuery)) {
@@ -103,8 +103,8 @@ public class ProductCategoryDao {
         List<ProductModel> productList = new ArrayList<>();
         String getProductsByCategoryQuery = """
         SELECT p.* 
-        FROM Products p 
-        JOIN ProductCategory pc ON p.productCategoryId = pc.productCategoryId 
+        FROM products p 
+        JOIN productcategory pc ON p.productCategoryId = pc.productCategoryId 
         WHERE pc.name LIKE ? 
         LIMIT ? OFFSET ?
     """;
@@ -143,8 +143,8 @@ public class ProductCategoryDao {
     public int countProductsByCategoryName(String categoryName) {
         String countProductsQuery =
                 "SELECT COUNT(*) AS totalProducts " +
-                        "FROM Products p " +
-                        "JOIN ProductCategory pc ON p.productCategoryId = pc.productCategoryId " +
+                        "FROM products p " +
+                        "JOIN productcategory pc ON p.productCategoryId = pc.productCategoryId " +
                         "WHERE pc.name LIKE ?";
         int totalProducts = 0;
 

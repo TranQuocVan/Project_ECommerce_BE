@@ -26,7 +26,7 @@ public class GroupDao {
                     s.size,
                     s.stock,
                     i.image
-                FROM groupProducts gp
+                FROM groupproducts gp
                 LEFT JOIN products p ON gp.groupProductID = p.groupProductID
                 LEFT JOIN colors c ON p.productId = c.productId
                 LEFT JOIN images i ON c.colorId = i.colorId

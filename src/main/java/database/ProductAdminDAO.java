@@ -22,6 +22,7 @@ public class ProductAdminDAO {
         WITH RankedProducts AS (
                                   SELECT
                                         p.productId,
+                                        p.productId,
                                         p.name AS productName,
                                         p.price,
                                         p.discount,
