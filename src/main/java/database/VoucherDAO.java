@@ -37,7 +37,7 @@ public class VoucherDAO {
     // Lấy danh sách voucher bằng loại voucher
     public List<VoucherModel> getVouchersByTypeVoucher(int typeVoucherId) {
         List<VoucherModel> list = new ArrayList<>();
-        String sql = "SELECT * FROM Voucher WHERE typeVoucherId = ?";
+        String sql = "SELECT * FROM voucher WHERE typeVoucherId = ?";
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
             st.setInt(1, typeVoucherId);
@@ -87,7 +87,7 @@ public class VoucherDAO {
 
     // Thêm voucher
     public void addVoucher(VoucherModel voucher) {
-        String sql = "INSERT INTO Voucher (typeVoucherId, discountPercent, discountMaxValue, startDate, endDate, quantity) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO voucher (typeVoucherId, discountPercent, discountMaxValue, startDate, endDate, quantity) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
@@ -107,7 +107,7 @@ public class VoucherDAO {
 
     // Cập nhật voucher
     public VoucherModel updateVoucher(VoucherModel voucher) {
-        String sql = "UPDATE Voucher SET typeVoucherId = ?, discountPercent = ?, discountMaxValue = ?, startDate = ?, endDate = ?, quantity = ? WHERE voucherId = ?";
+        String sql = "UPDATE voucher SET typeVoucherId = ?, discountPercent = ?, discountMaxValue = ?, startDate = ?, endDate = ?, quantity = ? WHERE voucherId = ?";
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
 
@@ -131,7 +131,7 @@ public class VoucherDAO {
 
     // Xóa voucher
     public void deleteVoucher(int voucherId) {
-        String sql = "DELETE FROM Voucher WHERE voucherId = ?";
+        String sql = "DELETE FROM voucher WHERE voucherId = ?";
 
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
@@ -185,8 +185,8 @@ public class VoucherDAO {
     public float calculateDiscountShippingFee(int voucherId, int deliveryId) {
         String sql = "SELECT v.discountPercent, v.discountMaxValue, d.fee " +
                 "FROM voucher v " +
-                "JOIN TypeVoucher tv ON v.typeVoucherId = tv.typeVoucherId " +
-                "JOIN Deliveries d ON d.deliveryId = ? " +
+                "JOIN typevoucher tv ON v.typeVoucherId = tv.typeVoucherId " +
+                "JOIN deliveries d ON d.deliveryId = ? " +
                 "WHERE v.voucherId = ? AND tv.typeName = 'shipping'";
 
         try (Connection con = JDBCUtil.getConnection();
@@ -222,10 +222,10 @@ public class VoucherDAO {
         for (Integer sizeId : listSizeId) {
             String sql = """
             SELECT p.price, p.discount, spc.quantity
-            FROM Sizes s 
-            LEFT JOIN ShoppingCartItems spc ON spc.sizeId = s.sizeId 
-            LEFT JOIN Colors c ON c.colorId = s.colorId 
-            LEFT JOIN Products p ON c.productId = p.productId 
+            FROM sizes s 
+            LEFT JOIN shoppingCartItems spc ON spc.sizeId = s.sizeId 
+            LEFT JOIN colors c ON c.colorId = s.colorId 
+            LEFT JOIN products p ON c.productId = p.productId 
             WHERE spc.sizeId = ?
         """;
 
