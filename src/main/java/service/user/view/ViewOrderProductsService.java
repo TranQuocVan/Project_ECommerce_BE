@@ -22,8 +22,6 @@ public class ViewOrderProductsService {
         ShoppingCartItemOrdersDao shoppingCartItemOrdersDao = new ShoppingCartItemOrdersDao();
         List<ShoppingCartItemOrderModel> shoppingCartItemsModels = shoppingCartItemOrdersDao.getShoppingCartItemsByOrderId(id);
 
-
-
         StatusDao statusDao = new StatusDao();
         orderModel.setStatusModels(statusDao.getStatusesByOrderId(id));
 
@@ -43,6 +41,17 @@ public class ViewOrderProductsService {
         orderModel.setProductModels(products);
 
         return orderModel;
+    }
+
+
+    public OrderModel getSignAndPublishKeyById(int id){
+        OrderDao orderDao = new OrderDao();
+        return orderDao.getSignAndPublishKeyById(id);
+    }
+
+    public void updateOrderSignature(int orderId, String base64Signature, String base64PublicKey) throws SQLException {
+        OrderDao orderDao = new OrderDao();
+        orderDao.updateOrderSignature(orderId, base64Signature, base64PublicKey);
     }
 
 

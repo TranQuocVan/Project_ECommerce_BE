@@ -36,8 +36,6 @@ const popUp = (img,name,color,size,price , productId) => {
     // Gửi dữ liệu đến server
 
 
-
-
     const timeDelay = timeAnimation * 1000 + 1000;
 
     setTimeout(() => {
@@ -114,10 +112,6 @@ productItems.forEach(productItem => {
             const productId = product.querySelector(".idProduct").innerHTML;
             products(Number(idSize), img, name, color, size, price);
             // popUp(img,name,color,size,price)
-
-
-
-
 
 
         })

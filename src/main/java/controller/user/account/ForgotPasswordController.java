@@ -12,7 +12,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import model.UserModel;
 import service.log.LogService;
-import service.util.GmailServices;
+import util.GmailServices;
 
 @WebServlet(name = "ForgotPasswordController", value = "/ForgotPasswordController")
 public class ForgotPasswordController extends HttpServlet {

@@ -13,6 +13,10 @@ public class OrderModel {
     float deliveryPrice ;
     String nameStatus ;
     String statusPayment;
+    String sign;
+    String publishKey;
+
+
 
     private List<ProductModel> productModels ;
 
@@ -112,5 +116,26 @@ public class OrderModel {
     }
     public void setDeliveryPrice(float deliveryPrice) {
         this.deliveryPrice = deliveryPrice;
+    }
+
+    public String getPublishKey() {
+        return publishKey;
+    }
+
+    public String getSign() {
+        return sign;
+    }
+
+    public void setSign(String sign) {
+        this.sign = sign;
+    }
+
+    public void setPublishKey(String publishKey) {
+        this.publishKey = publishKey;
+    }
+
+    public OrderModel(String publishKey,String sign){
+        this.sign = sign;
+        this.publishKey = publishKey;
     }
 }

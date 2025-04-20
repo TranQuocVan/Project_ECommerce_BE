@@ -8,7 +8,7 @@ import jakarta.servlet.annotation.*;
 import model.UserModel;
 import database.ShoppingCartItemsDao;
 import service.user.account.UserService;
-import service.util.ReaderRequest;
+import util.ReaderRequest;
 
 import java.io.IOException;
 

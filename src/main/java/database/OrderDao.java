@@ -270,7 +270,28 @@ public class OrderDao {
         return totalPrice;
     }
 
+    public OrderModel getSignAndPublishKeyById(int orderId) {
+        String sql = "SELECT publishKey, sign FROM orders WHERE orderId = ?";
+        OrderModel orderModel = null;
 
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+
+            st.setInt(1, orderId);
+            ResultSet rs = st.executeQuery();
+
+            if (rs.next()) {
+                orderModel = new OrderModel(
+                        rs.getString("publishKey"),
+                        rs.getString("sign")
+                );
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return orderModel;
+    }
 
     public OrderModel getOrderById(int orderId) {
         String sql = "select * from orders where orderId = ?";
@@ -406,6 +427,21 @@ public class OrderDao {
             e.printStackTrace();
         }
         return -1; // Trả về -1 nếu không tìm thấy
+    }
+
+    public boolean updateOrderSignature(int orderId, String base64Signature, String base64PublicKey) throws SQLException {
+        String sql = "UPDATE orders SET sign = ?, publishKey = ? WHERE orderId = ?";
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, base64Signature);
+            stmt.setString(2, base64PublicKey);
+            stmt.setInt(3, orderId);
+            int rows = stmt.executeUpdate();
+            if (rows == 0) {
+                return true;
+            }
+            return false;
+        }
     }
 }
 

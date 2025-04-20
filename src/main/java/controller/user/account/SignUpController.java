@@ -1,11 +1,10 @@
 package controller.user.account;
 
-import database.UserDao;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import service.user.account.UserService;
-import service.util.GmailServices;
+import util.GmailServices;
 import com.google.gson.Gson;
 
 import java.io.IOException;
