@@ -81,12 +81,6 @@
                                                         <div class="fw-normal mb-0 text-success">${item.paymentName}</div>
                                                     </div>
                                                 </div>
-<%--                                                <div class="col-md-2 d-flex justify-content-center">--%>
-<%--                                                    <div>--%>
-<%--                                                        <div class="text-muted">Trạng thái thanh toán</div>--%>
-<%--                                                        <div class="fw-normal mb-0 text-success">${item.statusPayment == 0 ? 'Chưa thanh toán' : 'Đã thanh toán'}</div>--%>
-<%--                                                    </div>--%>
-<%--                                                </div>--%>
                                                 <div class="col-md-2 d-flex justify-content-center">
                                                     <div>
                                                         <div class="text-muted">Trạng thái thanh toán</div>

@@ -7,7 +7,7 @@ import model.UserModel;
 import service.log.LogService;
 import service.user.account.AuthenticationService;
 import service.user.account.UserService;
-import service.util.SessionServices;
+import util.SessionServices;
 
 import java.io.IOException;
 import java.sql.SQLException;

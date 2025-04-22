@@ -26,6 +26,7 @@
             <div class="row">
                 <c:if test="${not empty orderProducts}">
                     <h3 class="mt-5 text-center">Order Detail ${orderProducts.id} </h3>
+                    <h3 id="idOrder" style="display: none">${orderProducts.id}</h3>
                     <div class="col-md-6 col-lg-6 col-sm-12">
                         <div class="order-summary">
                             <h4>Thông tin đơn hàng</h4>
@@ -41,6 +42,9 @@
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-6 col-sm-12">
+                        <div id="sign">
+
+                        </div>
                         <h4>Tiến độ đơn hàng</h4>
                         <c:forEach var="status" items="${orderProducts.statusModels}">
                             <div class="order-status">
@@ -59,7 +63,8 @@
                         </c:forEach>
                     </div>
 
-                    <div class="product-table-container">
+                    <div style="position: relative" class="product-table-container">
+                        <div id="formSign"></div>
                         <table class="product-table">
                             <thead>
                             <tr>
@@ -122,4 +127,5 @@
 
 <script src="components/footer.js?v=${System.currentTimeMillis()}"></script>
 <script src="components/navigation.js?v=${System.currentTimeMillis()}"></script>
+<script src="scripts/orderDetails.js?v=${System.currentTimeMillis()}"></script>
 </html>
