@@ -185,25 +185,23 @@ public class VoucherDAO {
     public float calculateDiscountShippingFee(int voucherId, int deliveryId) {
         String sql = "SELECT v.discountPercent, v.discountMaxValue, d.fee " +
                 "FROM voucher v " +
-                "JOIN typevoucher tv ON v.typeVoucherId = tv.typeVoucherId " +
                 "JOIN deliveries d ON d.deliveryId = ? " +
-                "WHERE v.voucherId = ? AND tv.typeName = 'shipping'";
+                "WHERE v.voucherId = ? AND v.typeVoucherId = ?";
 
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
 
-            // Set các tham số cho truy vấn
-            st.setInt(1, deliveryId);  // Gắn giá trị deliveryId vào câu truy vấn
-            st.setInt(2, voucherId);   // Gắn giá trị voucherId vào câu truy vấn
+            st.setInt(1, deliveryId);     // Gắn deliveryId vào vị trí dấu ?
+            st.setInt(2, voucherId);      // Gắn voucherId
+            st.setInt(3, 1);              // Gắn typeVoucherId = 1 cho shipping
 
             ResultSet rs = st.executeQuery();
 
             if (rs.next()) {
                 int discountPercent = rs.getInt("discountPercent");
                 int discountMaxValue = rs.getInt("discountMaxValue");
-                int fee = rs.getInt("fee");  // Lấy giá trị fee từ bảng Deliveries
+                int fee = rs.getInt("fee");
 
-                // Tính toán giá trị giảm giá ship
                 int discountValue = fee * discountPercent / 100;
                 return Math.min(discountValue, discountMaxValue);
             }
@@ -211,8 +209,9 @@ public class VoucherDAO {
             e.printStackTrace();
         }
 
-        return 0; // Nếu không tìm thấy voucher hoặc không phải shipping, không giảm giá
+        return 0;
     }
+
 
     // Tính toán giảm giá khi sử dụng voucher items
     public float calculateDiscountItemsFee(int voucherId, List<Integer> listSizeId){
@@ -274,6 +273,30 @@ public class VoucherDAO {
 
         return 0; // Nếu không hợp lệ, không có giảm giá
     }
+
+    public boolean decreaseVoucherQuantity(List<Integer> vouchersId) {
+        try (Connection con = JDBCUtil.getConnection()) {
+            String sql = "UPDATE voucher SET quantity = quantity - 1 WHERE voucherId = ? AND quantity > 0";
+
+            try (PreparedStatement st = con.prepareStatement(sql)) {
+                for (Integer voucherId : vouchersId) {
+                    st.setInt(1, voucherId);
+                    int rowsAffected = st.executeUpdate();
+
+                    if (rowsAffected == 0) {
+                        // Không cập nhật được (có thể do quantity = 0)
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
 }
 

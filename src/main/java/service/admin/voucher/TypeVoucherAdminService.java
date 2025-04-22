@@ -1,4 +1,4 @@
-package service.user.voucher;
+package service.admin.voucher;
 
 import database.TypeVoucherDAO;
 import model.TypeVoucherModel;
@@ -8,10 +8,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TypeVoucherService {
+public class TypeVoucherAdminService {
     private final TypeVoucherDAO typeVoucherDAO;
 
-    public TypeVoucherService(TypeVoucherDAO typeVoucherDAO) {
+    public TypeVoucherAdminService(TypeVoucherDAO typeVoucherDAO) {
         this.typeVoucherDAO = typeVoucherDAO;
     }
 
