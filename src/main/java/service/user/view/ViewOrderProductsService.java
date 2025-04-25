@@ -54,6 +54,21 @@ public class ViewOrderProductsService {
         orderDao.updateOrderSignature(orderId, base64Signature, base64PublicKey);
     }
 
+    public List<OrderModel> getAllOrders() throws SQLException {
+        OrderDao orderDao = new OrderDao();
+
+        List<OrderModel> orderModels = orderDao.getAllOrders();
+
+
+        List<OrderModel> orderModelsResult = new ArrayList<>();
+
+        for (OrderModel orderModel : orderModels) {
+            orderModelsResult.add(getOrder(orderModel.getId()));
+        }
+
+        return orderModelsResult;
+    }
+
 
 
 }

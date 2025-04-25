@@ -38,6 +38,7 @@
 
 %>
 <header>
+    <div id="gmailUser" style="display: none"><%= gmail %></div>
     <nav></nav>
     <div class="under-navigation">
         <div style="padding-top: 100px;" class="container">

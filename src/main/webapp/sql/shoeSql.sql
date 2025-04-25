@@ -24,7 +24,16 @@ CREATE TABLE IF NOT EXISTS `Users` (
     FOREIGN KEY (`membershipId`) REFERENCES `Membership`(`membershipId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
+-- UserPublicKeys Table
+CREATE TABLE IF NOT EXISTS UserPublicKeys (
+    keyId INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    userId INT NOT NULL,
+    public_key TEXT NOT NULL COLLATE utf8mb4_unicode_ci,
+    key_type VARCHAR(100) NOT NULL COLLATE utf8mb4_unicode_ci, -- e.g., RSA, ECDSA
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    expired_at DATETIME,
+    FOREIGN KEY (userId) REFERENCES Users(userId) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `PasswordResetTokens` (
     `userId` INT NOT NULL,
@@ -120,10 +129,17 @@ CREATE TABLE IF NOT EXISTS `Orders` (
     `paymentId` INT NOT NULL,
     `deliveryId` INT NOT NULL,
     `statusPayment` INT NOT NULL DEFAULT 0,
+    `publishKey` TEXT NULL,  -- Added as nullable
+    `sign` TEXT,        -- Added as nullable
     FOREIGN KEY (`userId`) REFERENCES `Users`(`userId`),
     FOREIGN KEY (`paymentId`) REFERENCES `Payments`(`paymentId`),
     FOREIGN KEY (`deliveryId`) REFERENCES `Deliveries`(`deliveryId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `Orders`
+ADD COLUMN `publishKey` TEXT  NULL AFTER `statusPayment`,
+ADD COLUMN `sign` TEXT  NULL AFTER `publishKey`;
+
 
 -- Shopping Cart Items Table
 CREATE TABLE IF NOT EXISTS `ShoppingCartItems` (

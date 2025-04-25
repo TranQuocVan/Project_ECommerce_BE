@@ -1,4 +1,4 @@
-const offsetWidthSlide = document.getElementById('slide').offsetWidth;
+const offsetWidthSlide = document.getElementById('slide')?.offsetWidth;
 const offsetWidthItem = document.querySelectorAll('#slide .item')[0].offsetWidth;
 const itemMargin = 20;
 const remainingPhotos = document.querySelectorAll('#slide .item').length - Math.floor((offsetWidthSlide + itemMargin) / (offsetWidthItem + itemMargin));
