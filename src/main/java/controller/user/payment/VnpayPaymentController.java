@@ -10,6 +10,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpSession;
 import model.Order;
 import model.UserModel;
+import service.log.LogService;
 import service.user.cart.ShoppingCartItemOrderService;
 import service.user.cart.ShoppingCartService;
 import service.user.order.OrderService;
@@ -46,6 +47,7 @@ public class VnpayPaymentController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
+        String ipAddress = req.getRemoteAddr();
 
         HttpSession session = req.getSession();
         UserModel user = (UserModel) session.getAttribute("user");
@@ -77,6 +79,21 @@ public class VnpayPaymentController extends HttpServlet {
             // Chuyển thành Integer nếu cần thiết, hoặc có thể xử lý theo cách khác
             int voucherShippingId = Integer.parseInt(selectedVoucherShipping);
             int voucherItemsId = Integer.parseInt(selectedVoucherItems);
+
+            List<Integer> voucherIdsToDecrease = new ArrayList<>();
+
+            if (voucherShippingId != 0) {
+                voucherIdsToDecrease.add(voucherShippingId);
+            }
+            if (voucherItemsId != 0) {
+                voucherIdsToDecrease.add(voucherItemsId);
+            }
+
+            boolean isVoucherQuantityDecreased = true;
+            if (!voucherIdsToDecrease.isEmpty()) {
+                isVoucherQuantityDecreased = voucherService.decreaseVoucherQuantity(voucherIdsToDecrease);
+                LogService.voucherDecreaseQuantity(user.getId(), isVoucherQuantityDecreased, ipAddress);
+            }
 
             List<Integer> selectedItems = parseSelectedItems(req.getParameter("selectedItems"));
             Timestamp sqlTimestamp = Timestamp.valueOf(LocalDateTime.now());

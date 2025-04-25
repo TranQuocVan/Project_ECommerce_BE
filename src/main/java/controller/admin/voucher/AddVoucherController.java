@@ -1,6 +1,7 @@
 package controller.admin.voucher;
 
 import database.TypeVoucherDAO;
+import database.VoucherDAO;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -9,7 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.TypeVoucherModel;
 import model.VoucherModel;
-import service.user.voucher.TypeVoucherService;
+import service.admin.voucher.TypeVoucherAdminService;
+import service.admin.voucher.VoucherAdminService;
 import service.user.voucher.VoucherService;
 
 import java.io.IOException;
@@ -17,8 +19,8 @@ import java.util.List;
 
 @WebServlet(name = "AddVoucherController", value = "/AddVoucherController")
 public class AddVoucherController extends HttpServlet {
-    private final TypeVoucherService typeVoucherService = new TypeVoucherService(new TypeVoucherDAO());
-    private final VoucherService voucherService = new VoucherService();
+    private final TypeVoucherAdminService typeVoucherService = new TypeVoucherAdminService(new TypeVoucherDAO());
+    private final VoucherAdminService voucherAdminService = new VoucherAdminService(new VoucherDAO());
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -51,7 +53,7 @@ public class AddVoucherController extends HttpServlet {
         voucher.setQuantity(quantity);
 
         try {
-            voucherService.addVoucher(voucher);
+            voucherAdminService.addVoucher(voucher);
             response.sendRedirect(request.getContextPath() + "/AddVoucherController?success=true");
         } catch (Exception e) {
             e.printStackTrace();
