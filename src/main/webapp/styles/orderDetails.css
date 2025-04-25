@@ -339,3 +339,15 @@
     box-shadow: var(--box-shadow);
     margin-bottom: 20px;
 }
+
+#key-input-form #downloadSign{
+    display: flex;
+    align-items: center;
+}
+
+#key-input-form #downloadSign a{
+    font-size: 16px;
+    text-decoration: underline;
+    color: blue;
+    margin-left: 4px;
+}

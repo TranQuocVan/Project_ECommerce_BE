@@ -43,8 +43,8 @@ async function submitPublishKey(publishKey, gmail) {
     try {
         const response = await fetch("/Shoe_war_exploded/AddKeyController", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ publishKey, gmail })
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({publishKey, gmail})
         });
 
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);

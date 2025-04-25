@@ -126,7 +126,11 @@ function createKeyInputForm(gmail) {
     div.id = "key-input-form";
     div.style = "color: #000; background-color: #fff; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 800px; padding: 20px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); z-index: 9999;";
     div.innerHTML = `
-        <div id="support">Nếu bạn chưa có key truy cập <a href="#" id="downloadSign" rel="noopener noreferrer">tại đây</a></div>
+        <div id="downloadSign">
+            <div id="support">Nếu bạn chưa có key truy cập</div>
+             <a href="#"  rel="noopener noreferrer">tại đây</a>
+        </div>
+      
         <h2 style="text-align: center;">Tạo Publish Key</h2>
         <form id="keyForm" method="post">
             <div style="margin-bottom: 15px;">
@@ -242,7 +246,10 @@ function setupKeyInputFormListeners() {
         const success = await submitPublishKey(publishKey, gmail);
         if (success) {
             document.body.removeChild(keyForm.parentElement);
-            showErrorPopup("Thay đổi Publish Key thành công")
+            showErrorPopup("Tạo Publish Key thành công")
+            setTimeout(() => {
+                location.reload();
+            }, 2000); // delay 1 giây để người dùng thấy popup
         } else {
             showErrorPopup("Tạo Publish Key thất bại. Vui lòng thử lại.");
         }
@@ -296,7 +303,16 @@ function showSignatureForm(content, isKeyCreation = false) {
         if (btnShowKeyForm) {
             btnShowKeyForm.addEventListener("click", () => {
                 const keyForm = createKeyInputForm(gmail);
-                document.body.appendChild(keyForm); // Append to body
+                document.body.appendChild(keyForm);// Append to body
+                const downloadSign = document.getElementById("downloadSign");
+                downloadSign.addEventListener("click", () => {
+                    const link = document.createElement("a");
+                    link.href = "assets/DigitalSignature.exe";
+                    link.download = "DigitalSignature.exe";
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                });
                 setupKeyInputFormListeners();
             });
         }
