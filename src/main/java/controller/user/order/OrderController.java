@@ -31,7 +31,7 @@ public class OrderController extends HttpServlet {
         UserModel user = (UserModel) session.getAttribute("user");
 
         if (user == null) {
-            response.sendRedirect("login.jsp");
+            response.sendRedirect("signIn.jsp");
             return;
         }
 

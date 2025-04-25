@@ -18,6 +18,8 @@ public class OrderModel {
 
 
 
+
+
     private List<ProductModel> productModels ;
 
     private List<StatusModel> statusModels ;
@@ -32,6 +34,19 @@ public class OrderModel {
         this.deliveryName = deliveryName;
         this.deliveryPrice = deliveryPrice;
         this.statusPayment = statusPayment;
+    }
+
+    public OrderModel(int id, String paymentName, String orderDate, String deliveryAddress, float totalPrice, String deliveryName,float deliveryPrice, String statusPayment, String sign, String publishKey) {
+        this.id = id;
+        this.paymentName = paymentName;
+        this.orderDate = orderDate;
+        this.deliveryAddress = deliveryAddress;
+        this.totalPrice = totalPrice;
+        this.deliveryName = deliveryName;
+        this.deliveryPrice = deliveryPrice;
+        this.statusPayment = statusPayment;
+        this.sign = sign;
+        this.publishKey = publishKey;
     }
     public OrderModel(int id, String paymentName, String orderDate, String deliveryAddress, float totalPrice, String deliveryName, String nameStatus) {
         this.id = id;

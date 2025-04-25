@@ -64,12 +64,18 @@ const addNavigationAdmin = () => {
                 <div class="subMenu" id="orderOptions">
                 <a href="http://localhost:8080/Shoe_war_exploded/OrderAdminController">
                     <div class="navAdmin-subItem">
-                        Quan li trạng thái đơn hàng
+                        Quản lí trạng thái đơn hàng
                     </div>
-                    </a>
+                </a>
+                
+                <a href="adminPages/signAdmin.jsp">
+                    <div class="navAdmin-subItem">
+                        Quản lí chữ ký đơn hàng
+                    </div>
+                </a>
                     
-                    
-                         
+                   
+                  
                 </div>
                 
                 
@@ -169,14 +175,14 @@ const addNavigationAdmin = () => {
 
     const userToggle = document.getElementById("userToggle")
     const userOptions = document.getElementById("userOptions")
-    userToggle.addEventListener("click", ()=>{
+    userToggle.addEventListener("click", () => {
 
         userOptions.classList.toggle("show");
     });
 
     const voucherToggle = document.getElementById("voucherToggle")
     const voucherOptions = document.getElementById("voucherOptions")
-    voucherToggle.addEventListener("click", ()=>{
+    voucherToggle.addEventListener("click", () => {
 
         voucherOptions.classList.toggle("show");
     });

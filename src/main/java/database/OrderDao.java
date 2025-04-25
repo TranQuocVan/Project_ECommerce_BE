@@ -320,7 +320,9 @@ public class OrderDao {
                         rs.getFloat("totalPrice"),
                         deliveryName(rs.getInt("deliveryId")),
                         deliveryFee(rs.getInt("deliveryId")),
-                        nameStatusPayment(rs.getInt("statusPayment"))
+                        nameStatusPayment(rs.getInt("statusPayment")),
+                        rs.getString("sign"),
+                        rs.getString("publishKey")
                 );
             }
 
@@ -329,6 +331,7 @@ public class OrderDao {
         }
         return orderModel;
     }
+
 
     public List<OrderModel> findByIdOrder(int userId) {
         String sql = "select * from orders where userId = ?";
@@ -442,6 +445,46 @@ public class OrderDao {
             }
             return false;
         }
+    }
+
+    public List<OrderModel> getAllOrders() {
+        String sql = "SELECT * FROM orders";
+        List<OrderModel> orders = new ArrayList<>();
+
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement st = con.prepareStatement(sql)) {
+            ResultSet rs = st.executeQuery();
+
+            // Định dạng ngày
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+
+            while (rs.next()) {
+                // Lấy ngày từ ResultSet
+                Timestamp orderDateTimestamp = rs.getTimestamp("orderDate");
+                String formattedDate = orderDateTimestamp != null ?
+                        dateFormatter.format(orderDateTimestamp) : "N/A"; // Nếu null, trả về "N/A"
+
+                // Tạo đối tượng OrderModel
+                OrderModel orderModel = new OrderModel(
+                        rs.getInt("orderId"),
+                        methodPayment(rs.getInt("paymentId")),
+                        formattedDate, // Ngày đã được định dạng
+                        rs.getString("deliveryAddress"),
+                        rs.getFloat("totalPrice"),
+                        deliveryName(rs.getInt("deliveryId")),
+                        deliveryFee(rs.getInt("deliveryId")),
+                        nameStatusPayment(rs.getInt("statusPayment")),
+                        rs.getString("sign"),
+                        rs.getString("publishKey")
+                );
+
+                orders.add(orderModel);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return orders;
     }
 }
 

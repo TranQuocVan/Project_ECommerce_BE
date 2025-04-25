@@ -47,7 +47,7 @@
                     <div class="row">
                         <div class="col-md-9">
                             <div>
-                                <h3>
+                                <h3 id="gmail">
                                     <%=gmail%>
                                 </h3>
                                 <img id="rankCurrent" src="./assets/rankImage/none.png" alt="">
@@ -127,6 +127,14 @@
                             <div class="user__menu-item">
                                 <div class="">
                                     Chính sách và câu hỏi thường gặp
+                                </div>
+                                <div class="">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </div>
+                            </div>
+                            <div id="changePublishKey" class="user__menu-item">
+                                <div class="">
+                                    Thay đổi khoá công khai
                                 </div>
                                 <div class="">
                                     <i class="fa-solid fa-chevron-right"></i>
@@ -256,7 +264,7 @@
 <script src="./components/navigation.js"></script>
 <script src="./scripts/user.js?v=${System.currentTimeMillis()}"></script>
 <script src="./components/footer.js?v=${System.currentTimeMillis()}"></script>
-
+<script src="scripts/userInfo.js?v=${System.currentTimeMillis()}"></script>
 
 
 

@@ -9,6 +9,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.OrderModel;
+import model.request.UserPublicKeyModel;
+import service.user.account.UserService;
+import service.user.key.UserPublicKeyService;
 import service.user.view.ViewOrderProductsService;
 import util.OrderJsonUtil;
 import util.SignatureVerifierUtil;
@@ -26,7 +29,7 @@ public class ApiVerifySignatureServlet extends HttpServlet {
     private static class RequestBody {
         public int orderId;
         public String base64Signature;
-        public String base64PublicKey;
+        public String gmail;
     }
 
     @Override
@@ -55,7 +58,7 @@ public class ApiVerifySignatureServlet extends HttpServlet {
         }
 
         // Validate input
-        if (body == null || body.orderId <= 0 || body.base64Signature == null || body.base64PublicKey == null) {
+        if (body == null || body.orderId <= 0 || body.base64Signature == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().write("{\"error\": \"Missing required fields: orderId, base64Signature, or base64PublicKey\"}");
             return;
@@ -72,14 +75,78 @@ public class ApiVerifySignatureServlet extends HttpServlet {
             }
 
             String hashBase64 = OrderJsonUtil.generateBase64HashFromOrder(orderModel);
-            boolean isValid = SignatureVerifierUtil.verifySignature(hashBase64, body.base64Signature, body.base64PublicKey);
+            UserPublicKeyService userPublicKeyService = new UserPublicKeyService();
+            String base64PublicKey = userPublicKeyService.getLatestUserPublicKeyByGmail(body.gmail);
+            boolean isValid = SignatureVerifierUtil.verifySignature(hashBase64, body.base64Signature, base64PublicKey);
 
             // Save signature if valid
             if (isValid) {
-                service.updateOrderSignature(body.orderId, body.base64Signature, body.base64PublicKey);
+                service.updateOrderSignature(body.orderId, body.base64Signature, base64PublicKey);
             }
 
             // Send response
+            Map<String, Object> result = new LinkedHashMap<>();
+            result.put("isValid", isValid);
+            response.getWriter().write(gson.toJson(result));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"error\": \"Database error\"}");
+        }
+
+
+    }
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        // Lấy tham số orderId từ query string
+        String orderIdStr = request.getParameter("orderId");
+
+        // Validate input
+        if (orderIdStr == null || !orderIdStr.matches("\\d+")) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("{\"error\": \"Missing or invalid orderId\"}");
+            return;
+        }
+
+        int orderId;
+        try {
+            orderId = Integer.parseInt(orderIdStr);
+        } catch (NumberFormatException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("{\"error\": \"Invalid orderId format\"}");
+            return;
+        }
+
+        // Fetch order and verify signature
+        ViewOrderProductsService service = new ViewOrderProductsService();
+        try {
+            OrderModel orderModel = service.getOrder(orderId);
+            if (orderModel == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                response.getWriter().write("{\"error\": \"Order not found\"}");
+                return;
+            }
+
+            // Lấy chữ ký và khóa công khai đã lưu
+            String storedSignature = orderModel.getSign(); // Giả sử OrderModel có phương thức này
+            String storedPublicKey = orderModel.getPublishKey(); // Giả sử OrderModel có phương thức này
+            if (storedSignature == null || storedPublicKey == null) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("{\"error\": \"No signature or public key found for this order\"}");
+                return;
+            }
+
+            // Tạo hash từ đơn hàng
+            String hashBase64 = OrderJsonUtil.generateBase64HashFromOrder(orderModel);
+
+            // Kiểm tra chữ ký
+            boolean isValid = SignatureVerifierUtil.verifySignature(hashBase64, storedSignature, storedPublicKey);
+
+            // Gửi phản hồi
+            Gson gson = new Gson();
             Map<String, Object> result = new LinkedHashMap<>();
             result.put("isValid", isValid);
             response.getWriter().write(gson.toJson(result));

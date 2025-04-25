@@ -1,3 +1,4 @@
+<%@ page import="model.UserModel" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -18,8 +19,17 @@
     <link rel="stylesheet" href="styles/orderDetails.css?v=${System.currentTimeMillis()}">
 </head>
 <body>
+<%
+    UserModel user = (UserModel) session.getAttribute("user");
+    String gmail = "Chưa có thông tin";
+    if(user != null) {
+        gmail = user.getGmail();
+    }
 
+
+%>
 <header>
+    <div id="gmail" style="display: none"><%=gmail%></div>
     <nav></nav>
     <div class="under-navigation">
         <div class="container mt-5">
