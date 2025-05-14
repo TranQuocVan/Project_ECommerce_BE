@@ -18,18 +18,6 @@ public class VoucherService {
         return voucherDAO.getAllVoucherItems();
     }
 
-    public void addVoucher(VoucherModel voucher){
-        voucherDAO.addVoucher(voucher);
-    }
-
-    public VoucherModel updateVoucher(VoucherModel voucher){
-        return voucherDAO.updateVoucher(voucher);
-    }
-
-    public void deleteVoucher(int voucherId){
-        voucherDAO.deleteVoucher(voucherId);
-    }
-
     public float calculateDiscountShippingFee(int voucherId, int deliveryId) {
         return voucherDAO.calculateDiscountShippingFee(voucherId, deliveryId);
     }
@@ -40,5 +28,9 @@ public class VoucherService {
 
     public List<VoucherModel> getVouchersByTypeVoucher(int typeVoucherId){
         return voucherDAO.getVouchersByTypeVoucher(typeVoucherId);
+    }
+
+    public boolean decreaseVoucherQuantity(List<Integer> vouchersId){
+        return voucherDAO.decreaseVoucherQuantity(vouchersId);
     }
 }

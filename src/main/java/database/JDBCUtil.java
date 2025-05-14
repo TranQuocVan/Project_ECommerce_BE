@@ -15,12 +15,12 @@ public class JDBCUtil {
             // Đăng ký MySQL Driver với DriverManager
             DriverManager.registerDriver(new com.mysql.jdbc.Driver());
 
-            String url = "jdbc:mysql://db:3306/shoesql";
-//            String url = "jdbc:mysql://localhost:3306/shoesql";
+//            String url = "jdbc:mysql://db:3306/shoesql";
+            String url = "jdbc:mysql://localhost:3306/shoesql";
 
             String username = "root";
-            String password = "123456";
-//            String password = "";
+//            String password = "123456";
+            String password = "";
 
 
 

@@ -31,7 +31,7 @@ public class OrderController extends HttpServlet {
         UserModel user = (UserModel) session.getAttribute("user");
 
         if (user == null) {
-            response.sendRedirect("login.jsp");
+            response.sendRedirect("signIn.jsp");
             return;
         }
 
@@ -66,6 +66,7 @@ public class OrderController extends HttpServlet {
             return;
         }
 
+
         try {
             // Thu thập dữ liệu từ form
             int paymentId = Integer.parseInt(request.getParameter("paymentId"));
@@ -86,6 +87,21 @@ public class OrderController extends HttpServlet {
             // Chuyển thành Integer nếu cần thiết, hoặc có thể xử lý theo cách khác
             int voucherShippingId = Integer.parseInt(selectedVoucherShipping);
             int voucherItemsId = Integer.parseInt(selectedVoucherItems);
+
+            List<Integer> voucherIdsToDecrease = new ArrayList<>();
+
+            if (voucherShippingId != 0) {
+                voucherIdsToDecrease.add(voucherShippingId);
+            }
+            if (voucherItemsId != 0) {
+                voucherIdsToDecrease.add(voucherItemsId);
+            }
+
+            boolean isVoucherQuantityDecreased = true;
+            if (!voucherIdsToDecrease.isEmpty()) {
+                isVoucherQuantityDecreased = voucherService.decreaseVoucherQuantity(voucherIdsToDecrease);
+                LogService.voucherDecreaseQuantity(user.getId(), isVoucherQuantityDecreased, ipAddress);
+            }
 
             List<Integer> selectedItems = parseSelectedItems(request.getParameter("selectedItems"));
             Timestamp sqlTimestamp = Timestamp.valueOf(LocalDateTime.now());

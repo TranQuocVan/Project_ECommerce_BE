@@ -166,6 +166,12 @@ function orderButton(button, event) {
     updateQuantityInForm();
 
     let paymentId = parseInt(document.getElementById("paymentId").value, 10);
+    // Gán giá trị voucher vào input hidden
+    let selectedShippingInput = document.querySelector('input[name="selectedVoucherShipping"]:checked');
+    let selectedItemInput = document.querySelector('input[name="selectedVoucherItems"]:checked');
+
+    document.getElementById("selectedVoucherShipping").value = selectedShippingInput ? selectedShippingInput.value : "0";
+    document.getElementById("selectedVoucherItems").value = selectedItemInput ? selectedItemInput.value : "0";
     let form = document.getElementById("orderForm");
 
     if (paymentId === 1) {
@@ -245,7 +251,7 @@ itemShoppingCart.forEach(item => {
 
 document.getElementById('deliverySelect').addEventListener('change', function () {
     const selectedOption = this.options[this.selectedIndex];  // Lấy option đã chọn
-    const deliveryFee = parseFloat(selectedOption.getAttribute('data-fee')) || 0;  // Lấy phí giao hàng
+    const deliveryFee = parseFloat(selectedOption?.getAttribute('data-fee')) || 0;  // Lấy phí giao hàng
 
     // Cập nhật phí giao hàng lên màn hình
     document.getElementById('feeDisplay').textContent = formatPrice(deliveryFee);
@@ -258,7 +264,7 @@ document.getElementById('deliverySelect').addEventListener('change', function ()
 window.addEventListener('load', function () {
     // Lấy phương thức giao hàng mặc định
     const defaultOption = document.querySelector('#deliverySelect option:first-child');
-    const deliveryFee = parseFloat(selectedOption.getAttribute('data-fee')) || 0;
+    const deliveryFee = parseFloat(selectedOption?.getAttribute('data-fee')) || 0;
 
     // Định dạng và hiển thị phí giao hàng mặc định
     document.getElementById('feeDisplay').textContent = formatPrice(deliveryFee);
@@ -592,8 +598,3 @@ function submitVoucher() {
             console.error("Có lỗi xảy ra:", error);
         });
 }
-
-
-
-
-

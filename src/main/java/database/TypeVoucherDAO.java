@@ -11,7 +11,7 @@ import java.util.List;
 
 public class TypeVoucherDAO {
     public void addTypeVoucher(TypeVoucherModel typeVoucher) {
-        String sql = "INSERT INTO TypeVoucher (typeName, description) VALUES (?, ?)";
+        String sql = "INSERT INTO typevoucher (typeName, description) VALUES (?, ?)";
 
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
@@ -28,7 +28,7 @@ public class TypeVoucherDAO {
     }
 
     public TypeVoucherModel updateTypeVoucher(TypeVoucherModel typeVoucher) {
-        String sql = "UPDATE TypeVoucher SET typeName = ?, description = ? WHERE typeVoucherId = ?";
+        String sql = "UPDATE typevoucher SET typeName = ?, description = ? WHERE typeVoucherId = ?";
 
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
@@ -48,7 +48,7 @@ public class TypeVoucherDAO {
     }
 
     public void deleteTypeVoucher(int typeVoucherId) {
-        String sql = "DELETE FROM TypeVoucher WHERE typeVoucherId = ?";
+        String sql = "DELETE FROM typevoucher WHERE typeVoucherId = ?";
 
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
@@ -84,7 +84,7 @@ public class TypeVoucherDAO {
     // Lấy loại voucher bằng Id
     public TypeVoucherModel getTypeVoucherById(int typeVoucherId) {
         TypeVoucherModel typeVoucher = null;
-        String sql = "SELECT * FROM TypeVoucher WHERE typeVoucherId = ?";
+        String sql = "SELECT * FROM typevoucher WHERE typeVoucherId = ?";
         try (Connection con = JDBCUtil.getConnection();
              PreparedStatement st = con.prepareStatement(sql)) {
             st.setInt(1, typeVoucherId);

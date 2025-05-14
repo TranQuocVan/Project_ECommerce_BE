@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.TypeVoucherModel;
-import service.user.voucher.TypeVoucherService;
+import service.admin.voucher.TypeVoucherAdminService;
 
 import java.io.IOException;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 @WebServlet(name = "ManagerTypeVoucherController", value = "/ManagerTypeVoucherController")
 public class ManagerTypeVoucherController extends HttpServlet {
 
-    private final TypeVoucherService typeVoucherService = new TypeVoucherService(new TypeVoucherDAO());
+    private final TypeVoucherAdminService typeVoucherService = new TypeVoucherAdminService(new TypeVoucherDAO());
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

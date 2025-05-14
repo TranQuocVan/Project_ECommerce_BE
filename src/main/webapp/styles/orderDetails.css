@@ -136,3 +136,218 @@
     box-shadow: var(--box-shadow);
     margin-top: 5px;
 }
+/* Signature container */
+#formSign {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000; /* Ensure it appears above other elements */
+}
+
+/* Digital signature form */
+#form-digitalSignature {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 800px;
+    max-width: 90vw; /* Responsive width */
+    position: relative;
+    opacity: 0;
+    transform: scale(0.95);
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    display: none; /* Hidden by default */
+}
+
+#form-digitalSignature.show {
+    display: block;
+    opacity: 1;
+    transform: scale(1);
+    animation: fadeInScale 0.3s ease-out;
+    pointer-events: auto;
+}
+
+#form-digitalSignature.hide {
+    opacity: 0;
+    transform: scale(0.95);
+    animation: fadeOutScale 0.3s ease-in;
+    pointer-events: none;
+}
+
+/* Animations */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeOutScale {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+}
+
+/* Form content */
+#form-digitalSignature h2 {
+    margin-bottom: 10px;
+}
+
+#form-digitalSignature #support {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+#form-digitalSignature #support a{
+    margin-left: 5px;
+    font-size: 14px;
+    text-decoration: underline;
+    color: blue;
+    font-weight: 700;
+}
+
+#form-digitalSignature textarea {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 14px;
+    margin-bottom: 1.5rem;
+    background-color: #fdfdfd;
+    padding-right: 60px;
+    white-space: pre-line;
+    position: relative;
+    resize: none;
+    padding-top: 20px;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+#form-digitalSignature label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+#publishKey {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 8px;
+}
+
+/* Buttons */
+#form-digitalSignature #copyBtn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    padding: 4px 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    width: fit-content;
+    text-align: center;
+    font-size: 14px;
+    z-index: 2;
+}
+
+#form-digitalSignature #copyBtn:hover, #form-digitalSignature #submit:hover {
+    background-color: #333;
+}
+
+#form-digitalSignature #submit {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+#form-digitalSignature #copyBtn svg {
+    height: 16px;
+    width: 16px;
+    vertical-align: middle;
+}
+
+/* Close button */
+#close-digitalSignature {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: red;
+    font-size: 20px;
+    line-height: 20px;
+    cursor: pointer;
+    color: white;
+    z-index: 2;
+    border-radius: 3px;
+    width: 45px;
+    height: 25px;
+    font-weight: 700;
+    border: 1px solid red;
+    text-align: center;
+}
+
+#close-digitalSignature:hover {
+    color: red;
+    background-color: transparent;
+    border: 1px solid red;
+}
+
+/* Textarea wrapper */
+.textarea-wrapper {
+    position: relative;
+}
+
+.show {
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.hide {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+#signValid{
+    padding: var(--padding-horizontal);
+    background-color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.5;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 20px;
+}
+
+#key-input-form #downloadSign{
+    display: flex;
+    align-items: center;
+}
+
+#key-input-form #downloadSign a{
+    font-size: 16px;
+    text-decoration: underline;
+    color: blue;
+    margin-left: 4px;
+}

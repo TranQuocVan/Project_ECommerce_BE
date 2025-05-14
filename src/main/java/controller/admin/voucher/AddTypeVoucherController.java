@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.TypeVoucherModel;
-import service.user.voucher.TypeVoucherService;
+import service.admin.voucher.TypeVoucherAdminService;
 import database.TypeVoucherDAO;
 
 import java.io.IOException;
@@ -15,13 +15,13 @@ import java.io.IOException;
 @WebServlet(name = "AddTypeVoucherController", value = "/AddTypeVoucherController")
 public class AddTypeVoucherController extends HttpServlet {
 
-    private TypeVoucherService typeVoucherService;
+    private TypeVoucherAdminService typeVoucherService;
 
     @Override
     public void init() throws ServletException {
         super.init();
         // Khởi tạo Service và DAO tại đây
-        typeVoucherService = new TypeVoucherService(new TypeVoucherDAO());
+        typeVoucherService = new TypeVoucherAdminService(new TypeVoucherDAO());
     }
 
     @Override

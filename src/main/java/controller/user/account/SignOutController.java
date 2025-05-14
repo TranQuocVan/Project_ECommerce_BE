@@ -6,8 +6,8 @@ import jakarta.servlet.annotation.*;
 import model.UserModel;
 import service.log.LogService;
 import service.user.account.UserService;
-import service.util.CookiesServices;
-import service.util.SessionServices;
+import util.CookiesServices;
+import util.SessionServices;
 
 
 import java.io.IOException;
