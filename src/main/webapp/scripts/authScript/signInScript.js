@@ -9,9 +9,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 window.fbAsyncInit = function() {
-
     FB.init({
-        appId: '1143031257503719',
+        appId: window.APP_CONFIG.FACEBOOK_APP_ID,
         cookie: true,
         xfbml: true,
         version: 'v19.0'
@@ -65,7 +64,7 @@ function getUserInfo() {
         console.log("Dữ liệu gửi đến server:", userData);
 
         // Gửi dữ liệu đến controller bằng Fetch API
-        fetch('http://localhost:8080/Shoe_war_exploded/SignInFacebookController', {
+        fetch('SignInFacebookController', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -103,14 +102,14 @@ function logout() {
     });
 }
 
+
 window.onload = function () {
     google.accounts.id.initialize({
-        client_id: "217805572415-osmo8h44ev71tn023pdqg192e4q7sg31.apps.googleusercontent.com",
+        client_id: window.APP_CONFIG.GOOGLE_CLIENT_ID,
         callback: handleCredentialResponse,
-        ux_mode: "popup", // ⚡ Hiển thị popup thay vì redirect
+        ux_mode: "popup",
     });
 
-    // Hiển thị nút Google ngay khi trang tải
     google.accounts.id.renderButton(
         document.getElementById("google-login-container"),
         { theme: "outline", size: "large" } // Tùy chỉnh giao diện
@@ -122,7 +121,7 @@ window.onload = function () {
 
 
 function handleCredentialResponse(response) {
-    fetch("http://localhost:8080/Shoe_war_exploded/SignInGoogleController", {
+    fetch("SignInGoogleController", {
         method: "POST",
         headers: {"Content-Type": "application/x-www-form-urlencoded"},
         body: "credential=" + response.credential

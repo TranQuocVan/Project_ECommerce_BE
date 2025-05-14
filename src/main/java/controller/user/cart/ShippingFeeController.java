@@ -41,19 +41,15 @@ public class ShippingFeeController extends HttpServlet {
             // Chuyển đổi dữ liệu JSON thành JSONObject
             JSONObject jsonRequest = new JSONObject(requestData.toString());
 
-            // Lấy các tham số từ JSON
             String districtId = jsonRequest.getString("to_district_id");
             String wardCode = jsonRequest.getString("to_ward_code");
             int serviceTypeId = jsonRequest.getInt("serviceTypeId");
 
-            // Kiểm tra các tham số trước khi gửi yêu cầu
             if (districtId == null || districtId.isEmpty() || wardCode == null || wardCode.isEmpty()) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.getWriter().write("{\"error\": \"Thiếu thông tin quận hoặc phường\"}");
                 return;
             }
-
-            // Tạo URL và Token cho API GHN
             String apiUrl = "https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee";
             String token = System.getenv("GHN_TOKEN");
             String shopId = System.getenv("SHOP_ID");

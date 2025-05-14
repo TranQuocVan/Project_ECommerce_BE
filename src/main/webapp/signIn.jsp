@@ -108,6 +108,16 @@
 <script src="https://accounts.google.com/gsi/client?v=${System.currentTimeMillis()}" async defer></script>
 <script src="components/footer.js?v=${System.currentTimeMillis()}"></script>
 <script src="components/navigation.js?v=${System.currentTimeMillis()}"></script>
+
+
+<script>
+    window.APP_CONFIG = {
+        GOOGLE_CLIENT_ID: '<%= request.getAttribute("GOOGLE_CLIENT_ID") != null ? request.getAttribute("GOOGLE_CLIENT_ID") : "" %>',
+        FACEBOOK_APP_ID: '<%= request.getAttribute("FACEBOOK_APP_ID") != null ? request.getAttribute("FACEBOOK_APP_ID") : "" %>'
+    };
+
+</script>
+
 <script src="scripts/authScript/signInScript.js?v=${System.currentTimeMillis()}"></script>
 <script src="scripts/authScript/uiAuth.js?v=${System.currentTimeMillis()}"></script>
 
