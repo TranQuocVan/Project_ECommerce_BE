@@ -14,15 +14,9 @@ public class JDBCUtil {
         try {
             // Đăng ký MySQL Driver với DriverManager
             DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-
-            String url = "jdbc:mysql://xxx:9999/xxx";
-            String username = "abc";
-            String password = "xyz";
-
-
-//            String url = System.getenv("URL_DB");
-//            String username = System.getenv("USER_DB");
-//            String password = System.getenv("PASS_DB");
+            String url = System.getenv("URL_DB");
+            String username = System.getenv("USER_DB");
+            String password = System.getenv("PASS_DB");
             // Tạo kết nối
             c = DriverManager.getConnection(url, username, password);
 
