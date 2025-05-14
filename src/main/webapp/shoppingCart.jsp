@@ -130,7 +130,8 @@
                                                 </div>
                                                 <h5 class=" mb-3">Địa chỉ nhận hàng</h5>
                                                 <div class="mb-3">
-                                                    <input type="text" class="form-control form-control-lg" name="address" placeholder="Nhập địa chỉ của bạn" />
+                                                    <address-form></address-form>
+                                                <%--<input type="text" class="form-control form-control-lg" name="address" placeholder="Nhập địa chỉ của bạn" />--%>
                                                 </div>
 
                                                 <h5 class=" mb-3">Voucher hiện có</h5>
@@ -270,6 +271,7 @@
 
 <footer></footer>
 <script src="components/navigation.js"></script>
+<script src="components/address.js"></script>
 <script src="components/footer.js"></script>
 <script src="scripts/shoppingCart.js?v=${System.currentTimeMillis()}"></script>
 </body>
