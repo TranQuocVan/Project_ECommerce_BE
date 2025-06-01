@@ -3,8 +3,9 @@ version: '3.8'
 services:
   web:
     build: .
+#    image: vantran102/silkroadv2:latest
     ports:
-      - "8080:8080"
+      - "80:8080"
     depends_on:
       - db
     environment:
@@ -23,4 +24,7 @@ services:
     ports:
       - "3307:3306"
     volumes:
+      - mysql-data:/var/lib/mysql
       - ./Dump2004:/docker-entrypoint-initdb.d
+volumes:
+  mysql-data:

@@ -166,6 +166,12 @@ function orderButton(button, event) {
     updateQuantityInForm();
 
     let paymentId = parseInt(document.getElementById("paymentId").value, 10);
+    // Gán giá trị voucher vào input hidden
+    let selectedShippingInput = document.querySelector('input[name="selectedVoucherShipping"]:checked');
+    let selectedItemInput = document.querySelector('input[name="selectedVoucherItems"]:checked');
+
+    document.getElementById("selectedVoucherShipping").value = selectedShippingInput ? selectedShippingInput.value : "0";
+    document.getElementById("selectedVoucherItems").value = selectedItemInput ? selectedItemInput.value : "0";
     let form = document.getElementById("orderForm");
 
     if (paymentId === 1) {
@@ -592,8 +598,3 @@ function submitVoucher() {
             console.error("Có lỗi xảy ra:", error);
         });
 }
-
-
-
-
-

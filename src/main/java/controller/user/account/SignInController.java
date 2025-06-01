@@ -18,11 +18,12 @@ public class SignInController extends HttpServlet {
     private final UserService userService = new UserService();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        // Có thể redirect đến trang đăng nhập hoặc đăng ký
-        response.sendRedirect("signIn.jsp");
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("FACEBOOK_APP_ID", System.getenv("FACEBOOK_APP_ID"));
+        request.setAttribute("GOOGLE_CLIENT_ID", System.getenv("GOOGLE_CLIENT_ID"));
+        request.getRequestDispatcher("/signIn.jsp").forward(request, response);
     }
+
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

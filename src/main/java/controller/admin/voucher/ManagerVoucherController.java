@@ -1,12 +1,14 @@
 package controller.admin.voucher;
 
 import database.TypeVoucherDAO;
+import database.VoucherDAO;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import model.TypeVoucherModel;
 import model.VoucherModel;
-import service.user.voucher.TypeVoucherService;
+import service.admin.voucher.TypeVoucherAdminService;
+import service.admin.voucher.VoucherAdminService;
 import service.user.voucher.VoucherService;
 
 import java.io.IOException;
@@ -15,7 +17,8 @@ import java.util.*;
 @WebServlet(name = "ManagerVoucherController", value = "/ManagerVoucherController")
 public class ManagerVoucherController extends HttpServlet {
     private final VoucherService voucherService = new VoucherService();
-    private final TypeVoucherService typeVoucherService = new TypeVoucherService(new TypeVoucherDAO());
+    private final VoucherAdminService voucherAdminService = new VoucherAdminService(new VoucherDAO());
+    private final TypeVoucherAdminService typeVoucherService = new TypeVoucherAdminService(new TypeVoucherDAO());
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -58,7 +61,7 @@ public class ManagerVoucherController extends HttpServlet {
 
         if ("delete".equals(action)) {
             int voucherId = Integer.parseInt(request.getParameter("voucherId"));
-            voucherService.deleteVoucher(voucherId);
+            voucherAdminService.deleteVoucher(voucherId);
             response.getWriter().write("success"); // AJAX nhận
         } else if ("update".equals(action)) {
             int voucherId = Integer.parseInt(request.getParameter("voucherId"));
@@ -79,7 +82,7 @@ public class ManagerVoucherController extends HttpServlet {
             updatedVoucher.setEndDate(endDate);
             updatedVoucher.setQuantity(quantity);
 
-            voucherService.updateVoucher(updatedVoucher);
+            voucherAdminService.updateVoucher(updatedVoucher);
             response.getWriter().write("success"); // AJAX nhận
         }
     }

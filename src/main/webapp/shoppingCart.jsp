@@ -102,7 +102,10 @@
                                                 <div id="totalSelectedItems">0 món</div>
                                             </div>
                                             <form id="orderForm" method="post">
+                                                <input type="hidden" name="selectedVoucherShipping" id="selectedVoucherShipping">
+                                                <input type="hidden" name="selectedVoucherItems" id="selectedVoucherItems">
                                                 <input type="hidden" id="selectedItems" name="selectedItems" />
+
                                                 <h5 class=" mb-3">Phương thức giao hàng</h5>
                                                 <div class="d-flex justify-content-between mb-4">
                                                     <select name="deliveryId" id="deliverySelect">
@@ -127,7 +130,8 @@
                                                 </div>
                                                 <h5 class=" mb-3">Địa chỉ nhận hàng</h5>
                                                 <div class="mb-3">
-                                                    <input type="text" class="form-control form-control-lg" name="address" placeholder="Nhập địa chỉ của bạn" />
+                                                    <address-form></address-form>
+                                                <%--<input type="text" class="form-control form-control-lg" name="address" placeholder="Nhập địa chỉ của bạn" />--%>
                                                 </div>
 
                                                 <h5 class=" mb-3">Voucher hiện có</h5>
@@ -267,6 +271,7 @@
 
 <footer></footer>
 <script src="components/navigation.js"></script>
+<script src="components/address.js"></script>
 <script src="components/footer.js"></script>
 <script src="scripts/shoppingCart.js?v=${System.currentTimeMillis()}"></script>
 </body>

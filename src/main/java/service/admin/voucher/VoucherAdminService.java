@@ -16,23 +16,15 @@ public class VoucherAdminService {
         return voucherDAO.getAllVouchers();
     }
 
-    public void addVoucher(VoucherModel voucher) {
+    public void addVoucher(VoucherModel voucher){
         voucherDAO.addVoucher(voucher);
     }
 
-    public VoucherModel updateVoucher(VoucherModel voucher) {
+    public VoucherModel updateVoucher(VoucherModel voucher){
         return voucherDAO.updateVoucher(voucher);
     }
 
-    public void deleteVoucher(int voucherId) {
+    public void deleteVoucher(int voucherId){
         voucherDAO.deleteVoucher(voucherId);
-    }
-
-    public List<VoucherModel> getAllVoucherShipping() {
-        return voucherDAO.getAllVoucherShipping();
-    }
-
-    public List<VoucherModel> getAllVoucherItems() {
-        return voucherDAO.getAllVoucherItems();
     }
 }

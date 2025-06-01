@@ -88,6 +88,7 @@
               <!-- Status Filter -->
               <div class="col-md-2">
                 <label for="statusFilter" class="form-label">Trạng thái</label>
+
                 <select class="form-select" id="statusFilter" name="statusTypeId">
                   <option selected value="0">All</option>
 
@@ -137,7 +138,7 @@
                         <!-- Trạng thái -->
                         <div class="col-md-2">
                           <p class="small text-muted mb-1">Trạng thái</p>
-<%--                          <p class="status fw-normal mb-0">${od.nameStatus}</p>--%>
+                          <p class="status fw-normal mb-0">Đã xác nhận</p>
                           <div class="status-list" style="display: none;">
                             <form action="AdminUpdateStatusController" method="post" class="edit-status-form">
                               <input type="hidden" name="nameStatus" id="nameStatus" value="">
