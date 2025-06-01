@@ -119,6 +119,10 @@ public class VnpayPaymentController extends HttpServlet {
 
             orderId = orderService.addOrder(order);
             System.out.println("OrderId: " + orderId);
+            if (orderId <= 0) {
+                resp.getWriter().write("{\"status\":\"false\",\"message\":\"Failed to create order.\"}");
+                return;
+            }
 
             cartItemOrderService.addShoppingCartItemOrders(selectedItems, user.getId(), orderId);
             shoppingCartService.cleanShoppingCartItems(selectedItems);

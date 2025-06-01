@@ -33,4 +33,14 @@ public List<OrderModel> getAllOrders(int userId){
         OrderDao orderDao = new OrderDao();
         return orderDao.getOrderByDate(timestamp);
     }
+
+    public boolean updateStatusPayment(int orderId, int status){
+        OrderDao orderDao = new OrderDao();
+        return orderDao.updateStatusPayment(orderId, status);
+    }
+
+    public boolean deleteOrderById(int orderId){
+        OrderDao orderDao = new OrderDao();
+        return orderDao.deleteOrderById(orderId);
+    }
 }

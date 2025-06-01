@@ -263,6 +263,7 @@ public class ShoppingCartItemsDao {
          }
          return false;
      }
+
     public boolean updateStockProduct(int userId) {
         String sql = """
         SELECT spc.quantity, s.sizeId
@@ -308,6 +309,50 @@ public class ShoppingCartItemsDao {
         }
     }
 
+    public boolean restoreStockByOrderId(int orderId) {
+        String selectSql = "SELECT sizeId, quantity FROM shoppingcartitemsorder WHERE orderId = ?";
+        String updateSql = "UPDATE sizes SET stock = stock + ? WHERE sizeId = ?";
+
+        try (Connection con = JDBCUtil.getConnection()) {
+            con.setAutoCommit(false);
+
+            try (
+                    PreparedStatement selectStmt = con.prepareStatement(selectSql);
+                    PreparedStatement updateStmt = con.prepareStatement(updateSql)
+            ) {
+                selectStmt.setInt(1, orderId);
+                ResultSet rs = selectStmt.executeQuery();
+
+                while (rs.next()) {
+                    int sizeId = rs.getInt("sizeId");
+                    int quantity = rs.getInt("quantity");
+
+                    updateStmt.setInt(1, quantity);
+                    updateStmt.setInt(2, sizeId);
+
+                    int updatedRows = updateStmt.executeUpdate();
+                    if (updatedRows == 0) {
+                        con.rollback();
+                        System.out.println("Không thể cập nhật tồn kho cho sizeId = " + sizeId);
+                        return false;
+                    }
+                }
+
+                con.commit();
+                return true;
+            } catch (SQLException e) {
+                con.rollback();
+                e.printStackTrace();
+                return false;
+            } finally {
+                con.setAutoCommit(true);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 
     public boolean cleanShoppingCartItems(List<Integer> listSizeId) {

@@ -179,6 +179,20 @@ public class OrderDao {
         }
     }
 
+    public boolean deleteOrderById(int orderId) {
+        String sql = "DELETE FROM orders WHERE orderId = ?";
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, orderId);
+            int affectedRows = ps.executeUpdate();
+            return affectedRows > 0; // true nếu có ít nhất 1 dòng bị xóa
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public int convertStatusPaymentToInt(String statusPayment) {
         if ("Chưa thanh toán".equals(statusPayment)) {
             return 0;
