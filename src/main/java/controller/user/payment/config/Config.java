@@ -23,7 +23,7 @@ import jakarta.servlet.http.HttpServletRequest;
 public class Config {
 
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-//    public static String vnp_ReturnUrl = "http://localhost:8080/Shoe_war_exploded/vnpay_return.jsp";
+//    public static String vnp_ReturnUrl = "https://silkroadshop.io.vn/VnpayReturnController";
     public static String vnp_ReturnUrl = "http://localhost:8080/Shoe_war_exploded/VnpayReturnController";
     public static String vnp_TmnCode = "GBDWQQV9";
     public static String secretKey = "HOV92R3LQCM3JXW3L7BHXZWFCVRONEBQ";

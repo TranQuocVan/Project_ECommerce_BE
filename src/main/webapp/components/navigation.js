@@ -140,7 +140,8 @@ const renderNavigation = () => {
                 <div style="font-size: 20px;" class="row">
                     <div class="col-md-9 flex-align-items-center dropdown">
                         <span class="navigation"><a href="IndexController"><img style="width: 20px;" src="${urlLogo}" alt="logo"></a></span>
-                        <span class="navigation" id="shop"><a href="/Shoe_war_exploded/IndexController">Cửa hàng</a></span> 
+<!--                        <span class="navigation" id="shop"><a href="/Shoe_war_exploded/IndexController">Cửa hàng</a></span> -->
+                        <span class="navigation" id="shop"><a href="IndexController">Cửa hàng</a></span> 
                         <span class="navigation" id="shoe"><a href="productDetails.jsp">Giày</a></span> 
                         <span class="navigation" id="sandal"><a href="#">Dép</a></span> 
                         <span class="navigation"><a href="GetProductByCategoryNameController">Sản phẩm theo loại hàng</a></span>
@@ -148,7 +149,8 @@ const renderNavigation = () => {
                                                            
                     </div>
                     <div class="col-md-3 flex-align-items-center" style="justify-content: end;">
-                        ${isLogin ? `<a href='./userInfo.jsp'><i class="fa-regular fa-user"></i></i></a> 
+                        ${isLogin ? `<!--<a href='./userInfo.jsp'><i class="fa-regular fa-user"></i></i></a> -->
+                                     <a href='./UserInfoController'><i class="fa-regular fa-user"></i></i></a>
                                      <a href='./ShoppingCartItemsController'><i class="fa-solid fa-cart-shopping"></i></i></a>
                                      <a href='./OrderController'><i class="fa-solid fa-truck"></i></i></a>` : `<a href='SignInController'>Sign in</i></a>`}
                     </div>
