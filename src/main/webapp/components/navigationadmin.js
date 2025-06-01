@@ -1,5 +1,6 @@
 const addNavigationAdmin = () => {
     const navigationAdmin = document.querySelector("#navigationAdmin");
+    // <a href="http://localhost:8080/Shoe_war_exploded/AddVoucherController">
     navigationAdmin.innerHTML = `
             <div id="navAdmin">
                 <h4>Navigation Admin</h4>
@@ -14,7 +15,6 @@ const addNavigationAdmin = () => {
                     </div>
                 </a>
                 
-                
 
                 <div class="navAdmin-item" id="addCategoryToggle">
                     <div class="navAdmin-text">
@@ -25,30 +25,39 @@ const addNavigationAdmin = () => {
                     </div>
                 </div>
                 <div class="subMenu" id="categoryOptions">
-                <a href="http://localhost:8080/Shoe_war_exploded/adminPages/addProductGroup.jsp">
-                    <div class="navAdmin-subItem">
-                        Thêm nhóm sản phẩm
-                    </div>
-                    </a>
+                    <span class="navigation">
+<!--                        <a href="http://localhost:8080/Shoe_war_exploded/adminPages/addProductGroup.jsp">-->
+                        <a href="AddProductGroupController">
+                            <div class="navAdmin-subItem">
+                                Thêm nhóm sản phẩm
+                            </div>
+                        </a>
+                    </span>
                     
-                     <a href="http://localhost:8080/Shoe_war_exploded/adminPages/addProductCatelogy.jsp">
-                    <div class="navAdmin-subItem">
-                        Thêm loại sản phẩm
-                    </div>
-                    </a>
-
-                     <a href="http://localhost:8080/Shoe_war_exploded/AddProductController">
-                    <div class="navAdmin-subItem">
-                        Thêm sản phẩm 
-                    </div>
-                    </a>
+                    <span class="navigation">
+<!--                        <a href="http://localhost:8080/Shoe_war_exploded/adminPages/addProductCatelogy.jsp">-->
+                        <a href="AddProductCatalogController">
+                            <div class="navAdmin-subItem">
+                                Thêm loại sản phẩm
+                            </div>
+                        </a>
+                    </span>
+                     
+                    <span class="navigation">
+                        <a href="AddProductController">
+                            <div class="navAdmin-subItem">
+                                Thêm sản phẩm 
+                            </div>
+                        </a>
+                    </span>
                     
-                     <a href="http://localhost:8080/Shoe_war_exploded/ProductAdminController">
-                    <div class="navAdmin-subItem">
-                        Quản lí sản phẩm
-                    </div>
-                     </a>
-
+                     <span class="navigation">
+                        <a href="ProductAdminController">
+                            <div class="navAdmin-subItem">
+                                Quản lí sản phẩm
+                            </div>
+                        </a>
+                    </span>
                 </div>
 
 
@@ -62,20 +71,21 @@ const addNavigationAdmin = () => {
                 </div>
                 
                 <div class="subMenu" id="orderOptions">
-                <a href="http://localhost:8080/Shoe_war_exploded/OrderAdminController">
-                    <div class="navAdmin-subItem">
-                        Quản lí trạng thái đơn hàng
-                    </div>
-                </a>
-                
-                <a href="adminPages/signAdmin.jsp">
-                    <div class="navAdmin-subItem">
-                        Quản lí chữ ký đơn hàng
-                    </div>
-                </a>
+                    <span class="navigation">
+                        <a href="OrderAdminController">
+                            <div class="navAdmin-subItem">
+                                Quản lí trạng thái đơn hàng
+                            </div>
+                        </a>
+                    </span>
                     
-                   
-                  
+                    <span class="navigation">
+                        <a href="ManageOrderSignatureStatusController">
+                            <div class="navAdmin-subItem">
+                                Quản lí chữ ký đơn hàng
+                            </div>
+                        </a>
+                    </span>
                 </div>
                 
                 
@@ -88,11 +98,13 @@ const addNavigationAdmin = () => {
                     </div>
                 </div>
                 <div class="subMenu" id="userOptions">
-                <a href="http://localhost:8080/Shoe_war_exploded/adminPages/addProductGroup.jsp">
-                    <div class="navAdmin-subItem">
-                        Quản lí user
-                    </div>
-                    </a>
+                    <span class="navigation">
+                        <a href="http://localhost:8080/Shoe_war_exploded/adminPages/addProductGroup.jsp">
+                            <div class="navAdmin-subItem">
+                                Quản lí user
+                            </div>
+                        </a>
+                    </span>            
                 </div>
                 
                 
@@ -105,29 +117,38 @@ const addNavigationAdmin = () => {
                     </div>
                 </div>
                 <div class="subMenu" id="voucherOptions">
-                    <a href="http://localhost:8080/Shoe_war_exploded/AddTypeVoucherController">
-                        <div class="navAdmin-subItem">
-                            Thêm loại Voucher
-                        </div>
-                    </a>
-                    
-                     <a href="http://localhost:8080/Shoe_war_exploded/AddVoucherController">
-                        <div class="navAdmin-subItem">
-                            Thêm Voucher
-                        </div>
-                    </a>
-
-                     <a href="http://localhost:8080/Shoe_war_exploded/ManagerTypeVoucherController">
-                        <div class="navAdmin-subItem">
-                            Quản lí loại Voucher
-                        </div>
-                    </a>
-                    
-                     <a href="http://localhost:8080/Shoe_war_exploded/ManagerVoucherController">
-                        <div class="navAdmin-subItem">
-                            Quản lí Voucher
-                        </div>
-                     </a>
+                    <span class="navigation">
+                        <a href="AddTypeVoucherController">
+                            <div class="navAdmin-subItem">
+                                Thêm loại Voucher
+                            </div>
+                        </a>
+                    </span>
+                   
+                    <span class="navigation">
+                        <a href="AddVoucherController">
+                            <div class="navAdmin-subItem">
+                                Thêm Voucher
+                            </div>
+                        </a>
+                    </span>
+                     
+                    <span class="navigation">
+                        <a href="ManagerTypeVoucherController">
+                            <div class="navAdmin-subItem">
+                                Quản lí loại Voucher
+                            </div>
+                        </a>
+                    </span>
+                     
+                    <span class="navigation">
+                        <a href="ManagerVoucherController">
+                            <div class="navAdmin-subItem">
+                                Quản lí Voucher
+                            </div>
+                         </a>
+                    </span>
+                     
 
                 </div>
 

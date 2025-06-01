@@ -25,6 +25,12 @@ public class ShoppingCartService {
         ShoppingCartItemsDao shoppingCartItemsDao = new ShoppingCartItemsDao();
         return shoppingCartItemsDao.cleanShoppingCartItems(listSizeId);
     }
+
+    public boolean restoreStockByOrderId(int orderId){
+        ShoppingCartItemsDao shoppingCartItemsDao = new ShoppingCartItemsDao();
+        return shoppingCartItemsDao.restoreStockByOrderId(orderId);
+    }
+
     public boolean updateStockProduct(int userId) {
         ShoppingCartItemsDao shoppingCartItemsDao = new ShoppingCartItemsDao();
         return shoppingCartItemsDao.updateStockProduct(userId);

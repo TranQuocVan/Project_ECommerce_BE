@@ -15,14 +15,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import model.Order;
-import model.OrderModel;
 import service.log.LogService;
 import service.user.account.UserService;
+import service.user.cart.ShoppingCartService;
+import service.user.order.OrderService;
 
 @WebServlet(name = "VnpayReturnController", value = "/VnpayReturnController")
 public class VnpayReturnController extends HttpServlet {
-    OrderDao orderDao = new OrderDao();
+//    OrderDao orderDao = new OrderDao();
+    private final OrderService orderService = new OrderService();
+    private final ShoppingCartService shoppingCartService = new ShoppingCartService();
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -53,7 +55,7 @@ public class VnpayReturnController extends HttpServlet {
             }
             String signValue = Config.hashAllFields(fields);
             if (signValue.equals(vnp_SecureHash)) {
-                String paymentCode = request.getParameter("vnp_TransactionNo");
+//                String paymentCode = request.getParameter("vnp_TransactionNo");
 
                 String orderId = request.getParameter("vnp_TxnRef");
 
@@ -61,14 +63,31 @@ public class VnpayReturnController extends HttpServlet {
                 boolean transSuccess = false;
 
                 int statusPayment = 0;
-                if ("00".equals(request.getParameter("vnp_TransactionStatus"))) {
+                String transactionStatus = request.getParameter("vnp_TransactionStatus");
+                if ("00".equals(transactionStatus)) {
                     //update banking system
                     statusPayment = 1;
 //                    order.setStatus("Completed");
                     transSuccess = true;
+                } else {
+                    // Trả lại hàng vào kho trước khi xóa đơn
+                    boolean restored = shoppingCartService.restoreStockByOrderId(orderIdInt);
+                    if (!restored) {
+                        System.out.println("Khôi phục tồn kho thất bại! Không xóa đơn hàng.");
+                        response.getWriter().write("{\"status\":\"false\",\"message\":\"Restore stock failed. Cannot delete order.\"}");
+                        return;
+                    }
+
+                    // Sau khi khôi phục tồn kho thành công, tiến hành xóa đơn hàng
+                    boolean isDeleted = orderService.deleteOrderById(orderIdInt);
+                    if (!isDeleted) {
+                        System.out.println("Xóa đơn hàng thất bại!");
+                    } else {
+                        System.out.println("Đã xóa đơn hàng do thanh toán thất bại.");
+                    }
                 }
 
-                boolean updateStatusPayment = orderDao.updateStatusPayment(orderIdInt, statusPayment);
+                boolean updateStatusPayment = orderService.updateStatusPayment(orderIdInt, statusPayment);
                 if (!updateStatusPayment) {
                     System.out.println("Cập nhật trạng thái thanh toán thất bại!");
                 }
