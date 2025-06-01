@@ -28,6 +28,7 @@ public class JDBCUtil {
 //            String url = System.getenv("URL_DB");
 //            String username = System.getenv("USER_DB");
 //            String password = System.getenv("PASS_DB");
+
             // Tạo kết nối
             c = DriverManager.getConnection(url, username, password);
 
