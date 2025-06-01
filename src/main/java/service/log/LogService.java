@@ -1,6 +1,9 @@
 package service.log;
 
 import database.LogDAO;
+import model.request.LogModel;
+
+import java.util.List;
 
 public class LogService {
 
@@ -61,6 +64,10 @@ public class LogService {
 
     public static void adminDeleteProduct(int userId, String dataAfter, String ipAddress) {
         LogDAO.insertLog(userId, "ADMIN_DELETE_PRODUCT", "Products", "none", "productId has deleted" + dataAfter, ipAddress);
+    }
+
+    public static List<LogModel> getAllLogs() {
+        return LogDAO.getAllLogs();
     }
 
 

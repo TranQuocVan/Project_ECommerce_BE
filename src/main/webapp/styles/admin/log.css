@@ -1,0 +1,136 @@
+
+
+/* Tiêu đề trang */
+.titlePageAdmin {
+    font-weight: 600;
+    font-size: 1.8rem;
+    color: #222;
+    margin-bottom: 1.5rem;
+}
+
+
+
+/* Bảng log */
+#logsTable {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+    font-size: 0.9rem;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+    padding: 20px;
+}
+
+/* Header bảng */
+#logsTable thead tr {
+    border-radius: 8px;
+}
+
+#logsTable thead th {
+    background-color: #000000; /* Bootstrap dark header */
+    color: #fff;
+    font-weight: 600;
+    text-align: center;
+    padding: 12px 15px;
+    border-bottom: 2px solid #23272b;
+}
+
+/* Các hàng dữ liệu */
+#logsTable tbody tr {
+    background-color: #fff;
+    transition: background-color 0.25s ease;
+    box-shadow: 0 1px 4px rgb(0 0 0 / 0.05);
+    border-radius: 6px;
+}
+
+#logsTable tbody tr:hover {
+    background-color: #f1f7ff;
+}
+
+/* Các ô dữ liệu */
+#logsTable tbody td {
+    padding: 10px 15px;
+    vertical-align: middle;
+    text-align: center;
+    border-bottom: 1px solid #e0e0e0;
+    word-break: break-word;
+}
+
+/* Khi không có dữ liệu hoặc lỗi */
+#logsTable tbody tr td.text-center {
+    font-style: italic;
+    color: #888;
+    padding: 25px 0;
+}
+
+/* Responsive cho bảng trên màn hình nhỏ */
+@media (max-width: 767px) {
+    #logsTable, #logsTable thead, #logsTable tbody, #logsTable th, #logsTable td, #logsTable tr {
+        display: block;
+    }
+    #logsTable thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    #logsTable tbody tr {
+        margin-bottom: 15px;
+        box-shadow: none;
+        border-radius: 6px;
+        background-color: #fff;
+        padding: 10px;
+    }
+    #logsTable tbody td {
+        border: none;
+        position: relative;
+        padding-left: 50%;
+        text-align: left;
+        white-space: pre-wrap;
+    }
+    #logsTable tbody td::before {
+        position: absolute;
+        top: 10px;
+        left: 15px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: 600;
+        content: attr(data-label);
+    }
+}
+
+#logsTable thead th:first-child {
+    border-top-left-radius: 12px;
+}
+
+#logsTable thead th:last-child {
+    border-top-right-radius: 12px;
+}
+
+
+#logsTable tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 12px;
+}
+
+#logsTable tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 12px;
+}
+
+#filter{
+    display: flex;
+    align-items: center ;
+    gap: 20px;
+    justify-content: flex-end
+}
+#filter button{
+    background: #0044ff;
+    width: 120px;
+}
+
+#filter button:hover{
+    background: white;
+    color: #0044ff;;
+}
+
+

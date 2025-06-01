@@ -130,6 +130,25 @@ const addNavigationAdmin = () => {
                      </a>
 
                 </div>
+                
+               
+                
+                <div class="navAdmin-item" id="logToggle">
+                    <div class="navAdmin-text">
+                       <a>Quản lý Log</a> 
+                    </div>
+                    <div class="navAdmin-icon">
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                </div>
+                <div class="subMenu" id="logOptions">
+                    <a href="LogPageController">
+                        <div class="navAdmin-subItem">
+                            Quản lý log
+                        </div>
+                    </a>          
+                </div>
+                
 
 <!--                <a href="./delivery.jsp">-->
 <!--                    <div class="navAdmin-item">-->
@@ -185,6 +204,13 @@ const addNavigationAdmin = () => {
     voucherToggle.addEventListener("click", () => {
 
         voucherOptions.classList.toggle("show");
+    });
+
+
+    const logToggle = document.getElementById("logToggle");
+    const logOptions = document.getElementById("logOptions");
+    logToggle.addEventListener("click", () => {
+        logOptions.classList.toggle("show");
     });
 };
 
