@@ -1,6 +1,9 @@
 package service.log;
 
 import database.LogDAO;
+import model.request.LogModel;
+
+import java.util.List;
 
 public class LogService {
 
@@ -63,9 +66,13 @@ public class LogService {
         LogDAO.insertLog(userId, "ADMIN_DELETE_PRODUCT", "Products", "none", "productId has deleted" + dataAfter, ipAddress);
     }
 
+
+    public static List<LogModel> getAllLogs() {
+        return LogDAO.getAllLogs();
+    }
+
     public static void voucherDecreaseQuantity(int userId, boolean success, String ipAddress) {
         String dataAfter = success ? "DECREASE_SUCCESS" : "DECREASE_FAILED_OR_OUT_OF_STOCK";
         LogDAO.insertLog(userId, "DECREASE_VOUCHER_QUANTITY", "voucher", "none", dataAfter, ipAddress);
-    }
 
 }

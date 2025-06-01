@@ -70,6 +70,41 @@ public class StatusDao {
         return statuses; // Trả về danh sách các StatusModel
     }
 
+    public List<StatusModel> getAllStatuses() {
+        String sql = "SELECT * FROM statuses";
+        List<StatusModel> statuses = new ArrayList<>();
+
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement st = con.prepareStatement(sql);
+             ResultSet rs = st.executeQuery()) {
+
+            while (rs.next()) {
+                StatusModel status = new StatusModel();
+                status.setId(rs.getInt("statusId"));
+                status.setName(rs.getString("name"));
+                status.setOrderId(rs.getInt("orderId"));
+                status.setDescription(rs.getString("description"));
+
+                // timeline là DATE => lấy bằng getDate, rồi convert thành Timestamp
+                Date sqlDate = rs.getDate("timeline"); // java.sql.Date
+                if (sqlDate != null) {
+                    status.setTimeline(new Timestamp(sqlDate.getTime()));
+                }
+
+                statuses.add(status);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return statuses;
+    }
+
+
+
+
+
 
 
 }

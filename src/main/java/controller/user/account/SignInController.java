@@ -1,6 +1,5 @@
 package controller.user.account;
 
-import database.LogDAO;
 import database.UserDao;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
