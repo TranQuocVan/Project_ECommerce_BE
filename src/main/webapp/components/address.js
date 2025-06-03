@@ -2,6 +2,7 @@
         constructor() {
             super();
             this.attachShadow({ mode: 'open' }); // Tạo Shadow DOM
+            this.totalFee = 0; /////
         }
 
         connectedCallback() {
@@ -157,6 +158,7 @@
 
             if (!provinceID || !districtID || !wardID) {
                 resultText.textContent = 'Vui lòng chọn đầy đủ Tỉnh, Quận, và Xã để tính phí.';
+                this.totalFee = 0; /////
                 return;
             }
 
@@ -182,15 +184,22 @@
                 })
                 .then(data => {
                     if (data && data.data && data.data.total) {
+                        this.totalFee = data.data.total; ///// Lưu lại totalFee
                         resultText.textContent = `Phí vận chuyển: ${data.data.total.toLocaleString()}đ`;
                     } else {
+                        this.totalFee = 0;
                         resultText.textContent = 'Không nhận được phí vận chuyển từ máy chủ.';
                     }
                 })
                 .catch(error => {
                     console.error('Lỗi khi tính phí vận chuyển:', error);
+                    this.totalFee = 0;
                     resultText.textContent = 'Đã xảy ra lỗi khi tính phí vận chuyển.';
                 });
+        }
+
+        getShippingFee() {
+            return this.totalFee; ///// Để JS ngoài lấy được
         }
 
     }

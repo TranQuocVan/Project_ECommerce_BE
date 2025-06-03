@@ -172,6 +172,35 @@ function orderButton(button, event) {
 
     document.getElementById("selectedVoucherShipping").value = selectedShippingInput ? selectedShippingInput.value : "0";
     document.getElementById("selectedVoucherItems").value = selectedItemInput ? selectedItemInput.value : "0";
+
+    ///// LẤY totalFee TỪ address-form
+    const addressForm = document.getElementById("addressForm");
+
+    // Kiểm tra form và method getShippingFee có tồn tại không
+    if (!addressForm || typeof addressForm.getShippingFee !== 'function') {
+        Swal.fire({
+            title: 'Thiếu thông tin địa chỉ',
+            text: 'Không thể lấy phí vận chuyển. Vui lòng kiểm tra lại địa chỉ.',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
+
+    const shippingFee = addressForm.getShippingFee(); ///// dùng method trong web component
+
+    if (shippingFee === 0) {
+        Swal.fire({
+            title: 'Thiếu thông tin địa chỉ',
+            text: 'Vui lòng chọn đầy đủ Tỉnh / Quận / Xã để tính phí vận chuyển.',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
+    document.getElementById("shippingFee").value = shippingFee;
+
+
     let form = document.getElementById("orderForm");
 
     if (paymentId === 1) {
@@ -336,6 +365,15 @@ function updateTotalPrice() {
     const feeDisplayText = document.querySelector("#feeDisplay").textContent;
     const deliveryFee = parseFloat(feeDisplayText.replace(/[.,đ\s]+/g, ""));
     total += deliveryFee;
+
+    // Lấy thêm phí vận chuyển từ address-form
+    let shippingFee = 0;
+    const addressForm = document.getElementById("addressForm");
+    if (addressForm && typeof addressForm.getShippingFee === "function") {
+        shippingFee = addressForm.getShippingFee() || 0;
+    }
+    total += shippingFee;
+    document.getElementById('shippingFee').value = shippingFee;
 
     // Lưu giá trị tổng tiền gốc (chưa áp dụng giảm giá)
     originalTotalAmount = total;

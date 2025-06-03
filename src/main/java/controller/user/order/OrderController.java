@@ -112,10 +112,18 @@ public class OrderController extends HttpServlet {
             // Tính toán tổng giá
             float discountShippingFee = 0;
             float discountItemsFee = 0;
+            float shippingFee = 0;
             discountShippingFee = voucherService.calculateDiscountShippingFee(voucherShippingId, deliveryId);
             discountItemsFee = voucherService.calculateDiscountItemsFee(voucherItemsId, selectedItems);
+            try {
+                shippingFee = Float.parseFloat(request.getParameter("shippingFee"));
+            } catch (NumberFormatException e) {
+                shippingFee = 0;
+            }
 
-            float totalPrice = orderService.calculateTotalPrice(selectedItems, user.getId(), deliveryId) - discountShippingFee - discountItemsFee;
+//            float totalPrice = orderService.calculateTotalPrice(selectedItems, user.getId(), deliveryId) - discountShippingFee - discountItemsFee;
+            float totalPrice = orderService.calculateTotalPrice(selectedItems, user.getId(), deliveryId)
+                    - discountShippingFee - discountItemsFee + shippingFee;
             Order order = new Order(paymentId, sqlTimestamp, request.getParameter("address"), totalPrice, user.getId(),
                     deliveryId);
 

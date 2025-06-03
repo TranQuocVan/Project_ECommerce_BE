@@ -74,5 +74,5 @@ public class LogService {
     public static void voucherDecreaseQuantity(int userId, boolean success, String ipAddress) {
         String dataAfter = success ? "DECREASE_SUCCESS" : "DECREASE_FAILED_OR_OUT_OF_STOCK";
         LogDAO.insertLog(userId, "DECREASE_VOUCHER_QUANTITY", "voucher", "none", dataAfter, ipAddress);
-
+    }
 }
