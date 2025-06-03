@@ -105,6 +105,7 @@
                                                 <input type="hidden" name="selectedVoucherShipping" id="selectedVoucherShipping">
                                                 <input type="hidden" name="selectedVoucherItems" id="selectedVoucherItems">
                                                 <input type="hidden" id="selectedItems" name="selectedItems" />
+                                                <input type="hidden" id="shippingFee" name="shippingFee" value="0">
 
                                                 <h5 class=" mb-3">Phương thức giao hàng</h5>
                                                 <div class="d-flex justify-content-between mb-4">
@@ -130,7 +131,8 @@
                                                 </div>
                                                 <h5 class=" mb-3">Địa chỉ nhận hàng</h5>
                                                 <div class="mb-3">
-                                                    <address-form></address-form>
+<%--                                                    <address-form></address-form>--%>
+                                                    <address-form id="addressForm"></address-form>
                                                 <%--<input type="text" class="form-control form-control-lg" name="address" placeholder="Nhập địa chỉ của bạn" />--%>
                                                 </div>
 

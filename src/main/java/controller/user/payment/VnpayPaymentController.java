@@ -104,10 +104,18 @@ public class VnpayPaymentController extends HttpServlet {
             // Tính toán tổng giá
             float discountShippingFee = 0;
             float discountItemsFee = 0;
+            float shippingFee = 0;
             discountShippingFee = voucherService.calculateDiscountShippingFee(voucherShippingId, deliveryId);
             discountItemsFee = voucherService.calculateDiscountItemsFee(voucherItemsId, selectedItems);
+            try {
+                shippingFee = Float.parseFloat(req.getParameter("shippingFee"));
+            } catch (NumberFormatException e) {
+                shippingFee = 0;
+            }
 
-            totalPrice = orderService.calculateTotalPrice(selectedItems, user.getId(), deliveryId) - discountShippingFee - discountItemsFee;
+//            totalPrice = orderService.calculateTotalPrice(selectedItems, user.getId(), deliveryId) - discountShippingFee - discountItemsFee;
+            totalPrice = orderService.calculateTotalPrice(selectedItems, user.getId(), deliveryId)
+                    - discountShippingFee - discountItemsFee + shippingFee;
             System.out.println("Tổng giá: " + totalPrice);
             Order order = new Order(paymentId, sqlTimestamp, req.getParameter("address"), totalPrice, user.getId(), deliveryId);
 
