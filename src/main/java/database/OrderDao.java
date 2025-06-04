@@ -180,18 +180,61 @@ public class OrderDao {
     }
 
     public boolean deleteOrderById(int orderId) {
-        String sql = "DELETE FROM orders WHERE orderId = ?";
-        try (Connection con = JDBCUtil.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        String deleteItemsSql = "DELETE FROM shoppingcartitemsorder WHERE orderId = ?";
+        String deleteStatusSql = "DELETE FROM statuses WHERE orderId = ?";
+        String deleteOrderSql = "DELETE FROM orders WHERE orderId = ?";
 
-            ps.setInt(1, orderId);
-            int affectedRows = ps.executeUpdate();
-            return affectedRows > 0; // true nếu có ít nhất 1 dòng bị xóa
+        Connection con = null;
+
+        try {
+            con = JDBCUtil.getConnection();
+            con.setAutoCommit(false); // Bắt đầu transaction
+
+            // B1: Xóa bảng shoppingcartitemsorder (nếu có liên kết với orders)
+            try (PreparedStatement psItems = con.prepareStatement(deleteItemsSql)) {
+                psItems.setInt(1, orderId);
+                psItems.executeUpdate();
+            }
+
+            // B2: Xóa bảng statuses (liên kết bắt buộc gây lỗi nếu không xóa trước)
+            try (PreparedStatement psStatus = con.prepareStatement(deleteStatusSql)) {
+                psStatus.setInt(1, orderId);
+                psStatus.executeUpdate();
+            }
+
+            // B3: Xóa đơn hàng trong bảng orders
+            int affectedRows = 0;
+            try (PreparedStatement psOrder = con.prepareStatement(deleteOrderSql)) {
+                psOrder.setInt(1, orderId);
+                affectedRows = psOrder.executeUpdate();
+            }
+
+            con.commit(); // Commit nếu không lỗi
+            return affectedRows > 0;
+
         } catch (Exception e) {
             e.printStackTrace();
+            if (con != null) {
+                try {
+                    con.rollback(); // Rollback nếu có lỗi
+                    System.err.println("Rollback giao dịch vì lỗi: " + e.getMessage());
+                } catch (SQLException rollbackEx) {
+                    rollbackEx.printStackTrace();
+                }
+            }
+        } finally {
+            if (con != null) {
+                try {
+                    con.setAutoCommit(true); // Khôi phục lại trạng thái ban đầu
+                    con.close();
+                } catch (SQLException closeEx) {
+                    closeEx.printStackTrace();
+                }
+            }
         }
         return false;
     }
+
 
     public int convertStatusPaymentToInt(String statusPayment) {
         if ("Chưa thanh toán".equals(statusPayment)) {
