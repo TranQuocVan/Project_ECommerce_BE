@@ -106,6 +106,7 @@
                                                 <input type="hidden" name="selectedVoucherItems" id="selectedVoucherItems">
                                                 <input type="hidden" id="selectedItems" name="selectedItems" />
                                                 <input type="hidden" id="shippingFee" name="shippingFee" value="0">
+                                                <input type="hidden" name="address" id="hiddenAddressInput" />
 
                                                 <h5 class=" mb-3">Phương thức giao hàng</h5>
                                                 <div class="d-flex justify-content-between mb-4">

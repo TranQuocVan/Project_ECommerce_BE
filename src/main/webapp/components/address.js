@@ -35,7 +35,7 @@
                   </select>
     
                   <label for="address">Số nhà / Địa chỉ cụ thể:</label>
-                  <input type="text" id="address" placeholder="Ví dụ: Số 10, ngõ 45, đường Nguyễn Trãi">
+                  <input type="text" id="address" name="address" placeholder="Ví dụ: Số 10, ngõ 45, đường Nguyễn Trãi">
                     </form>
                     <p id="shipping-fee-result">Phí vận chuyển sẽ hiển thị tại đây sau khi chọn đầy đủ địa chỉ.</p>
                     
@@ -186,6 +186,11 @@
                     if (data && data.data && data.data.total) {
                         this.totalFee = data.data.total; ///// Lưu lại totalFee
                         resultText.textContent = `Phí vận chuyển: ${data.data.total.toLocaleString()}đ`;
+
+                        ///// Dispatch sự kiện báo rằng shippingFee đã được cập nhật
+                        this.dispatchEvent(new CustomEvent('shippingFeeUpdated', {
+                            detail: { shippingFee: this.totalFee }
+                        }));
                     } else {
                         this.totalFee = 0;
                         resultText.textContent = 'Không nhận được phí vận chuyển từ máy chủ.';
