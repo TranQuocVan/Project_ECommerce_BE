@@ -67,7 +67,7 @@
         }
 
         loadProvinces() {
-            fetch('/Shoe_war_exploded/ProvinceController', {
+            fetch('/ProvinceController', {
                 method: 'GET',
             })
                 .then(response => response.json())
@@ -101,7 +101,7 @@
             wardSelect.innerHTML = '<option value="">-- Chọn Phường / Xã --</option>';
 
             if (provinceID) {
-                fetch(`/Shoe_war_exploded/DistrictController?provinceID=${provinceID}`, { // Địa chỉ này cần được chỉnh sửa đúng với route của bạn
+                fetch(`/DistrictController?provinceID=${provinceID}`, { // Địa chỉ này cần được chỉnh sửa đúng với route của bạn
                     method: 'GET',
                 })
                     .then(response => response.json())
@@ -130,7 +130,7 @@
             wardSelect.innerHTML = '<option value="">-- Chọn Phường / Xã --</option>';
 
             if (provinceID && districtID) {
-                fetch(`/Shoe_war_exploded/WardController?districtID=${districtID}`, {
+                fetch(`/WardController?districtID=${districtID}`, {
                     method: 'GET',
                 })
                     .then(response => response.json())
@@ -167,7 +167,7 @@
             const serviceTypeId = totalQuantity > 2 ? 5 : 2;
 
             // ✅ Gửi yêu cầu đến Controller
-            fetch(`/Shoe_war_exploded/ShippingFeeController`, {
+            fetch(`/ShippingFeeController`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
