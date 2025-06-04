@@ -21,7 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
  * Shoe_war_exploded
  */
 public class Config {
-    
+
 
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
     public static String vnp_ReturnUrl = "https://silkroadshop.io.vn/VnpayReturnController";

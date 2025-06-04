@@ -200,6 +200,21 @@ function orderButton(button, event) {
     }
     document.getElementById("shippingFee").value = shippingFee;
 
+    const addressInput = addressForm.shadowRoot.getElementById("address");
+    const addressText = addressInput ? addressInput.value.trim() : "";
+
+    if (!addressText) {
+        Swal.fire({
+            title: 'Thiếu địa chỉ cụ thể',
+            text: 'Vui lòng nhập địa chỉ cụ thể (số nhà, ngõ, đường...)',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
+
+    document.getElementById("hiddenAddressInput").value = addressText;
+
 
     let form = document.getElementById("orderForm");
 
@@ -342,6 +357,21 @@ document.addEventListener('DOMContentLoaded', function () {
 let originalTotalAmount = 0;
 let discountShipping = 0;
 let discountItems = 0;
+
+document.addEventListener("DOMContentLoaded", function () {
+    const addressForm = document.getElementById("addressForm");
+
+    if (addressForm) {
+        addressForm.addEventListener("shippingFeeUpdated", function (event) {
+            const newFee = event.detail.shippingFee || 0;
+            document.getElementById('shippingFee').value = newFee;
+
+            // 💡 Gọi lại hàm tính tổng sau khi chắc chắn đã có shipping fee
+            updateTotalPrice();
+        });
+    }
+});
+
 
 function updateTotalPrice() {
     let total = 0;
