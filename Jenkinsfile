@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'Maven 3.9.9'   // Tên Maven tool bạn khai báo trong Jenkins Global Tool Configuration
+    }
+
     environment {
         DOCKER_IMAGE = 'vantran102/silkroadv2:vtest'
         DOCKERHUB_CREDENTIALS_ID = 'dockerhub-credentials'   // ID trong Jenkins Credential cho Docker Hub
@@ -19,7 +23,7 @@ pipeline {
         stage('Build with Maven') {
             steps {
                 echo '🔧 Building project with Maven...'
-                sh 'mvn clean package -DskipTests'   // Bỏ qua test nếu bạn muốn nhanh
+                sh 'mvn clean package -DskipTests'
             }
         }
 
