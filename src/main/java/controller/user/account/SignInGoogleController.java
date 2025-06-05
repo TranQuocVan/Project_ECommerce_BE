@@ -11,6 +11,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import model.UserModel;
 import service.log.LogService;
+import service.user.account.AuthenticationService;
 import service.user.account.UserService;
 
 import java.io.IOException;
@@ -22,6 +23,7 @@ import java.util.Collections;
 public class SignInGoogleController extends HttpServlet {
 
     private static final String CLIENT_ID = "217805572415-osmo8h44ev71tn023pdqg192e4q7sg31.apps.googleusercontent.com";
+    private final AuthenticationService authenticationService = new AuthenticationService();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -51,25 +53,21 @@ public class SignInGoogleController extends HttpServlet {
                 String name = (String) payload.get("name");
 
 
-                UserDao userDao = new UserDao();
-                UserModel userModel = userDao.selectByGmail(email);
-
-                if (userModel == null) {
-                    userModel = new UserModel();
-                    userModel.setGmail(email);
-                    userModel.setPassword("");
-                    userModel.setRole("ROLE_USER");
-                    // Facebook không cần password
-                    userDao.insert(userModel); // 🚀 Lưu user vào DB
-                }
-
-
                 HttpSession session = request.getSession(true);
+
+                UserModel userModel = null;
+                try {
+                    userModel = authenticationService.registerUser(email, "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b");
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
                 try {
                     UserService.handleRememberMe(userModel, session, response);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
+
+                LogService.signUp(userModel.getId(),email,true,ipAddress);
 
 
                 LogService.logLoginWithGG(userModel.getId(), credential,true,ipAddress);
