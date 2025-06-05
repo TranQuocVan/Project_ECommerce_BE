@@ -26,8 +26,8 @@ public class Config {
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
     public static String vnp_ReturnUrl = "https://silkroadshop.io.vn/VnpayReturnController";
 //    public static String vnp_ReturnUrl = "http://localhost:8080/Shoe_war_exploded/VnpayReturnController";
-    public static String vnp_TmnCode = "GBDWQQV9";
-    public static String secretKey = "HOV92R3LQCM3JXW3L7BHXZWFCVRONEBQ";
+    public static String vnp_TmnCode = "9EYUWP3C";
+    public static String secretKey = "GA4HCDN7JFQ4M3ZIA7GUFXQZ2OJWVPAB";
     public static String vnp_ApiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
 
     public static String md5(String message) {
