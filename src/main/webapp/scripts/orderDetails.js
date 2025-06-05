@@ -5,7 +5,7 @@ const gmail = document.getElementById("gmail").innerText;
 // Fetch order details from the server
 async function fetchOrderDetails(orderId) {
     try {
-        const response = await fetch("/Shoe_war_exploded/ApiDataOrder", {
+        const response = await fetch("/ApiDataOrder", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id: orderId }),
@@ -22,7 +22,7 @@ async function fetchOrderDetails(orderId) {
 // Fetch order signature and publish key
 async function fetchOrderSignAndPublishKey(orderId) {
     try {
-        const response = await fetch(`/Shoe_war_exploded/ApiDataOrder?id=${orderId}`, {
+        const response = await fetch(`/ApiDataOrder?id=${orderId}`, {
             method: "GET",
             headers: { "Content-Type": "application/json" },
         });
@@ -40,7 +40,7 @@ async function fetchOrderSignAndPublishKey(orderId) {
 // Check if order has a signature
 async function checkHasKey() {
     try {
-        const response = await fetch(`/Shoe_war_exploded/KeyController`, {
+        const response = await fetch(`/KeyController`, {
             method: "POST", // Changed from GET to POST
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ gmail }), // Send gmail in the body as JSON
@@ -58,7 +58,7 @@ async function checkHasKey() {
 // Submit signature for verification
 async function submitSignature(orderId, base64Signature) {
     try {
-        const response = await fetch("/Shoe_war_exploded/ApiVerifySignature", {
+        const response = await fetch("/ApiVerifySignature", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ orderId, base64Signature, gmail }),
@@ -76,7 +76,7 @@ async function submitSignature(orderId, base64Signature) {
 // Submit new publish key and email for creation
 async function submitPublishKey(publishKey, gmail) {
     try {
-        const response = await fetch("/Shoe_war_exploded/AddKeyController", {
+        const response = await fetch("/AddKeyController", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({publishKey, gmail}),
@@ -321,7 +321,7 @@ function showSignatureForm(content, isKeyCreation = false) {
         // If signature exists, verify it using GET request
         if (data.sign) {
             try {
-                const response = await fetch(`/Shoe_war_exploded/ApiVerifySignature?orderId=${idOrder}`, {
+                const response = await fetch(`/ApiVerifySignature?orderId=${idOrder}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

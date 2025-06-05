@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
             orderId: filters.orderId || ''
         };
 
-        fetch('/Shoe_war_exploded/SignAdminController', {
+        fetch('/SignAdminController', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

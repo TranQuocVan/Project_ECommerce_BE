@@ -55,7 +55,7 @@ const products = (idSize, img, name, color, size, price) => {
         return;
     }
 
-    fetch('/Shoe_war_exploded/AddToCartController', {
+    fetch('/AddToCartController', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ idSize }),

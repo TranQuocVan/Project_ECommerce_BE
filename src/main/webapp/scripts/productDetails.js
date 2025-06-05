@@ -99,7 +99,7 @@ const checkStock = async (idSize, quantity) => {
             throw new Error("Invalid idSize: must be a valid number.");
         }
 
-        const response = await fetch('/Shoe_war_exploded/CheckStockController', {
+        const response = await fetch('/CheckStockController', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ idSize, quantity }),
@@ -163,7 +163,7 @@ const addToCart = async () => {
 
         if (isStockAvailable) {
             try {
-                const response = await fetch('/Shoe_war_exploded/AddToCartController', {
+                const response = await fetch('/AddToCartController', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ idSize, quantity: currentQuantity }),

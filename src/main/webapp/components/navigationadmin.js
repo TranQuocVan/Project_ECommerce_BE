@@ -99,7 +99,7 @@ const addNavigationAdmin = () => {
                 </div>
                 <div class="subMenu" id="userOptions">
                     <span class="navigation">
-                        <a href="http://localhost:8080/Shoe_war_exploded/adminPages/addProductGroup.jsp">
+                        <a href="https://silkroadshop.io.vn/adminPages/addProductGroup.jsp">
                             <div class="navAdmin-subItem">
                                 Quản lí user
                             </div>

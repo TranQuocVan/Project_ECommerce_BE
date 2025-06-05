@@ -50,7 +50,7 @@
                         <p style="font-size: 18px; margin-top: 15px;">Vui lòng để ý số điện thoại của nhân viên tư vấn:</p>
                         <strong style="color: red; font-size: 24px;">0383456xxx</strong>
 
-                        <a href="http://localhost:8080/Shoe_war_exploded/OrderController"
+                        <a href="https://silkroadshop.io.vn/OrderController"
                            style="font-size: 24px; margin-top: 15px; text-decoration: underline;">
                             Kiểm tra đơn hàng của bạn !
                         </a>
@@ -66,7 +66,7 @@
                         <p style="font-size: 18px; margin-top: 15px;">Cảm ơn quý khách đã dùng dịch vụ của chúng tôi.</p>
                         <p style="font-size: 18px;">Liên hệ tổng đài để được tư vấn:</p>
                         <strong style="color: red; font-size: 24px;">0383456xxx</strong>
-                        <a href="http://localhost:8080/Shoe_war_exploded/OrderController"
+                        <a href="https://silkroadshop.io.vn/OrderController"
                            style="font-size: 24px; margin-top: 15px; text-decoration: underline;">
                             Kiểm tra đơn hàng của bạn !
                         </a>
@@ -81,7 +81,7 @@
                         </h3>
                         <p style="font-size: 18px; margin-top: 15px;">Vui lòng để ý số điện thoại của nhân viên tư vấn:</p>
                         <strong style="color: red; font-size: 24px;">0383456xxx</strong>
-                        <a href="http://localhost:8080/Shoe_war_exploded/OrderController"
+                        <a href="https://silkroadshop.io.vn/OrderController"
                            style="font-size: 24px; margin-top: 15px; text-decoration: underline;">
                             Kiểm tra đơn hàng của bạn !
                         </a>

@@ -20,7 +20,7 @@ public class GmailServices {
     }
 
     public boolean sendGmailForForgotPass(String gmail,String token) {
-        String resetLink = "http://localhost:8080/Shoe_war_exploded/ResetPasswordForgot?token=" + token;
+        String resetLink = "https://silkroadshop.io.vn/ResetPasswordForgot?token=" + token;
 
         String emailContent = "<h2>Yêu cầu đặt lại mật khẩu</h2>" +
                 "<p>Bạn đã yêu cầu đặt lại mật khẩu. Nhấn vào liên kết bên dưới để đặt lại:</p>" +
