@@ -72,7 +72,7 @@ function decreaseQuantity(button,event) {
 function updateQuantityInDatabase(sizeId, quantity,isDecreaseQuantity = false) {
     return new Promise((resolve, reject) => {
         $.ajax({
-            url: '/Shoe_war_exploded/UpdateQuantityCartController', // Server endpoint
+            url: '/UpdateQuantityCartController', // Server endpoint
             type: 'POST',
             contentType: 'application/json', // Ensure data is sent as JSON
             data: JSON.stringify({

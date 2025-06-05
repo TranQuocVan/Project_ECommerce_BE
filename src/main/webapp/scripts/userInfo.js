@@ -41,7 +41,7 @@ function showErrorPopup(message) {
 // Submit publish key to server
 async function submitPublishKey(publishKey, gmail) {
     try {
-        const response = await fetch("/Shoe_war_exploded/AddKeyController", {
+        const response = await fetch("/AddKeyController", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({publishKey, gmail})
